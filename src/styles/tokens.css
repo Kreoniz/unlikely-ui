@@ -1,0 +1,204 @@
+/* unlikely ui — foundations, 2026-10-19.
+ * Opt-in runtime scope; distributed in the private M0 package build.
+ * CSS is the source of truth for this draft. See tokens.md for the contract.
+ */
+.u-theme {
+  /* Private references: components consume semantic aliases below. */
+  --u-ref-mint-300: #88f19e;
+  --u-ref-mint-400: #6de584;
+  --u-ref-mint-500: #4bcb6d;
+  --u-ref-coral-400: #ff5454;
+
+  /* Semantic colors: default light appearance. */
+  --u-canvas: #f7f4eb;
+  --u-surface: #fcfaf5;
+  --u-surface-raised: #ffffff;
+  --u-surface-hover: #eee8dd;
+  --u-well: #eee8dd;
+  --u-ink: #1f2421;
+  --u-muted: #5d6860;
+  --u-line-soft: #e2dccf;
+  --u-line: #7b857c;
+  --u-accent: var(--u-ref-mint-300);
+  --u-accent-hover: var(--u-ref-mint-400);
+  --u-accent-pressed: var(--u-ref-mint-500);
+  --u-accent-ink: #102818;
+  --u-accent-soft: #dcfbe2;
+  --u-accent-text: #21613a;
+  --u-accent-border: #32824d;
+  --u-selection: var(--u-accent-soft);
+  --u-selection-ink: var(--u-accent-text);
+  --u-selection-border: var(--u-accent-border);
+  --u-focus: #21613a;
+  --u-success: #176b36;
+  --u-success-soft: #dcf7e4;
+  --u-success-border: #278345;
+  --u-warning: #805000;
+  --u-warning-soft: #fff0cc;
+  --u-warning-border: #a57200;
+  --u-danger: #ac2733;
+  --u-danger-soft: #ffe5e7;
+  --u-danger-soft-hover: #ffdade;
+  --u-danger-soft-pressed: #ffccd2;
+  --u-danger-border: #c63b49;
+  --u-info: #245bab;
+  --u-info-soft: #e6efff;
+  --u-info-border: #4778c3;
+  /* Categorical fills are independent of brand and status meanings. */
+  --u-category-1: #bfdcff;
+  --u-category-2: #d6cbee;
+  --u-category-3: #c5dcb9;
+  --u-category-4: #f7d6ac;
+  --u-category-5: #bde2dc;
+  --u-category-6: #f6c2b5;
+  --u-category-ink: #142016;
+  --u-disabled-surface: #eeeae1;
+  --u-disabled-ink: #777b74;
+  --u-overlay: rgb(10 18 13 / 48%);
+  /* Opt-in PhysicalButton materials; independent of status meanings. */
+  --u-physical-cap: #ff4b40;
+  --u-physical-ink: #241411;
+  --u-physical-casing: #1c211c;
+  --u-physical-plate: #252b25;
+  --u-physical-stripe: #f7dc36;
+  --u-physical-indicator: #88f19e;
+
+  /* Spaces: rem values assume the browser's default 16px root size. */
+  --u-space-0: 0;
+  --u-space-0-5: 0.125rem;
+  --u-space-1: 0.25rem;
+  --u-space-2: 0.5rem;
+  --u-space-3: 0.75rem;
+  --u-space-4: 1rem;
+  --u-space-5: 1.25rem;
+  --u-space-6: 1.5rem;
+  --u-space-8: 2rem;
+  --u-space-10: 2.5rem;
+  --u-space-12: 3rem;
+  --u-space-16: 4rem;
+
+  --u-font: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --u-font-display:
+    'Inter Tight', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --u-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --u-weight-regular: 400;
+  --u-weight-medium: 500;
+  --u-weight-semibold: 600;
+  --u-weight-bold: 700;
+  --u-type-caption-size: 0.75rem;
+  --u-type-caption-leading: 1rem;
+  --u-type-small-size: 0.875rem;
+  --u-type-small-leading: 1.25rem;
+  --u-type-body-size: 1rem;
+  --u-type-body-leading: 1.5rem;
+  --u-type-heading-sm-size: 1.5rem;
+  --u-type-heading-sm-leading: 2rem;
+  --u-type-heading-md-size: 2rem;
+  --u-type-heading-md-leading: 2.5rem;
+  --u-type-heading-lg-size: 2.5rem;
+  --u-type-heading-lg-leading: 3rem;
+  --u-type-display-size: 3.5rem;
+  --u-type-display-leading: 4rem;
+  --u-tracking-normal: 0;
+  --u-tracking-heading: -0.01em;
+  --u-tracking-display: -0.02em;
+
+  --u-radius-none: 0;
+  --u-radius-xs: 0.25rem;
+  --u-radius-sm: 0.375rem;
+  --u-radius-md: 0.5rem;
+  --u-radius-lg: 0.75rem;
+  --u-radius-xl: 1rem;
+  --u-radius-2xl: 1.5rem;
+  --u-radius-full: 9999px;
+  --u-border-width: 1px;
+  --u-focus-width: 2px;
+  --u-focus-offset: 2px;
+  --u-shadow-sm: 0 1px 2px rgb(17 29 21 / 8%);
+  --u-shadow-md: 0 4px 12px rgb(17 29 21 / 12%);
+  --u-shadow-lg: 0 12px 32px rgb(17 29 21 / 18%);
+
+  --u-control-height-sm: 2rem;
+  --u-control-height-md: 2.5rem;
+  --u-control-height-lg: 3rem;
+  --u-target-touch: 2.75rem;
+  --u-control-padding: 0.875rem;
+  --u-icon-sm: 1rem;
+  --u-icon-md: 1.25rem;
+  --u-icon-lg: 1.5rem;
+  --u-opacity-disabled: 0.5;
+
+  --u-duration-fast: 100ms;
+  --u-duration-normal: 160ms;
+  --u-duration-slow: 240ms;
+  --u-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --u-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --u-z-sticky: 10;
+  --u-z-dialog: 100;
+  --u-z-popup: 110;
+  --u-z-tooltip: 130;
+  --u-z-toast: 150;
+
+  /* Useful component-role aliases; avoid an exhaustive per-part layer. */
+  --u-radius: var(--u-radius-sm);
+  --u-panel-radius: var(--u-radius-md);
+  --u-dialog-radius: var(--u-radius-lg);
+  --u-control-height: var(--u-control-height-md);
+  --u-space: var(--u-space-4);
+  --u-text-size: var(--u-type-body-size);
+  --u-shadow: var(--u-shadow-sm);
+  --u-panel-shadow: var(--u-shadow-md);
+  --u-motion: var(--u-duration-normal);
+  color-scheme: light;
+}
+
+.u-theme[data-appearance='dark'] {
+  --u-canvas: #292d28;
+  --u-surface: #2c322b;
+  --u-surface-raised: #353c33;
+  --u-surface-hover: #3b4438;
+  --u-well: #232720;
+  --u-ink: #f5f5ee;
+  --u-muted: #b4b9ae;
+  --u-line-soft: #41483e;
+  --u-line: #8b9985;
+  --u-accent-soft: #203e2a;
+  --u-accent-text: #9af4ae;
+  --u-accent-border: #72c787;
+  --u-focus: #88f19e;
+  --u-success: #a6edbd;
+  --u-success-soft: #183824;
+  --u-success-border: #529d6a;
+  --u-warning: #f8d58d;
+  --u-warning-soft: #3a2d14;
+  --u-warning-border: #b18a40;
+  --u-danger: #ffb0b7;
+  --u-danger-soft: #43242a;
+  --u-danger-soft-hover: #502a31;
+  --u-danger-soft-pressed: #5a3038;
+  --u-danger-border: #c9717b;
+  --u-info: #aecfff;
+  --u-info-soft: #1b2e49;
+  --u-info-border: #729ad0;
+  --u-category-1: #92bde6;
+  --u-category-2: #b5a4d7;
+  --u-category-3: #a9c692;
+  --u-category-4: #d6b384;
+  --u-category-5: #93c6bc;
+  --u-category-6: #d89582;
+  --u-disabled-surface: #2b362e;
+  --u-disabled-ink: #829086;
+  --u-overlay: rgb(5 10 7 / 64%);
+  --u-shadow-sm: 0 1px 2px rgb(0 0 0 / 20%);
+  --u-shadow-md: 0 4px 12px rgb(0 0 0 / 28%);
+  --u-shadow-lg: 0 12px 32px rgb(0 0 0 / 36%);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .u-theme {
+    --u-duration-fast: 0ms;
+    --u-duration-normal: 0ms;
+    --u-duration-slow: 0ms;
+  }
+}

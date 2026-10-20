@@ -1,0 +1,10 @@
+{
+  "created": "2026-10-20",
+  "tool": "built-in image_gen",
+  "intent": "Widen the striped circular base around the red cap while preserving the overall framing, head-on view and absent indicator.",
+  "reference": "button-front-no-light.png",
+  "sourceGeneration": "no-light.json",
+  "output": "../../../../dev/public/button-logo.png",
+  "transparentBackground": true,
+  "prompt": "Use case: precise-object-edit.\nInput image 1 is the edit target: the current unlikely ui red push-button logo.\nPrimary request: make the striped circular base around the red button noticeably wider. Keep the same overall outside diameter and framing. Reduce the red cap from its current proportion to approximately 62–64% of the total housing diameter, with the black ridged bezel at approximately 69–71% of the total diameter. Use the gained space for a substantially broader yellow/charcoal hazard-striped annulus, around 10–11% of the total diameter in radial width, inside the unchanged narrow outer casing rim. The striped base should be a clear, bold circular ring that remains readable when the logo is displayed at 52px.\nPreserve the same satin coral-red gently domed blank cap, dark finely ridged bezel, diagonal yellow/charcoal stripes, dark olive-black circular outer casing, restrained beveled depth and soft studio highlights. Keep the cap large enough to remain the main recognizable feature.\nKeep the exact head-on orthographic view, centered concentric true circles, equal left/right and top/bottom proportions. No tilt, camera roll, perspective ellipse or angled view. No indicator light, lens, recess or glow anywhere. No text, face, eyes, mouth, limbs, symbols or added objects.\nPreserve the existing clean product-render style. Exactly one complete button on genuine transparent alpha, with small even transparent margins and nothing cropped. Change only the relative cap/bezel/striped-ring proportions; keep the overall asset framing, materials and colors consistent with the edit target."
+}

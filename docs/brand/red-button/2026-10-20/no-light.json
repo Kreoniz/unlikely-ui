@@ -1,0 +1,11 @@
+{
+  "created": "2026-10-20",
+  "tool": "built-in image_gen",
+  "intent": "Enlarge the red cap and framing and remove the indicator completely. Use it beside the workspace wordmark and in the favicon, with no large overview image.",
+  "reference": "button-front-with-light.png",
+  "sourceGeneration": "front-facing.json",
+  "output": "button-front-no-light.png",
+  "status": "Preserved narrow-ring variant; wider-base.json records the current logo.",
+  "transparentBackground": true,
+  "prompt": "Use case: precise-object-edit.\nInput image 1 is the edit target: the existing front-facing red push-button logo.\nKeep the same head-on orthographic camera, true circular silhouette, concentric rings, satin coral-red domed blank cap, dark ridged bezel, diagonal yellow/charcoal hazard ring, dark olive-black casing, restrained dimensional bevels and studio highlights.\nMake the red cap visibly bigger relative to the housing: approximately 77% of the outer button diameter. Narrow the bezel and hazard annulus proportionately but retain a clearly visible striped ring. Frame the complete button larger as well, around 92% of the square canvas, with small even transparent margins and nothing cropped.\nRemove the mint-green indicator light COMPLETELY. Remove the lens, recess, black socket, glow and any traces of the lamp at six o'clock. Replace that area with a smooth continuous dark rim, matching the rest of the circular casing. The final logo has no lights.\nChange only these size/proportion details and the indicator removal. Maintain a directly facing circular design with no tilt, no perspective ellipse and no sideways rotation.\nPreserve genuine transparent alpha background and clean edges. No backdrop, floor, text, cap icon, face, eyes, mouth, limbs, extra objects or watermark. Exactly one complete button."
+}

@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>unlikely ui · token draft</title>
+    <style>
+      %%TOKENS%% html,
+      body {
+        margin: 0;
+        background: transparent;
+      }
+      html {
+        font-size: 16px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      #unlikely-token-sheet {
+        color: var(--foreground);
+        font-family: var(--font-sans, system-ui);
+      }
+      #unlikely-token-sheet .sheet-bar {
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 14px;
+        font-size: 12px;
+        color: var(--muted-foreground);
+      }
+      #unlikely-token-sheet .sheet-bar label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 36px;
+      }
+      #unlikely-token-sheet .sheet-bar input {
+        accent-color: var(--primary);
+        width: 16px;
+        height: 16px;
+      }
+      #unlikely-token-sheet .comparison {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      #unlikely-token-sheet .sample {
+        padding: 22px;
+        background: var(--u-canvas);
+        color: var(--u-ink);
+        border-radius: var(--radius, 16px);
+        border: 1px solid var(--u-line-soft);
+        font-family: var(--u-font);
+        min-width: 0;
+      }
+      #unlikely-token-sheet .sample-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      #unlikely-token-sheet .brand {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        font: 700 20px/1.1 var(--u-font-display);
+        letter-spacing: -0.04em;
+      }
+      #unlikely-token-sheet .brand img {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+      }
+      #unlikely-token-sheet .appearance {
+        color: var(--u-muted);
+        font-size: 12px;
+      }
+      #unlikely-token-sheet .eyebrow {
+        font: 500 11px/1.4 var(--u-font);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--u-muted);
+        margin: 20px 0 9px;
+      }
+      #unlikely-token-sheet h2 {
+        font: var(--u-weight-semibold)
+          var(--u-type-heading-md-size)/var(--u-type-heading-md-leading)
+          var(--u-font-display);
+        letter-spacing: var(--u-tracking-heading);
+        margin: 0 0 12px;
+      }
+      #unlikely-token-sheet .sample-desc {
+        color: var(--u-muted);
+        font-size: 14px;
+        line-height: 20px;
+        margin: 0 0 20px;
+      }
+      #unlikely-token-sheet .product {
+        padding: 16px;
+        background: var(--u-surface);
+        border: 1px solid var(--u-line-soft);
+        border-radius: var(--u-panel-radius);
+      }
+      #unlikely-token-sheet .product strong {
+        font-size: 15px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+      }
+      #unlikely-token-sheet .product p {
+        color: var(--u-muted);
+        font-size: 13px;
+        line-height: 19px;
+        margin: 0 0 16px;
+      }
+      #unlikely-token-sheet .product label {
+        display: block;
+        font-size: 12px;
+        line-height: 18px;
+        margin-bottom: 6px;
+      }
+      #unlikely-token-sheet .product input {
+        display: block;
+        width: 100%;
+        height: var(--u-control-height);
+        padding: 0 var(--u-control-padding);
+        border: 1px solid var(--u-line);
+        border-radius: var(--u-radius);
+        background: var(--u-canvas);
+        color: var(--u-ink);
+        font: 400 14px/20px var(--u-font);
+        margin-bottom: 12px;
+      }
+      #unlikely-token-sheet .product input::placeholder {
+        color: var(--u-muted);
+        opacity: 1;
+      }
+      #unlikely-token-sheet .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      #unlikely-token-sheet .product button {
+        width: 100%;
+        min-height: var(--u-control-height);
+        padding: 0 10px;
+        border-radius: var(--u-radius);
+        font: 500 14px/20px var(--u-font);
+        border: 1px solid var(--u-line);
+        background: transparent;
+        color: var(--u-ink);
+        cursor: default;
+      }
+      #unlikely-token-sheet .product button.primary {
+        background: var(--u-accent);
+        color: var(--u-accent-ink);
+        border-color: var(--u-accent-border);
+      }
+      #unlikely-token-sheet .product button.primary:hover {
+        background: var(--u-accent-hover);
+      }
+      #unlikely-token-sheet .product button.primary:active {
+        background: var(--u-accent-pressed);
+      }
+      #unlikely-token-sheet .product button.secondary:hover {
+        background: var(--u-surface-hover);
+      }
+      #unlikely-token-sheet .product button:focus-visible,
+      #unlikely-token-sheet .product input:focus-visible {
+        outline: var(--u-focus-width) solid var(--u-focus);
+        outline-offset: var(--u-focus-offset);
+      }
+      #unlikely-token-sheet .feedback {
+        margin: 12px 0 0;
+        border-radius: var(--u-radius-md);
+        background: var(--u-success-soft);
+        color: var(--u-success);
+        padding: 10px 12px;
+        font: 500 12px/18px var(--u-font);
+      }
+      #unlikely-token-sheet .selection {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 10px;
+        border: 1px solid var(--u-selection-border);
+        border-radius: var(--u-radius);
+        padding: 9px 11px;
+        color: var(--u-selection-ink);
+        background: var(--u-selection);
+        font: 500 12px/18px var(--u-font);
+      }
+      #unlikely-token-sheet .selection span {
+        font-weight: 400;
+      }
+      #unlikely-token-sheet .categories {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+      #unlikely-token-sheet .category {
+        border-radius: var(--u-radius-xs);
+        padding: 10px 8px;
+        color: var(--u-category-ink);
+        font: 500 12px/18px var(--u-font);
+        text-align: center;
+      }
+      #unlikely-token-sheet .palette {
+        display: grid;
+        gap: 9px;
+      }
+      #unlikely-token-sheet .color-row {
+        display: grid;
+        grid-template-columns: 25px minmax(0, 1fr) auto;
+        gap: 9px;
+        align-items: center;
+        font-size: 12px;
+        min-width: 0;
+      }
+      #unlikely-token-sheet .color-mark {
+        width: 25px;
+        height: 25px;
+        border-radius: 6px;
+        border: 1px solid var(--u-line-soft);
+      }
+      #unlikely-token-sheet .color-row code {
+        color: var(--u-muted);
+        font: 11px/16px var(--u-font-mono);
+      }
+      #unlikely-token-sheet .statuses {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      #unlikely-token-sheet .status {
+        border-radius: var(--u-radius-full);
+        padding: 4px 9px;
+        font: 500 11px/16px var(--u-font);
+      }
+      #unlikely-token-sheet .status.success {
+        color: var(--u-success);
+        background: var(--u-success-soft);
+      }
+      #unlikely-token-sheet .status.warning {
+        color: var(--u-warning);
+        background: var(--u-warning-soft);
+      }
+      #unlikely-token-sheet .status.danger {
+        color: var(--u-danger);
+        background: var(--u-danger-soft);
+      }
+      #unlikely-token-sheet .status.info {
+        color: var(--u-info);
+        background: var(--u-info-soft);
+      }
+      #unlikely-token-sheet .foundations {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        color: var(--foreground);
+      }
+      #unlikely-token-sheet .foundation-title {
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      #unlikely-token-sheet .type-sample {
+        font:
+          600 24px/32px 'Inter Tight',
+          'Inter',
+          system-ui;
+        letter-spacing: -0.01em;
+      }
+      #unlikely-token-sheet .type-note {
+        margin: 8px 0 0;
+        font-size: 12px;
+        line-height: 19px;
+        color: var(--muted-foreground);
+      }
+      #unlikely-token-sheet .radii {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      #unlikely-token-sheet .radius-item {
+        text-align: center;
+        font-size: 11px;
+        color: var(--muted-foreground);
+      }
+      #unlikely-token-sheet .radius-shape {
+        width: 44px;
+        height: 38px;
+        background: color-mix(in srgb, var(--foreground) 14%, transparent);
+        border: 1px solid var(--border);
+        margin-bottom: 5px;
+      }
+      #unlikely-token-sheet .spacing {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      #unlikely-token-sheet .spacing-item {
+        color: var(--muted-foreground);
+        font-size: 11px;
+        text-align: center;
+      }
+      #unlikely-token-sheet .space-mark {
+        background: var(--foreground);
+        opacity: 0.6;
+        border-radius: 2px;
+        margin: 0 auto 7px;
+      }
+      #unlikely-token-sheet .motion {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      #unlikely-token-sheet .motion span {
+        color: var(--muted-foreground);
+        font-size: 12px;
+        padding: 6px 0;
+        margin-right: 8px;
+      }
+      #unlikely-token-sheet .footnote {
+        color: var(--muted-foreground);
+        font-size: 11px;
+        line-height: 17px;
+        margin: 22px 0 0;
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+      }
+      @media (max-width: 580px) {
+        #unlikely-token-sheet .comparison {
+          grid-template-columns: 1fr;
+        }
+        #unlikely-token-sheet .foundations {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        #unlikely-token-sheet .sample {
+          padding: 20px;
+        }
+      }
+      @media (pointer: coarse) {
+        #unlikely-token-sheet .product button,
+        #unlikely-token-sheet .product input {
+          min-height: var(--u-target-touch);
+        }
+        #unlikely-token-sheet .product input {
+          font-size: 16px;
+        }
+        #unlikely-token-sheet .sheet-bar label {
+          min-height: 44px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="unlikely-token-sheet">
+      <div class="sheet-bar">
+        <span>FOUNDATIONS · DRAFT 02</span><span>Default controls · 40px</span>
+      </div>
+      <div class="comparison">%%SAMPLES%%</div>
+      <div class="foundations">
+        <div>
+          <p class="foundation-title">Typography</p>
+          <div class="type-sample">
+            A little personality.<br />A lot of clarity.
+          </div>
+          <p class="type-note">
+            Inter Tight · display &amp; headings<br />Inter · body &amp;
+            controls<br />JetBrains Mono · code
+          </p>
+        </div>
+        <div>
+          <p class="foundation-title">Corner roles</p>
+          <div class="radii">
+            <div class="radius-item">
+              <div class="radius-shape" style="border-radius: 6px"></div>
+              Control · 6
+            </div>
+            <div class="radius-item">
+              <div class="radius-shape" style="border-radius: 8px"></div>
+              Card · 8
+            </div>
+            <div class="radius-item">
+              <div class="radius-shape" style="border-radius: 12px"></div>
+              Dialog · 12
+            </div>
+          </div>
+          <p class="type-note">1px borders · 2px focus · 2px offset</p>
+        </div>
+        <div>
+          <p class="foundation-title">Spacing · 4px rhythm</p>
+          <div class="spacing">%%SPACING%%</div>
+        </div>
+        <div>
+          <p class="foundation-title">Motion</p>
+          <div class="motion">
+            <span>Fast · 100ms</span><span>Default · 160ms</span
+            ><span>Slow · 240ms</span>
+          </div>
+          <p class="type-note">
+            Reduced motion · 0ms<br />Controls · 32 / 40 / 48px<br />Touch
+            targets · ≥44px
+          </p>
+        </div>
+      </div>
+      <p class="footnote">
+        %%CONTRAST%% Fonts use system fallbacks when unavailable. Illustrative
+        HTML controls; see the local showcase for React preview components.
+        Palette checks are not a full accessibility audit.
+      </p>
+    </div>
+    <script>
+      const sheet = document.getElementById('unlikely-token-sheet');
+      sheet.querySelectorAll('.primary').forEach((button) =>
+        button.addEventListener('click', () => {
+          button.closest('.sample').querySelector('.feedback').textContent =
+            '✓ Project created.';
+        }),
+      );
+      sheet.querySelectorAll('.secondary').forEach((button) =>
+        button.addEventListener('click', () => {
+          button.closest('.sample').querySelector('.feedback').textContent =
+            '✓ All projects are up to date.';
+        }),
+      );
+      console.log(
+        JSON.stringify({
+          palettePanels: sheet.querySelectorAll('.sample').length,
+          horizontalOverflow: document.documentElement.scrollWidth > innerWidth,
+        }),
+      );
+    </script>
+  </body>
+</html>

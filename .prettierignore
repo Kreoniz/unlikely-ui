@@ -1,0 +1,9 @@
+dist/
+.local/
+node_modules/
+test-results/
+playwright-report/
+pnpm-lock.yaml
+src/token-names.ts
+docs/foundations/token-sheet.html
+docs/foundations/contrast.json

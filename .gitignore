@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.local/
+__pycache__/
+*.pyc
+test-results/
+playwright-report/
+dev/generated/
+
+# Local credentials and generated archives must not enter source history.
+.env
+.env.*
+!.env.example
+.npmrc
+*.log
+*.tgz

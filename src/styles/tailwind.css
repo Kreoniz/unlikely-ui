@@ -1,0 +1,22 @@
+/* Optional Tailwind v4 adapter. Import tokens.css or styles.css as well. */
+@theme inline {
+  --color-u-canvas: var(--u-canvas);
+  --color-u-surface: var(--u-surface);
+  --color-u-raised: var(--u-surface-raised);
+  --color-u-hover: var(--u-surface-hover);
+  --color-u-ink: var(--u-ink);
+  --color-u-muted: var(--u-muted);
+  --color-u-line: var(--u-line);
+  --color-u-accent: var(--u-accent);
+  --color-u-accent-hover: var(--u-accent-hover);
+  --color-u-accent-pressed: var(--u-accent-pressed);
+  --color-u-accent-ink: var(--u-accent-ink);
+  --color-u-accent-border: var(--u-accent-border);
+  --color-u-danger: var(--u-danger);
+  --color-u-danger-soft: var(--u-danger-soft);
+  --color-u-danger-hover: var(--u-danger-soft-hover);
+  --color-u-danger-pressed: var(--u-danger-soft-pressed);
+  --color-u-danger-border: var(--u-danger-border);
+  --font-u-sans: var(--u-font);
+  --radius-u-control: var(--u-radius);
+}

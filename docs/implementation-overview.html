@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>unlikely ui · implementation plan</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+        color: var(--foreground);
+        font-family: var(--font-sans, system-ui, sans-serif);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      #unlikely-plan {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      #unlikely-plan h2 {
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0 0 16px;
+      }
+      #unlikely-plan h3 {
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0 0 6px;
+      }
+      #unlikely-plan .phases {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px 28px;
+        margin-bottom: 30px;
+      }
+      #unlikely-plan .phase {
+        padding: 0 0 14px;
+        border-bottom: 1px solid var(--border);
+        min-width: 0;
+      }
+      #unlikely-plan .phase-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      #unlikely-plan .number {
+        font: 12px/1.5 var(--font-mono, monospace);
+        color: var(--muted-foreground);
+      }
+      #unlikely-plan .phase-head h3 {
+        margin: 0;
+      }
+      #unlikely-plan .detail {
+        color: var(--muted-foreground);
+        font-size: 13px;
+      }
+      #unlikely-plan .status {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin-top: 7px;
+      }
+      #unlikely-plan .contract {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 28px;
+        margin-bottom: 30px;
+      }
+      #unlikely-plan pre {
+        margin: 0;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font: 12px/1.8 var(--font-mono, monospace);
+        color: var(--foreground);
+      }
+      #unlikely-plan ul {
+        padding-left: 18px;
+        margin: 0;
+      }
+      #unlikely-plan li {
+        margin-bottom: 8px;
+      }
+      #unlikely-plan table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 13px;
+      }
+      #unlikely-plan th,
+      #unlikely-plan td {
+        padding: 10px 8px;
+        vertical-align: top;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        overflow-wrap: anywhere;
+      }
+      #unlikely-plan th {
+        font-weight: 500;
+      }
+      #unlikely-plan th:first-child,
+      #unlikely-plan td:first-child {
+        padding-left: 0;
+        width: 25%;
+        color: var(--muted-foreground);
+      }
+      #unlikely-plan td {
+        color: var(--muted-foreground);
+      }
+      #unlikely-plan td strong {
+        font-weight: 500;
+        color: var(--foreground);
+      }
+      #unlikely-plan a {
+        color: var(--foreground);
+        text-underline-offset: 3px;
+      }
+      #unlikely-plan .source {
+        font-size: 12px;
+        color: var(--muted-foreground);
+        margin: 12px 0 0;
+      }
+      #unlikely-plan .later {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        font-size: 13px;
+        color: var(--muted-foreground);
+      }
+      #unlikely-plan .later strong {
+        font-weight: 500;
+        color: var(--foreground);
+      }
+      @media (max-width: 520px) {
+        #unlikely-plan .phases,
+        #unlikely-plan .contract {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        #unlikely-plan th,
+        #unlikely-plan td {
+          font-size: 12px;
+          padding: 9px 6px;
+        }
+        #unlikely-plan th:first-child,
+        #unlikely-plan td:first-child {
+          width: 24%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="unlikely-plan">
+      <section aria-label="Implementation milestones">
+        <h2>First alpha · one form-and-dialog flow</h2>
+        <div class="phases">
+          <div class="phase">
+            <div class="phase-head">
+              <span class="number">M0</span>
+              <h3>Foundations &amp; delivery</h3>
+            </div>
+            <div class="detail">
+              Theme · tokens · Tailwind build · ESM/types/CSS exports
+            </div>
+            <div class="status">
+              Gate: tarball, nested themes, portal specimen and consumer
+              overrides
+            </div>
+          </div>
+          <div class="phase">
+            <div class="phase-head">
+              <span class="number">M1</span>
+              <h3>Actions &amp; fields</h3>
+            </div>
+            <div class="detail">
+              Button · IconButton · Field · Input · Textarea
+            </div>
+            <div class="status">
+              Gate: names, states, keyboard use and density
+            </div>
+          </div>
+          <div class="phase">
+            <div class="phase-head">
+              <span class="number">M2</span>
+              <h3>Overlays → alpha candidate</h3>
+            </div>
+            <div class="detail">Dialog · Popover · Tooltip</div>
+            <div class="status">
+              Gate: focus, nested portals, narrow layouts and packed integration
+            </div>
+          </div>
+          <div class="phase">
+            <div class="phase-head">
+              <span class="number">M3</span>
+              <h3>Common controls</h3>
+            </div>
+            <div class="detail">
+              Calendar · Checkbox · Combobox · DatePicker · RadioGroup · Select
+            </div>
+            <div class="status">
+              Alert · Badge · Card · Skeleton · Spinner · Toast. Switch and Tabs
+              next.
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="contract">
+        <section aria-label="Proposed repository structure">
+          <h2>One package · proposed layout</h2>
+          <pre>
+AGENTS.md
+CONTEXT.md
+src/
+  components/*.tsx
+  theme.tsx
+  styles/*.css
+  index.ts
+dev/             gallery
+tests/           browser + consumer
+scripts/         build + pack checks
+docs/            foundations + plans
+dist/            generated</pre>
+        </section>
+        <section aria-label="First release boundaries">
+          <h2>Initial delivery contract</h2>
+          <ul>
+            <li>React + Base UI + Tailwind v4</li>
+            <li>One npm package, one version</li>
+            <li>Compiled ESM, declarations and CSS</li>
+            <li>Component subpath imports</li>
+            <li>Framework-independent token CSS</li>
+            <li>One canonical component source</li>
+          </ul>
+        </section>
+      </div>
+      <section aria-label="Distribution comparison">
+        <h2>Distribution · different ownership models</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Concern</th>
+              <th scope="col">Npm · recommended first</th>
+              <th scope="col">Source registry · optional later</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Installed as</th>
+              <td>Versioned dependency</td>
+              <td>Editable local files + dependencies</td>
+            </tr>
+            <tr>
+              <th scope="row">Customization</th>
+              <td>Tokens, variants, composition and documented overrides</td>
+              <td>Component internals and markup</td>
+            </tr>
+            <tr>
+              <th scope="row">Shared fixes</th>
+              <td><strong>Upgrade the package</strong></td>
+              <td><strong>Review and merge into local copies</strong></td>
+            </tr>
+            <tr>
+              <th scope="row">Selection</th>
+              <td>
+                Subpath exports; verify unused JS is removed. Combined CSS
+                initially.
+              </td>
+              <td>Requested items plus their shared files and dependencies</td>
+            </tr>
+            <tr>
+              <th scope="row">Delivery work</th>
+              <td>Build, exports, release and consumer fixture</td>
+              <td>
+                Registry metadata, imports/styles setup and install fixture
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="source">
+          Custom registries can use the existing
+          <a href="https://ui.shadcn.com/docs/registry"
+            >shadcn registry protocol and CLI</a
+          >.
+        </p>
+      </section>
+      <div class="later">
+        <strong>Later registry:</strong> same source → generated release items →
+        verified installation. Existing npm consumers can keep their current
+        adoption mode.
+      </div>
+    </main>
+    <script>
+      console.log(
+        JSON.stringify({
+          phases: document.querySelectorAll('.phase').length,
+          horizontalOverflow: document.documentElement.scrollWidth > innerWidth,
+          status: 'planning only',
+        }),
+      );
+    </script>
+  </body>
+</html>

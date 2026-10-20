@@ -1,0 +1,11 @@
+{
+  "created": "2026-10-20",
+  "tool": "built-in image_gen",
+  "intent": "Edit viewpoint only to make the logo face the viewer directly.",
+  "reference": "button-perspective.png",
+  "sourceGeneration": "generation.json",
+  "output": "button-front-with-light.png",
+  "transparentBackground": true,
+  "prompt": "Use case: precise-object-edit.\nInput image 1 is the edit target: our existing red PhysicalButton mascot.\nChange only its viewpoint to a fully head-on logo. The large circular RED CAP must face directly toward the viewer. Aim an orthographic camera along the button's central axis, perpendicular to its circular face, as if the button were mounted on a vertical wall facing us.\nThe red cap, black bezel, yellow/charcoal hazard annulus, and outer casing should form centered, symmetrical, perfectly circular concentric rings. Equal apparent left/right and top/bottom proportions. Absolutely no tilt, no elliptical foreshortening, no three-quarter perspective, no camera roll or yaw. Do not show the button edge-on from its cylindrical side.\nPreserve its recognizable materials, colors, and design: gently domed satin coral-red blank cap, finely ridged dark bezel, broad diagonal yellow and charcoal hazard stripes in the circular ring, low dark olive-black circular casing, and one tiny mint-green horizontal indicator centered at six o'clock on the outer front rim. Keep restrained dimensional bevels and soft highlights to retain the existing well-crafted product-render appearance. The casing should not look like a tall canister.\nKeep the image transparent with genuine alpha, no backdrop, no wall visible, no floor, no scene. One complete centered button, fully visible with even transparent margins, square composition, around 80% frame coverage. No text, symbols on the cap, face, eyes, mouth, limbs, extra objects, or watermark. Preserve all identifying details except the requested camera angle.",
+  "status": "Preserved illuminated variant; no-light.json records indicator removal, and wider-base.json records the current logo."
+}
