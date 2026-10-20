@@ -6,8 +6,8 @@ Cream and olive-charcoal foundations, fresh mint, and a playful streak.
 ## Install
 
 The unscoped package uses `next` for alpha releases. All components are previews.
-Install an exact registry version when available, or a locally built tarball
-before publication:
+The [first alpha](https://www.npmjs.com/package/unlikely-ui/v/0.1.0-alpha.1)
+was published on 2026-10-20. Pin its exact version:
 
 ```sh
 pnpm add -E unlikely-ui@0.1.0-alpha.1

@@ -6,7 +6,7 @@ Values are deliberately chosen from that visual direction, not presented as
 exact measurements of raster mockups. [tokens.css](../../src/styles/tokens.css) is the
 authoritative value source for this draft; the HTML sheet reads that source.
 Mint is the single initial design direction. The tokens feed the alpha runtime
-build; there is no published release.
+build; the first runtime alpha, `0.1.0-alpha.1`, was published on 2026-10-20.
 
 ## Character
 
@@ -319,8 +319,8 @@ export function App() {
 }
 ```
 
-Theme and Button are alpha preview implementations. The example does not
-imply that the package has been published. The intended integration is to import CSS once at the consumer
+Theme and Button are alpha preview implementations in the published alpha.
+Import CSS once at the consumer
 entry and wrap the appropriate UI in Theme. Implement semantic overrides
 through Theme's `tokens` prop so customization also reaches portals.
 Pin exact versions while iterating, commit lockfiles, and upgrade each project
@@ -365,11 +365,12 @@ versions in apps rather than depending on a moving tag. After 1.0, use e.g.
 The runtime has one default sizing system and explicit control sizes. Theme,
 Button (including icon sizes), fields, selection controls and overlays are alpha
 preview implementations, with compiled ESM/types/CSS, explicit exports, a local
-workspace and tarball consumer fixtures. The unscoped package is prepared at
-`0.1.0-alpha.1` with MIT licensing and the `next` tag, and remains unpublished.
+workspace and tarball consumer fixtures. The unscoped package was published as
+`0.1.0-alpha.1` on 2026-10-20 with MIT licensing and the `next` tag. npm also
+assigned `latest` on this first publication; the release record documents it.
 See [implementation](../implementation.md), [showcase](../showcase.md)
 and [packaging](../packaging.md) for current scope.
-Npm publication, registry source installation and Campus migration are separate.
+Further releases, registry source installation and Campus migration are separate.
 
 ## Primary references checked 2026-10-19
 

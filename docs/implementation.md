@@ -1,17 +1,18 @@
 # Implementation plan
 
-Status: first alpha release preparation, 2026-10-20. M0, M1 fields/actions, and
+Status: first alpha published, 2026-10-20. M0, M1 fields/actions, and
 M2 overlay implementations exist with browser and packed-consumer checks.
 All twenty-one catalogue entries are previews. The owner selected the unscoped
-`unlikely-ui` name and MIT license. `0.1.0-alpha.1` is prepared locally;
-publication remains a separate action. The source registry is planned.
+`unlikely-ui` name and MIT license. `0.1.0-alpha.1` is published on npm under
+`next`; npm also assigned `latest` on this first publication. See the
+[release record](./release-2026-10-20.md). The source registry is planned.
 Campus migration is separate.
 
 ## Initial scope
 
 Build one React library on Base UI and Tailwind CSS v4. Start with one root npm
 package and one local Vite/React gallery. Use the selected unscoped name
-`unlikely-ui`, subject to npm accepting the first publication. Keep one
+`unlikely-ui`, now published for the first alpha. Keep one
 version for tokens and components. A source registry can later use the same
 component source; see [packaging](./packaging.md).
 
@@ -252,9 +253,9 @@ gate for an alpha candidate.
   restore theme settings inside portals. The project form, focus containment and
   return, nested popover stacking, tooltip descriptions and narrow touch layouts
   are covered. The unscoped alpha and MIT license are selected, with build/publish
-  hooks and release notes. No publication was attempted.
+  hooks and release notes. `0.1.0-alpha.1` was published on 2026-10-20.
 - M3: Common controls, feedback and presentation are alpha previews, including
-  the Campus adoption set above. Switch, Tabs, source registry, CI and npm publication remain planned.
+  the Campus adoption set above. Switch, Tabs, source registry, and CI remain planned.
 - Expressive: PhysicalButton is an opt-in preview requested from a physical
   button reference. It adds a domed cap, configurable circular casing and plate,
   and an optional front light following aria-pressed or momentary pressure,

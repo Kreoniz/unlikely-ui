@@ -81,8 +81,9 @@
 - Do not claim exports, scripts, registry commands or compatibility that have
   not been implemented and verified. Examples must identify proposed APIs.
 - The owner selected the unscoped `unlikely-ui` name and MIT license; the first
-  prepared release is `0.1.0-alpha.1` on `next`. Publication is a separate action
-  requiring an explicit request. Do not publish during routine development.
+  published release is `0.1.0-alpha.1` on `next`, dated 2026-10-20. npm also assigned
+  `latest` on first publication and rejected its removal; see `docs/releasing.md`.
+  Further publication requires an explicit request. Do not publish during routine development.
 - Before a release, run `pnpm release:check` and inspect the tarball. Preserve
   `prepack`/`prepublishOnly` hooks and the explicit registry/access/tag settings.
   Follow `docs/releasing.md`; do not invent repository URLs or broaden peers

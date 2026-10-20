@@ -1,9 +1,9 @@
 # Packaging and source installation
 
-Status: unscoped `unlikely-ui@0.1.0-alpha.1` release preparation, 2026-10-20.
+Status: unscoped `unlikely-ui@0.1.0-alpha.1` published, 2026-10-20.
 ESM, types, CSS, explicit exports and tarball consumer checks exist. MIT is the
-selected code/documentation license. No package is published; source registry
-installation is future work. See [the release workflow](./releasing.md).
+selected code/documentation license. The first alpha is available on npm;
+source registry installation is future work. See [the release workflow](./releasing.md).
 
 ## Initial decision
 
@@ -131,7 +131,7 @@ generated API JSON and development assets stay outside the artifact. Keep
 repository-only references in README as explicit repository paths rather than
 links to files absent from an installation.
 
-Illustrative consumer after a release exists:
+Consumer setup for the published alpha:
 
 ```sh
 pnpm add -E unlikely-ui@0.1.0-alpha.1
@@ -272,7 +272,10 @@ Follow [the changelog's alpha/beta and 0.x policy](../CHANGELOG.md#release-polic
 alpha follows M2's verified vertical slice; beta follows API and token settling
 plus real adoption feedback. A source registry does not need to exist for 1.0.
 Publish prereleases with explicit `next` or `beta` tags, never accidentally as
-`latest`. The prepared first release is `0.1.0-alpha.1`; `0.1.0-alpha.0` was
+`latest`. The first published release is `0.1.0-alpha.1`; npm assigned both
+`next` and `latest` on initial publication and rejected `latest` removal with
+HTTP 400. See [the recorded exception](./release-2026-10-20.md#publication).
+`0.1.0-alpha.0` was
 unpublished development metadata. All components remain previews.
 
 ## Primary references checked 2026-10-19

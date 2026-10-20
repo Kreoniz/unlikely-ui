@@ -1,8 +1,9 @@
 # Releasing unlikely ui
 
-The selected package name is the unscoped `unlikely-ui`. The first candidate is
-`0.1.0-alpha.1`, with MIT-licensed package code/documentation and the `next` tag.
-It is prepared locally; this document does not mean it has been published.
+The selected package name is the unscoped `unlikely-ui`. The first release,
+`0.1.0-alpha.1`, was published on 2026-10-20 with MIT-licensed code/documentation
+and the `next` tag. See [the verified release record](./release-2026-10-20.md).
+The workflow below applies to subsequent explicitly authorized releases.
 
 ## Check and inspect
 
@@ -78,6 +79,14 @@ Only after that succeeds, record the publication date in the repository's
 release evidence and install in apps with `pnpm add -E unlikely-ui@0.1.0-alpha.1`.
 Keep app lockfiles committed. Shipped consumer guidance is publication-neutral;
 registry availability is established by the verification above.
+
+For the first publication, npm briefly exposed a `0.0.0-stage` placeholder
+before serving the alpha, and assigned `latest` as well as the requested `next`.
+An authenticated `npm dist-tag rm unlikely-ui latest` failed with HTTP 400.
+This first-publish behavior is also reported in
+[npm/cli#8490](https://github.com/npm/cli/issues/8490). Both tags currently point
+to the first alpha. Keep using explicit `--tag next` for later alphas, inspect
+the resulting tags, and do not promote later prereleases to `latest`.
 
 ## Later releases
 
