@@ -76,7 +76,8 @@ jobs:
           SITE_URL: https://ui.kreoniz.ru
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [[ "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)" != "$GITHUB_SHA" ]]; then
+          current_main=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          if [[ "$current_main" != "$GITHUB_SHA" ]]; then
             echo 'A newer main commit exists; skipping this deployment.'
             exit 0
           fi

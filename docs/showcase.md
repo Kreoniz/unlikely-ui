@@ -1,6 +1,6 @@
 # Component workspace
 
-Status: local implementation, 2026-10-19. The showcase is the daily development
+Status: preview showcase, 2026-10-21. The showcase is the daily development
 surface for unlikely ui, with a gallery of actual components and a devspace for
 new work. It is separate from the npm runtime. The public target is
 https://ui.kreoniz.ru; successful `main` builds deploy through GitHub Actions.
