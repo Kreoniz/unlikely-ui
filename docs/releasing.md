@@ -19,8 +19,9 @@ tar -tzf .local/packages/unlikely-ui-0.1.0-alpha.1.tgz
 `release:check` checks TypeScript, generated API extraction, token contrast,
 the production showcase, gallery behavior, and the installed tarball in plain
 React and consumer Tailwind fixtures. Browser prerequisites are described in
-[the showcase guide](./showcase.md#verification). Fixture dependencies must
-already be in pnpm's cache because its installation is offline.
+[the showcase guide](./showcase.md#verification). Local fixture dependencies
+must already be in pnpm's cache because its installation is offline. GitHub CI
+uses `--prefer-offline` so fresh runners can fetch missing dependency metadata.
 
 `prepack` performs a clean library build, including for `pnpm pack` and
 `npm publish`. `prepublishOnly` runs the full release check before an ordinary
@@ -95,14 +96,16 @@ compatibility policy in [the changelog](../CHANGELOG.md#release-policy).
 Change both the publish command and `publishConfig.tag` when moving to beta or
 a regular release. Never reuse a published name/version pair.
 
-Source is backed up in the private GitHub repository
+Source is available in the public GitHub repository
 [Kreoniz/unlikely-ui](https://github.com/Kreoniz/unlikely-ui), created on
-2026-10-20. The initial history excludes retired artwork and local caches;
-see [the pre-upload audit](./repository-audit-2026-10-20.md). Keep the repository
-private unless the owner explicitly changes that decision. CI and a hosted
-showcase can be added separately. Repository, bugs, and homepage metadata remain
-optional and are not added to the prepared npm artifact by this Git setup.
-Commit the reviewed source used for each release.
+2026-10-20 and made public at the owner's request on 2026-10-21. The initial
+history excludes retired artwork and local caches; see
+[the pre-upload audit](./repository-audit-2026-10-20.md). The showcase at
+https://ui.kreoniz.ru follows successful `main` builds through GitHub Actions.
+Repository, issues, and homepage metadata are included in local package source
+for the next release. This does not change the already published alpha.
+The workflow does not publish npm packages. Commit the reviewed source used
+for each release; see [showcase deployment](../deploy/README.md).
 
 ## Primary references checked 2026-10-20
 

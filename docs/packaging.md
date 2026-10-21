@@ -54,6 +54,7 @@ unlikely-ui/input
 unlikely-ui/physical-button
 unlikely-ui/popover
 unlikely-ui/radio-group
+unlikely-ui/scroll-area    # local unreleased addition after alpha.1
 unlikely-ui/select
 unlikely-ui/skeleton
 unlikely-ui/spinner

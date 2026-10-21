@@ -3,7 +3,9 @@ import { existsSync } from 'node:fs';
 
 const executablePath =
   process.env.UI_CHROMIUM_PATH ??
-  (existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : undefined);
+  (!process.env.CI && existsSync('/usr/bin/google-chrome')
+    ? '/usr/bin/google-chrome'
+    : undefined);
 export default defineConfig({
   testDir: './tests/browser',
   fullyParallel: false,

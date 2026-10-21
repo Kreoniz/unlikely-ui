@@ -5,6 +5,12 @@
   "description": "A practical, expressive React design system built on Base UI and Tailwind CSS.",
   "license": "MIT",
   "author": "Kreoniz",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kreoniz/unlikely-ui.git"
+  },
+  "bugs": "https://github.com/Kreoniz/unlikely-ui/issues",
+  "homepage": "https://ui.kreoniz.ru",
   "keywords": [
     "react",
     "components",
@@ -92,6 +98,10 @@
     "./radio-group": {
       "types": "./dist/components/radio-group.d.ts",
       "import": "./dist/components/radio-group.js"
+    },
+    "./scroll-area": {
+      "types": "./dist/components/scroll-area.d.ts",
+      "import": "./dist/components/scroll-area.js"
     },
     "./select": {
       "types": "./dist/components/select.d.ts",

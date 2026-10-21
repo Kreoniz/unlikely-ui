@@ -3,6 +3,7 @@ dist/
 node_modules/
 test-results/
 playwright-report/
+docs/concepts/
 pnpm-lock.yaml
 src/token-names.ts
 docs/foundations/token-sheet.html

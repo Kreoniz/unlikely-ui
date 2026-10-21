@@ -1,5 +1,137 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+
+async function recordRuntimeErrors(page: Page) {
+  await page.addInitScript(() => {
+    const errors: string[] = [];
+    Object.assign(window, { runtimeErrors: errors });
+    window.addEventListener('error', (event) => errors.push(event.message));
+  });
+  return () =>
+    page.evaluate(
+      () => (window as unknown as { runtimeErrors: string[] }).runtimeErrors,
+    );
+}
+
+test('scroll area keeps native wheel, keyboard and thumb dragging with dynamic overflow', async ({
+  page,
+}) => {
+  const readErrors = await recordRuntimeErrors(page);
+  await page.goto('/#components/scroll-area');
+  const viewport = page.getByRole('region', {
+    name: 'Resource list',
+    exact: true,
+  });
+  const area = page.getByTestId('vertical-scroll-area');
+  const thumb = area.locator('.u-scroll-thumb');
+  await expect(thumb).toBeVisible();
+  await viewport.focus();
+  const scrollEnd = viewport.evaluate(
+    (element) =>
+      new Promise<void>((resolve) =>
+        element.addEventListener('scrollend', () => resolve(), { once: true }),
+      ),
+  );
+  await page.keyboard.press('PageDown');
+  await scrollEnd;
+  await expect
+    .poll(() => viewport.evaluate((e) => e.scrollTop))
+    .toBeGreaterThan(0);
+  await page.getByRole('button', { name: 'Back to start' }).click();
+  await expect.poll(() => viewport.evaluate((e) => e.scrollTop)).toBe(0);
+  await viewport.hover();
+  await page.mouse.wheel(0, 300);
+  await expect
+    .poll(() => viewport.evaluate((e) => e.scrollTop))
+    .toBeGreaterThan(0);
+  const before = await viewport.evaluate((e) => e.scrollTop);
+  const box = await thumb.boundingBox();
+  if (!box) throw new Error('Missing scrollbar thumb');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2 + 60, {
+    steps: 6,
+  });
+  await page.mouse.up();
+  await expect
+    .poll(() => viewport.evaluate((e) => e.scrollTop))
+    .toBeGreaterThan(before);
+  await page.getByRole('checkbox', { name: 'Long list' }).uncheck();
+  await expect(area.locator('.u-scrollbar')).not.toBeAttached();
+  await expect(viewport).toHaveAttribute('tabindex', '-1');
+  await page.getByRole('checkbox', { name: 'Long list' }).check();
+  await expect(thumb).toBeVisible();
+  await expect(viewport).toHaveAttribute('tabindex', '0');
+  expect(await readErrors()).toEqual([]);
+});
+
+test('scroll area fits narrow layouts, handles RTL, and remains accessible in both themes', async ({
+  page,
+}) => {
+  const readErrors = await recordRuntimeErrors(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#components/scroll-area');
+  const area = page.getByTestId('both-scroll-area');
+  const viewport = page.getByRole('region', { name: 'Wide resource table' });
+  for (const width of [320, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
+      )
+      .toBeLessThanOrEqual(1);
+    await expect(area.locator('.u-scrollbar')).toHaveCount(2);
+    await viewport.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect
+      .poll(() => viewport.evaluate((e) => e.scrollLeft))
+      .toBeGreaterThan(0);
+    if (width === 320) {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({
+        path: '.local/scroll-area-mobile.png',
+        fullPage: true,
+      });
+    }
+  }
+  await page.getByRole('checkbox', { name: 'Right-to-left' }).check();
+  await viewport.evaluate((e) => {
+    e.scrollLeft = 0;
+  });
+  await viewport.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect
+    .poll(() => viewport.evaluate((e) => e.scrollLeft))
+    .toBeLessThan(0);
+  const track = area.locator('.u-scrollbar[data-orientation="vertical"]');
+  const [trackBox, areaBox] = await Promise.all([
+    track.boundingBox(),
+    area.boundingBox(),
+  ]);
+  if (!trackBox || !areaBox) throw new Error('Missing RTL scroll area bounds');
+  expect(Math.abs(trackBox.x - areaBox.x)).toBeLessThan(3);
+  for (const appearance of ['light', 'dark']) {
+    if (appearance === 'dark')
+      await page
+        .getByRole('button', { name: 'Switch to dark appearance' })
+        .click();
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({
+      path: `.local/scroll-area-${appearance}.png`,
+      fullPage: true,
+    });
+  }
+  await page.emulateMedia({ forcedColors: 'active' });
+  await expect
+    .poll(() =>
+      track
+        .locator('.u-scroll-thumb')
+        .evaluate((e) => getComputedStyle(e, '::before').borderTopStyle),
+    )
+    .toBe('solid');
+  expect(await readErrors()).toEqual([]);
+});
 
 test('button actions, loading names, native link composition and preview controls', async ({
   page,
@@ -200,7 +332,10 @@ test('mobile navigation exposes every component and closes after choosing one', 
   const menu = page.getByRole('button', { name: 'Components', exact: true });
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('.component-link:visible')).toHaveCount(21);
+  await expect(page.locator('.component-link:visible')).toHaveCount(22);
+  await expect(
+    page.locator('.component-link').filter({ hasText: /^ScrollArea$/ }),
+  ).toBeVisible();
   await page
     .locator('.component-link')
     .filter({ hasText: /^Textarea$/ })
@@ -774,6 +909,52 @@ test('loading, retry and empty-state examples expose meaningful states and respe
   await expect(
     page.getByRole('heading', { name: 'No groups selected' }),
   ).toBeVisible();
+});
+
+test('mixed-height toast stacks settle without resize errors when expanded, collapsed and resized', async ({
+  page,
+}) => {
+  const readErrors = await recordRuntimeErrors(page);
+  await page.goto('/#components/toast');
+  await page.getByRole('button', { name: 'Show stack', exact: true }).click();
+  const front = page.locator('.u-toast').filter({ hasText: 'Groups saved' });
+  const back = page.locator('.u-toast').filter({ hasText: 'Schedule updated' });
+  const settle = () =>
+    page.evaluate(async () => {
+      await Promise.all(
+        document
+          .getAnimations()
+          .map((animation) => animation.finished.catch(() => {})),
+      );
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
+    });
+  for (const width of [1280, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    if (width === 320)
+      await page
+        .getByRole('button', { name: 'Switch to dark appearance' })
+        .click();
+    for (let i = 0; i < 3; i++) {
+      await front.hover();
+      await expect(back).toHaveAttribute('data-expanded', '');
+      await settle();
+      for (const card of await page.locator('.u-toast').all()) {
+        const { available, content } = await card.evaluate((element) => ({
+          available: element.clientHeight,
+          content: (element.querySelector('.u-toast-content') as HTMLElement)
+            .offsetHeight,
+        }));
+        expect(content - available).toBeLessThanOrEqual(1);
+      }
+      if (i === 0)
+        await page.screenshot({ path: `.local/toast-expanded-${width}.png` });
+      await page.mouse.move(0, 0);
+      await expect(back).not.toHaveAttribute('data-expanded', '');
+      await settle();
+    }
+  }
+  expect(await readErrors()).toEqual([]);
 });
 
 test('toast cards overlap by default, expand on hover and keyboard focus, and dismiss individually', async ({

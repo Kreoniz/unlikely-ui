@@ -7,6 +7,88 @@
 @source '../lib';
 
 @layer ui-base {
+  .u-scroll-area {
+    --u-scroll-area-size: var(--u-space-3);
+    position: relative;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+  .u-scroll-viewport {
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: inherit;
+  }
+  .u-scroll-viewport:focus-visible {
+    outline: var(--u-focus-width) solid var(--u-focus);
+    outline-offset: calc(-1 * var(--u-focus-width));
+  }
+  .u-scroll-content {
+    box-sizing: border-box;
+    display: flow-root;
+    padding-inline-end: var(--u-scroll-area-size);
+    padding-block-end: var(--u-scroll-area-size);
+  }
+  .u-scrollbar {
+    box-sizing: border-box;
+    display: flex;
+    z-index: 1;
+    border-radius: var(--u-radius-full);
+  }
+  .u-scrollbar[data-orientation='vertical'] {
+    inline-size: var(--u-scroll-area-size);
+    padding-block: var(--u-space-0-5);
+  }
+  .u-scrollbar[data-orientation='horizontal'] {
+    block-size: var(--u-scroll-area-size);
+    padding-inline: var(--u-space-0-5);
+  }
+  .u-scroll-thumb {
+    position: relative;
+    flex: none;
+    border-radius: inherit;
+  }
+  .u-scroll-thumb[data-orientation='vertical'] {
+    inline-size: 100%;
+  }
+  .u-scroll-thumb[data-orientation='horizontal'] {
+    block-size: 100%;
+  }
+  .u-scroll-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: inherit;
+    background: var(--u-line);
+    transition: background-color var(--u-duration-fast) var(--u-ease-standard);
+  }
+  .u-scrollbar:is([data-hovering], [data-scrolling]) .u-scroll-thumb::before,
+  .u-scroll-area:focus-within .u-scroll-thumb::before {
+    background: var(--u-muted);
+  }
+  .u-scroll-thumb:is(:hover, :active)::before {
+    background: var(--u-ink);
+  }
+  .u-scroll-corner {
+    background: transparent;
+  }
+  @media (pointer: coarse) {
+    .u-scroll-area {
+      --u-scroll-area-size: var(--u-space-6);
+    }
+    .u-scroll-thumb[data-orientation='vertical']::before {
+      inset-inline: 9px;
+    }
+    .u-scroll-thumb[data-orientation='horizontal']::before {
+      inset-block: 9px;
+    }
+  }
+  @media (forced-colors: active) {
+    .u-scroll-thumb::before {
+      border: 1px solid CanvasText;
+      background: CanvasText;
+    }
+  }
   .u-physical-button {
     --u-physical-size: 12rem;
     --u-physical-travel: var(--u-space-2);
@@ -1162,7 +1244,7 @@
   .u-toast-content {
     box-sizing: border-box;
     display: flex;
-    block-size: 100%;
+    /* Base UI measures this content; keep it independent of the animated root. */
     padding: var(--u-space-4);
     overflow: hidden;
     gap: var(--u-space-3);

@@ -2,7 +2,9 @@
 
 Status: local implementation, 2026-10-19. The showcase is the daily development
 surface for unlikely ui, with a gallery of actual components and a devspace for
-new work. It is separate from the npm runtime and is not deployed.
+new work. It is separate from the npm runtime. The public target is
+https://ui.kreoniz.ru; successful `main` builds deploy through GitHub Actions.
+See [deployment and rollback](../deploy/README.md).
 
 ## Start and build
 
@@ -64,6 +66,9 @@ is retained in `dev/public/fonts/Inter-LICENSE.txt`.
 - `#components/badge`, `#components/alert`: status/category labels and recovery actions.
 - `#components/card`: content panels.
   The Card page includes an interactive empty-state recipe with no separate export.
+- `#components/scroll-area`: native scrolling with custom vertical and horizontal
+  scrollbars, changing content length, a viewport ref, and an RTL table example.
+  This component is a local unreleased preview after alpha.1.
 - `#devspace`: experiments that answer a specific implementation question.
 - Planned entries have a clear placeholder, not an advertised package export.
 
@@ -130,6 +135,12 @@ storage falls back to light; toggling still works when storage is blocked.
 Persistence belongs to the showcase; the library's Theme remains controlled by
 its consuming app. Copy uses direct, descriptive labels throughout the workspace.
 
+The sidebar and code examples use ScrollArea for consistent rounded scrollbars.
+The page itself keeps document scrolling. Code viewports cap their height at
+400px and preserve line formatting with horizontal scrolling; Copy stays outside
+the viewport. Named scrollable viewports are keyboard reachable when content
+overflows. The sidebar returns to its natural content height on mobile.
+
 ## Maturity and adding work
 
 **Planned**: no implementation/export. **Experimental**: a runnable devspace
@@ -165,8 +176,8 @@ scope against WCAG rules. Base UI temporarily hides outside content for virtual
 cursor navigation, so an open whole-page scan would incorrectly include the
 outside focus targets. Keyboard interaction and dismissal are checked separately.
 
-Tests use `/usr/bin/google-chrome` when available; else Playwright's installed
-Chromium. Use `UI_CHROMIUM_PATH` for another executable or install Chromium with
+Local tests use `/usr/bin/google-chrome` when available; CI uses Playwright's
+installed Chromium. Use `UI_CHROMIUM_PATH` for another executable or install Chromium with
 `pnpm exec playwright install chromium`. These checks are evidence for the
 covered cases, not blanket accessibility certification.
 

@@ -70,6 +70,16 @@ export type {
   RadioItemProps,
 } from './components/radio-group.js';
 
+export { ScrollArea } from './components/scroll-area.js';
+export type {
+  ScrollAreaRootProps,
+  ScrollAreaViewportProps,
+  ScrollAreaContentProps,
+  ScrollAreaScrollbarProps,
+  ScrollAreaThumbProps,
+  ScrollAreaCornerProps,
+} from './components/scroll-area.js';
+
 export { Select } from './components/select.js';
 export type {
   SelectTriggerProps,

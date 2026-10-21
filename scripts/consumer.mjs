@@ -158,7 +158,7 @@ run(
   'pnpm',
   [
     'install',
-    '--offline',
+    process.env.CI ? '--prefer-offline' : '--offline',
     '--ignore-workspace',
     '--ignore-scripts',
     '--no-frozen-lockfile',

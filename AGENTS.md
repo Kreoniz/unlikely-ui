@@ -91,6 +91,12 @@
 - Include visual, token and behavior changes in release notes; TypeScript
   signatures alone do not define compatibility. Follow the documented 0.x
   policy and explicit prerelease tags.
+- The owner made the repository public on 2026-10-21 and selected
+  `https://ui.kreoniz.ru` for the static showcase. Keep private deployment
+  evidence, credentials, and concept boards outside Git. See `deploy/README.md`.
+  GitHub Actions checks pull requests and deploys successful `main` builds;
+  the deployment account can replace static files only. Server configuration
+  and npm publication remain separate, explicitly authorized operations.
 
 ## Validation and resources
 

@@ -22,6 +22,18 @@ import type { BadgeProps } from 'unlikely-ui/badge';
 import type { AlertProps } from 'unlikely-ui/alert';
 import type { SpinnerProps } from 'unlikely-ui/spinner';
 import type { SkeletonProps } from 'unlikely-ui/skeleton';
+import type {
+  ScrollAreaViewportProps,
+  ScrollAreaScrollbarProps,
+} from 'unlikely-ui/scroll-area';
+
+const scrollViewport: ScrollAreaViewportProps = {
+  ref: createRef<HTMLDivElement>(),
+  onScroll: (event) => event.currentTarget.scrollTop,
+  className: (state) => (state.hasOverflowY ? 'overflowing' : undefined),
+};
+const scrollBar: ScrollAreaScrollbarProps = { orientation: 'horizontal' };
+void [scrollViewport, scrollBar];
 
 const allowed: ThemeTokens = {
   '--u-radius': '12px',

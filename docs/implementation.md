@@ -2,7 +2,8 @@
 
 Status: first alpha published, 2026-10-20. M0, M1 fields/actions, and
 M2 overlay implementations exist with browser and packed-consumer checks.
-All twenty-one catalogue entries are previews. The owner selected the unscoped
+All catalogue entries are previews. The local source adds ScrollArea after the
+first alpha, bringing the catalogue to twenty-two. The owner selected the unscoped
 `unlikely-ui` name and MIT license. `0.1.0-alpha.1` is published on npm under
 `next`; npm also assigned `latest` on this first publication. See the
 [release record](./release-2026-10-20.md). The source registry is planned.
@@ -57,6 +58,7 @@ unlikely-ui/
       physical-button.tsx
       popover.tsx
       radio-group.tsx
+      scroll-area.tsx
       select.tsx
       skeleton.tsx
       spinner.tsx
@@ -243,6 +245,9 @@ gate for an alpha candidate.
 
 ## Status
 
+- ScrollArea added locally on 2026-10-21 after the first alpha; it is not yet
+  published. It styles Base UI's native scroll viewport, includes vertical and
+  horizontal examples, and is used in showcase navigation and code panels.
 - M0: implemented and checked on 2026-10-19. Runtime scope `.u-theme`; `ui:`
   utility prefix and explicit CSS layers; ESM/types/CSS exports; packed
   fixtures with/without consumer Tailwind; SSR/hydration and themed portals.

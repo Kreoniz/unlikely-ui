@@ -3,6 +3,9 @@
 A practical, expressive React design system built on Base UI and Tailwind CSS v4.
 Cream and olive-charcoal foundations, fresh mint, and a playful streak.
 
+[Playground and API reference](https://ui.kreoniz.ru) ·
+[Source](https://github.com/Kreoniz/unlikely-ui)
+
 ## Install
 
 The unscoped package uses `next` for alpha releases. All components are previews.
@@ -18,9 +21,10 @@ The package ships JavaScript, TypeScript declarations and compiled CSS.
 
 ## Local development
 
-The repo pins Node with mise and pnpm in `package.json`.
+The repo pins Node and pnpm with mise; `package.json` records the same pnpm version.
 
 ```sh
+mise install
 pnpm install --frozen-lockfile
 pnpm dev
 ```
@@ -31,11 +35,13 @@ checkout, see `docs/showcase.md` for adding components and experiments.
 
 Preview components: `Alert`, `Badge`, `Button`, `Calendar`, `Card`, `Checkbox`,
 `Combobox`, `DatePicker`, `Dialog`, `Field`, `Input`, `PhysicalButton`, `Popover`,
-`RadioGroup`, `Select`, `Skeleton`, `Spinner`, `Textarea`, `Theme`, `Toast`, and
+`RadioGroup`, `ScrollArea`, `Select`, `Skeleton`, `Spinner`, `Textarea`, `Theme`, `Toast`, and
 `Tooltip`. Each has showcase examples and
 an explicit package export, with compiled ESM/types/CSS and isolated tarball
 consumer checks. All components are previews. See the [component contracts](./docs/components.md).
-The showcase supports mobile browsing through its Components menu.
+ScrollArea is a local addition after `0.1.0-alpha.1`; it is not in that npm release.
+The showcase supports mobile browsing through its Components menu. It follows
+the repository's `main` branch, which may include changes newer than npm.
 Every component page has Examples and API reference views. API references are
 generated from TypeScript, including compound parts, inherited props, helper
 types and exported functions. Code examples have light/dark syntax coloring.

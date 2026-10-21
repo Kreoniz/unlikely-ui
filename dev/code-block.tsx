@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { highlight } from './highlight.js';
 import { Button } from '../src/components/button.js';
+import { ScrollArea } from '../src/components/scroll-area.js';
 import { Glyph } from './glyph.js';
 
 export function CodeBlock({
@@ -52,26 +53,39 @@ export function CodeBlock({
           Copy
         </Button>
       </div>
-      <pre data-highlighted={tokens ? 'true' : undefined}>
-        <code>
-          {tokens
-            ? tokens.map((line, index) => (
-                <Fragment key={index}>
-                  {index > 0 ? '\n' : ''}
-                  {line.map((token, index) => (
-                    <span
-                      key={index}
-                      className="syntax-token"
-                      style={token.htmlStyle as CSSProperties}
-                    >
-                      {token.content}
-                    </span>
-                  ))}
-                </Fragment>
-              ))
-            : code}
-        </code>
-      </pre>
+      <ScrollArea.Root className="code-scroll-area">
+        <ScrollArea.Viewport
+          className="code-viewport"
+          role="group"
+          aria-label={`${language === 'typescript' ? 'TypeScript' : 'TSX'} code example`}
+        >
+          <ScrollArea.Content>
+            <pre data-highlighted={tokens ? 'true' : undefined}>
+              <code>
+                {tokens
+                  ? tokens.map((line, index) => (
+                      <Fragment key={index}>
+                        {index > 0 ? '\n' : ''}
+                        {line.map((token, index) => (
+                          <span
+                            key={index}
+                            className="syntax-token"
+                            style={token.htmlStyle as CSSProperties}
+                          >
+                            {token.content}
+                          </span>
+                        ))}
+                      </Fragment>
+                    ))
+                  : code}
+              </code>
+            </pre>
+          </ScrollArea.Content>
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar />
+        <ScrollArea.Scrollbar orientation="horizontal" />
+        <ScrollArea.Corner />
+      </ScrollArea.Root>
       <span className="copy-feedback" role="status">
         {feedback}
       </span>

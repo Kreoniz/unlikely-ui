@@ -107,6 +107,13 @@ export const catalog: readonly CatalogEntry[] = [
     description: 'A single choice from a visible set of options.',
   },
   {
+    id: 'scroll-area',
+    name: 'ScrollArea',
+    category: 'Layout',
+    status: 'preview',
+    description: 'Native scrolling with consistent, draggable scrollbars.',
+  },
+  {
     id: 'select',
     name: 'Select',
     category: 'Forms',

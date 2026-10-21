@@ -6,6 +6,7 @@ __pycache__/
 test-results/
 playwright-report/
 dev/generated/
+docs/concepts/
 
 # Local credentials and generated archives must not enter source history.
 .env

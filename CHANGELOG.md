@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Add a public GitHub repository and showcase at `https://ui.kreoniz.ru`, with
+  GitHub checks and deployment of successful main-branch builds. npm publication
+  remains a separate release action.
+- Add preview `ScrollArea`, backed by Base UI's native scroll container, with
+  consistent vertical/horizontal scrollbars, theme-aware thumb states, RTL and
+  forced-colors styling, and generated API documentation.
+- Use ScrollArea in the playground sidebar and code examples. Long code stays
+  inside its own viewport, with the Copy action outside the scrollable content.
+- Fix toast height measurement during stack expansion and collapse, preventing
+  ResizeObserver feedback errors with notifications of different heights.
+
 ## 0.1.0-alpha.1 — initial alpha
 
 - Twenty-one preview components: Alert, Badge, Button, Calendar, Card,

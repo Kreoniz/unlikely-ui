@@ -4,6 +4,7 @@ Status: alpha previews for `0.1.0-alpha.1`, 2026-10-20. All examples require a
 `Theme` boundary and one import of `unlikely-ui/styles.css`.
 Each component is exported from the root and its matching kebab-case subpath.
 For app and agent setup, follow the [consumer guide](../USAGE.md).
+ScrollArea below is a local unreleased addition after alpha.1, dated 2026-10-21.
 
 ## Actions and sizing
 
@@ -230,6 +231,51 @@ Prioritize Switch for boolean settings, Tabs for views with associated panels,
 and Menu for contextual actions when those uses arise. Full schedule views,
 group assignment and empty-state copy stay with the consuming app or a recipe.
 PhysicalButton belongs to the expressive set requested for playful surfaces.
+
+## Scroll area (unreleased)
+
+`ScrollArea` is exported from the local build's `unlikely-ui/scroll-area` and
+root entry. It composes Base UI Scroll Area without an additional dependency.
+The viewport uses native scrolling: wheel, trackpad, touch momentum and keyboard
+navigation retain browser behavior. Only the scrollbar presentation is custom.
+
+```tsx
+import { ScrollArea } from 'unlikely-ui/scroll-area';
+
+<ScrollArea.Root style={{ height: 240 }}>
+  <ScrollArea.Viewport role="region" aria-label="Resources">
+    <ScrollArea.Content>{/* Long content */}</ScrollArea.Content>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar />
+</ScrollArea.Root>;
+```
+
+The compound parts preserve Base UI props, state-based class/style callbacks,
+render composition and refs. Put a bounded size on Root, an accessible name and
+optional region role on Viewport, and content inside Content so geometry updates
+when it changes. Put scroll handlers and the programmatic scrolling ref on
+Viewport, not Root. Base UI makes overflowing viewports keyboard reachable and
+removes non-overflowing ones from the tab order.
+
+Scrollbar includes a styled Thumb by default; optional children can provide a
+custom `ScrollArea.Thumb`. Its orientation defaults to vertical. For both axes,
+add a second Scrollbar with `orientation="horizontal"` and a `ScrollArea.Corner`.
+Bars mount when that axis overflows; inherited `keepMounted` remains available.
+Content reserves a small end gutter so the overlaid tracks do not cover text;
+its padding can be overridden for custom layouts. Coarse pointers have wider
+tracks while keeping the visible thumb thin.
+
+Use contained scroll areas for panels, sidebars, code and wide tables. Give
+content enough space around focusable controls and avoid unnecessary nested
+scrolling. Leave touch and wheel scrolling native; do not intercept gestures or
+enable smooth scrolling globally. The default thumb is always visible when an
+axis overflows, darkens on hover/focus/scroll, follows semantic theme tokens and
+has a forced-colors outline. In reduced motion the color transition is disabled
+by the shared duration tokens. The document itself can retain its native
+scrollbar rather than introducing a full-page nested viewport.
+
+Implementation references: [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area)
+and [shadcn Scroll Area](https://ui.shadcn.com/docs/components/base/scroll-area).
 
 ## Physical button
 

@@ -21,6 +21,7 @@ import { Skeleton } from 'unlikely-ui/skeleton';
 import { Badge } from 'unlikely-ui/badge';
 import { Alert } from 'unlikely-ui/alert';
 import { Card } from 'unlikely-ui/card';
+import { ScrollArea } from 'unlikely-ui/scroll-area';
 
 const referenceDate = new Date(2026, 9, 19);
 function Notifications() {
@@ -48,6 +49,19 @@ function AdoptionComponents() {
   const [pressed, setPressed] = useState(false);
   return (
     <section aria-label="Adoption components">
+      <ScrollArea.Root
+        style={{ height: 120, width: 240, maxWidth: '100%' }}
+        data-testid="packed-scroll-area"
+      >
+        <ScrollArea.Viewport role="region" aria-label="Packed resources">
+          <ScrollArea.Content>
+            {Array.from({ length: 20 }, (_, i) => (
+              <p key={i}>Resource {i + 1}</p>
+            ))}
+          </ScrollArea.Content>
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar />
+      </ScrollArea.Root>
       <PhysicalButton
         size="sm"
         pattern="plain"

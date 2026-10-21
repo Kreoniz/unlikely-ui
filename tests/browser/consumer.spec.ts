@@ -1,5 +1,20 @@
 import { test, expect } from '@playwright/test';
 
+test('packed scroll area has styled overflow and keyboard scrolling', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const viewport = page.getByRole('region', { name: 'Packed resources' });
+  const area = page.getByTestId('packed-scroll-area');
+  await expect(area.locator('.u-scroll-thumb')).toBeVisible();
+  await expect(area.locator('.u-scrollbar')).toHaveCSS('width', '12px');
+  await viewport.focus();
+  await page.keyboard.press('PageDown');
+  await expect
+    .poll(() => viewport.evaluate((e) => e.scrollTop))
+    .toBeGreaterThan(0);
+});
+
 test('packed tooltip timing inherits Provider settings and honors Trigger overrides', async ({
   page,
 }) => {

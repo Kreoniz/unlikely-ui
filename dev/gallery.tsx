@@ -3,6 +3,8 @@ import packageMetadata from '../package.json' with { type: 'json' };
 import { Theme } from '../src/theme.js';
 import type { Appearance } from '../src/theme.js';
 import { Button } from '../src/components/button.js';
+import { ScrollArea } from '../src/components/scroll-area.js';
+import { ScrollAreaExamples } from './examples/scroll-area.js';
 import { ButtonExamples } from './examples/buttons.js';
 import { PhysicalButtonExamples } from './examples/physical-button.js';
 import { FieldExamples } from './examples/fields.js';
@@ -195,79 +197,90 @@ export function Gallery() {
           }
         }}
       >
-        <div className="sidebar-heading">
-          <a href="#overview" className="brand-lockup">
-            <img src="/button-logo.png" width={52} height={52} alt="" />
-            <span>unlikely ui</span>
-          </a>
-          <Button
-            className="mobile-nav-toggle"
-            variant="secondary"
-            size="sm"
-            aria-expanded={navOpen}
-            aria-controls="workspace-navigation"
-            onClick={() => setNavOpen((value) => !value)}
+        <ScrollArea.Root className="sidebar-scroll">
+          <ScrollArea.Viewport
+            className="sidebar-viewport"
+            role="region"
+            aria-label="Components sidebar"
           >
-            Components <Glyph name="layers" size={16} />
-          </Button>
-        </div>
-        <label className="search-field">
-          <Glyph name="search" size={17} />
-          <input
-            aria-label="Find components"
-            placeholder="Find a component…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </label>
-        <nav id="workspace-navigation" aria-label="Workspace navigation">
-          <span className="nav-label">WORKSPACE</span>
-          {(
-            [
-              { id: 'overview', label: 'Overview', icon: 'grid' },
-              { id: 'foundations', label: 'Foundations', icon: 'layers' },
-              { id: 'devspace', label: 'Devspace', icon: 'flask' },
-            ] as const
-          ).map((item) => (
-            <a
-              key={item.id}
-              className={`nav-link ${page === item.id ? 'active' : ''}`}
-              href={`#${item.id}`}
-              aria-current={page === item.id ? 'page' : undefined}
-            >
-              <Glyph name={item.icon} />
-              {item.label}
-              {item.id === 'devspace' && <span className="nav-dot" />}
-            </a>
-          ))}
-          <span className="nav-label component-label">
-            COMPONENTS <span>{catalog.length}</span>
-          </span>
-          {filtered.map((item) => (
-            <a
-              key={item.id}
-              href={`#components/${item.id}`}
-              className={`nav-link component-link ${entry?.id === item.id ? 'active' : ''}`}
-              aria-current={entry?.id === item.id ? 'page' : undefined}
-            >
-              <span>{item.name}</span>
-              {item.status === 'planned' ? (
-                <small>Planned</small>
-              ) : (
-                <span
-                  className="preview-dot"
-                  aria-label="Preview implementation"
+            <ScrollArea.Content className="sidebar-content">
+              <div className="sidebar-heading">
+                <a href="#overview" className="brand-lockup">
+                  <img src="/button-logo.png" width={52} height={52} alt="" />
+                  <span>unlikely ui</span>
+                </a>
+                <Button
+                  className="mobile-nav-toggle"
+                  variant="secondary"
+                  size="sm"
+                  aria-expanded={navOpen}
+                  aria-controls="workspace-navigation"
+                  onClick={() => setNavOpen((value) => !value)}
+                >
+                  Components <Glyph name="layers" size={16} />
+                </Button>
+              </div>
+              <label className="search-field">
+                <Glyph name="search" size={17} />
+                <input
+                  aria-label="Find components"
+                  placeholder="Find a component…"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
-              )}
-            </a>
-          ))}
-          {!filtered.length && (
-            <p className="no-results">No matching components.</p>
-          )}
-        </nav>
-        <div className="sidebar-footer">
-          <span className="version-pill">v{packageMetadata.version}</span>
-        </div>
+              </label>
+              <nav id="workspace-navigation" aria-label="Workspace navigation">
+                <span className="nav-label">WORKSPACE</span>
+                {(
+                  [
+                    { id: 'overview', label: 'Overview', icon: 'grid' },
+                    { id: 'foundations', label: 'Foundations', icon: 'layers' },
+                    { id: 'devspace', label: 'Devspace', icon: 'flask' },
+                  ] as const
+                ).map((item) => (
+                  <a
+                    key={item.id}
+                    className={`nav-link ${page === item.id ? 'active' : ''}`}
+                    href={`#${item.id}`}
+                    aria-current={page === item.id ? 'page' : undefined}
+                  >
+                    <Glyph name={item.icon} />
+                    {item.label}
+                    {item.id === 'devspace' && <span className="nav-dot" />}
+                  </a>
+                ))}
+                <span className="nav-label component-label">
+                  COMPONENTS <span>{catalog.length}</span>
+                </span>
+                {filtered.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#components/${item.id}`}
+                    className={`nav-link component-link ${entry?.id === item.id ? 'active' : ''}`}
+                    aria-current={entry?.id === item.id ? 'page' : undefined}
+                  >
+                    <span>{item.name}</span>
+                    {item.status === 'planned' ? (
+                      <small>Planned</small>
+                    ) : (
+                      <span
+                        className="preview-dot"
+                        aria-label="Preview implementation"
+                      />
+                    )}
+                  </a>
+                ))}
+                {!filtered.length && (
+                  <p className="no-results">No matching components.</p>
+                )}
+              </nav>
+              <div className="sidebar-footer">
+                <span className="version-pill">v{packageMetadata.version}</span>
+              </div>
+            </ScrollArea.Content>
+          </ScrollArea.Viewport>
+          <ScrollArea.Scrollbar />
+        </ScrollArea.Root>
       </aside>
       <div className="workspace-main">
         <header className="topbar">
@@ -533,6 +546,7 @@ export function Gallery() {
                   {entry.id === 'button' && <ButtonExamples />}
                   {entry.id === 'physical-button' && <PhysicalButtonExamples />}
                   {entry.id === 'combobox' && <ComboboxExamples />}
+                  {entry.id === 'scroll-area' && <ScrollAreaExamples />}
                   {entry.id === 'calendar' && (
                     <CalendarExamples key="calendar" />
                   )}
