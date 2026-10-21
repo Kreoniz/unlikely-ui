@@ -30,6 +30,9 @@ a GitHub runner and builds no JavaScript. npm publication is separate.
 An operator installs `compose.yaml` and `Caddyfile` in `/opt/unlikely-ui`.
 Set `CADDY_IMAGE` in a private `.env` to an approved locally available Caddy
 image ID or immutable digest. Compose never pulls or builds implicitly.
+The official Caddy binary needs `NET_BIND_SERVICE` in its capability bounding
+set even on port 8080; see [the upstream image issue](https://github.com/caddyserver/caddy-docker/issues/396).
+All other capabilities are dropped.
 The static container has no published host port, joins `beszel-edge` under
 `unlikely-ui-showcase:8080`, and mounts only the public site directory read-only.
 The existing HTTPS proxy gets this additional route:
