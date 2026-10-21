@@ -47,6 +47,19 @@ development asset. Its accompanying notice is preserved unchanged in
 `dev/public/fonts/Inter-LICENSE.txt`. The font retains its SIL Open Font License;
 it is not relicensed under the project's MIT grant. Upstream: [Inter](https://rsms.me/inter/).
 
+## README images
+
+The README reuses `dev/public/button-logo.png` without another editable copy.
+`docs/images/showcase-dark.png` is an actual browser capture of
+https://ui.kreoniz.ru/#overview in dark mode, at 1440×1050 CSS pixels and 2× pixel
+density. Refresh it with `mise exec -- pnpm readme:screenshot`; the script uses
+the existing Playwright dependency, waits for fonts and images, and changes no
+page content. It captures the deployed showcase, which can differ from local work.
+
+Both README image URLs point to GitHub-hosted files so they also resolve from
+the npm README. The images remain outside the packed runtime; the screenshot
+does not add a component export or change the logo's separate artwork terms.
+
 ## Retired artwork
 
 The former character is no longer served by the workspace or referenced by

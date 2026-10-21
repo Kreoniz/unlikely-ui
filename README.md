@@ -1,10 +1,18 @@
-# unlikely ui
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Kreoniz/unlikely-ui/main/dev/public/button-logo.png" alt="" width="96" height="96" />
+</p>
 
-A practical, expressive React design system built on Base UI and Tailwind CSS v4.
-Cream and olive-charcoal foundations, fresh mint, and a playful streak.
+<h1 align="center">unlikely ui</h1>
 
-[Playground and API reference](https://ui.kreoniz.ru) ·
-[Source](https://github.com/Kreoniz/unlikely-ui)
+<p align="center">React components built on Base UI and Tailwind CSS v4.</p>
+
+<p align="center">
+  <a href="https://ui.kreoniz.ru">Playground and API reference</a> ·
+  <a href="https://www.npmjs.com/package/unlikely-ui">npm</a> ·
+  <a href="https://github.com/Kreoniz/unlikely-ui">Source</a>
+</p>
+
+[![The unlikely ui showcase in dark mode, with component previews and navigation](https://raw.githubusercontent.com/Kreoniz/unlikely-ui/main/docs/images/showcase-dark.png)](https://ui.kreoniz.ru)
 
 ## Install
 

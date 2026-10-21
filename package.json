@@ -148,6 +148,7 @@
     "check": "node scripts/token-types.mjs && pnpm docs:generate && tsc --noEmit",
     "build": "node scripts/build.mjs",
     "showcase:build": "pnpm docs:generate && vite build",
+    "readme:screenshot": "node scripts/readme-screenshot.mjs",
     "tokens:check": "python3 docs/foundations/build-sheet.py",
     "test:browser": "playwright test --project=showcase",
     "test:consumer": "node scripts/consumer.mjs",
