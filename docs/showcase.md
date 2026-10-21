@@ -177,7 +177,10 @@ cursor navigation, so an open whole-page scan would incorrectly include the
 outside focus targets. Keyboard interaction and dismissal are checked separately.
 
 Local tests use `/usr/bin/google-chrome` when available; CI uses Playwright's
-installed Chromium. Use `UI_CHROMIUM_PATH` for another executable or install Chromium with
+full Chromium in [new headless mode](https://playwright.dev/docs/browsers#chromium-new-headless-mode),
+matching the browser used locally rather than the separate headless shell.
+Accessibility scans use reduced motion so they inspect settled colors; animation
+behavior has separate coverage. Use `UI_CHROMIUM_PATH` for another executable or install Chromium with
 `pnpm exec playwright install chromium`. These checks are evidence for the
 covered cases, not blanket accessibility certification.
 

@@ -248,6 +248,8 @@ test('representative showcase pages and the open popup pass automated accessibil
   page,
 }) => {
   test.setTimeout(90_000);
+  // Audit settled colors; overlay motion has its own interaction coverage.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const appearance of ['light', 'dark']) {
     for (const route of [
       'overview',

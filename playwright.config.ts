@@ -16,6 +16,7 @@ export default defineConfig({
     : 'test-results/showcase',
   use: {
     browserName: 'chromium',
+    channel: 'chromium',
     launchOptions: { executablePath },
     trace: 'retain-on-failure',
   },
