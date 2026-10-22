@@ -13,7 +13,7 @@ Run from the repository root with the pinned mise runtime and pnpm version:
 mise exec -- pnpm install --frozen-lockfile
 mise exec -- pnpm release:check
 mise exec -- pnpm pack --pack-destination .local/packages
-tar -tzf .local/packages/unlikely-ui-0.1.0-alpha.1.tgz
+tar -tzf .local/packages/unlikely-ui-0.1.0-alpha.2.tgz
 ```
 
 `release:check` checks TypeScript, generated API extraction, token contrast,
@@ -72,12 +72,12 @@ the actual publish.
 Verify the registry after publishing:
 
 ```sh
-mise exec -- npm view unlikely-ui@0.1.0-alpha.1 version license dist.integrity --json --registry=https://registry.npmjs.org/
+mise exec -- npm view unlikely-ui@0.1.0-alpha.2 version license dist.integrity --json --registry=https://registry.npmjs.org/
 mise exec -- npm dist-tag ls unlikely-ui --registry=https://registry.npmjs.org/
 ```
 
 Only after that succeeds, record the publication date in the repository's
-release evidence and install in apps with `pnpm add -E unlikely-ui@0.1.0-alpha.1`.
+release evidence and install in apps with `pnpm add -E unlikely-ui@0.1.0-alpha.2`.
 Keep app lockfiles committed. Shipped consumer guidance is publication-neutral;
 registry availability is established by the verification above.
 
@@ -102,8 +102,8 @@ Source is available in the public GitHub repository
 history excludes retired artwork and local caches; see
 [the pre-upload audit](./repository-audit-2026-10-20.md). The showcase at
 https://ui.kreoniz.ru follows successful `main` builds through GitHub Actions.
-Repository, issues, and homepage metadata are included in local package source
-for the next release. This does not change the already published alpha.
+Repository, issues, and homepage metadata are included starting with alpha.2.
+This does not change the already published alpha.1.
 The workflow does not publish npm packages. Commit the reviewed source used
 for each release; see [showcase deployment](../deploy/README.md).
 

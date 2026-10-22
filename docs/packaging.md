@@ -54,7 +54,7 @@ unlikely-ui/input
 unlikely-ui/physical-button
 unlikely-ui/popover
 unlikely-ui/radio-group
-unlikely-ui/scroll-area    # local unreleased addition after alpha.1
+unlikely-ui/scroll-area  # included starting with alpha.2
 unlikely-ui/select
 unlikely-ui/skeleton
 unlikely-ui/spinner
@@ -132,10 +132,10 @@ generated API JSON and development assets stay outside the artifact. Keep
 repository-only references in README as explicit repository paths rather than
 links to files absent from an installation.
 
-Consumer setup for the published alpha:
+Consumer setup for alpha.2:
 
 ```sh
-pnpm add -E unlikely-ui@0.1.0-alpha.1
+pnpm add -E unlikely-ui@0.1.0-alpha.2
 ```
 
 ```tsx

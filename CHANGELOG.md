@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-alpha.2 — 2026-10-22
 
 - Add a public GitHub repository and showcase at `https://ui.kreoniz.ru`, with
   GitHub checks and deployment of successful main-branch builds. npm publication
@@ -12,6 +12,8 @@
   inside its own viewport, with the Copy action outside the scrollable content.
 - Fix toast height measurement during stack expansion and collapse, preventing
   ResizeObserver feedback errors with notifications of different heights.
+- Include public repository, issues, and showcase links in package metadata.
+- No changes to existing component APIs, peer ranges, or semantic token values.
 
 ## 0.1.0-alpha.1 — initial alpha
 

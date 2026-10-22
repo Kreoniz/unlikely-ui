@@ -1,10 +1,10 @@
 # Component contracts
 
-Status: alpha previews for `0.1.0-alpha.1`, 2026-10-20. All examples require a
+Status: alpha previews for `0.1.0-alpha.2`, 2026-10-22. All examples require a
 `Theme` boundary and one import of `unlikely-ui/styles.css`.
 Each component is exported from the root and its matching kebab-case subpath.
 For app and agent setup, follow the [consumer guide](../USAGE.md).
-ScrollArea below is a local unreleased addition after alpha.1, dated 2026-10-21.
+ScrollArea is included starting with alpha.2.
 
 ## Actions and sizing
 
@@ -232,9 +232,9 @@ and Menu for contextual actions when those uses arise. Full schedule views,
 group assignment and empty-state copy stay with the consuming app or a recipe.
 PhysicalButton belongs to the expressive set requested for playful surfaces.
 
-## Scroll area (unreleased)
+## Scroll area
 
-`ScrollArea` is exported from the local build's `unlikely-ui/scroll-area` and
+`ScrollArea` is exported from `unlikely-ui/scroll-area` and the
 root entry. It composes Base UI Scroll Area without an additional dependency.
 The viewport uses native scrolling: wheel, trackpad, touch momentum and keyboard
 navigation retain browser behavior. Only the scrollbar presentation is custom.

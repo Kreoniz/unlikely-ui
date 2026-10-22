@@ -17,11 +17,10 @@
 ## Install
 
 The unscoped package uses `next` for alpha releases. All components are previews.
-The [first alpha](https://www.npmjs.com/package/unlikely-ui/v/0.1.0-alpha.1)
-was published on 2026-10-20. Pin its exact version:
+Pin an exact version when installing or upgrading:
 
 ```sh
-pnpm add -E unlikely-ui@0.1.0-alpha.1
+pnpm add -E unlikely-ui@0.1.0-alpha.2
 ```
 
 Requires React and React DOM `^19.3.1` (fixtures use 19.3.1). ESM only.
@@ -47,7 +46,7 @@ Preview components: `Alert`, `Badge`, `Button`, `Calendar`, `Card`, `Checkbox`,
 `Tooltip`. Each has showcase examples and
 an explicit package export, with compiled ESM/types/CSS and isolated tarball
 consumer checks. All components are previews. See the [component contracts](./docs/components.md).
-ScrollArea is a local addition after `0.1.0-alpha.1`; it is not in that npm release.
+ScrollArea is included starting with `0.1.0-alpha.2`.
 The showcase supports mobile browsing through its Components menu. It follows
 the repository's `main` branch, which may include changes newer than npm.
 Every component page has Examples and API reference views. API references are

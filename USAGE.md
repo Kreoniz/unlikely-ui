@@ -11,7 +11,7 @@ registry release exists. Repository contributors follow the repository's
 Install the chosen tarball with pnpm, or pin an exact version after publication:
 
 ```sh
-pnpm add -E unlikely-ui@0.1.0-alpha.1
+pnpm add -E unlikely-ui@0.1.0-alpha.2
 ```
 
 Commit the app's lockfile. React and React DOM are peers, currently `^19.3.1`

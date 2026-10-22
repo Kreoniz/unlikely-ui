@@ -68,7 +68,7 @@ is retained in `dev/public/fonts/Inter-LICENSE.txt`.
   The Card page includes an interactive empty-state recipe with no separate export.
 - `#components/scroll-area`: native scrolling with custom vertical and horizontal
   scrollbars, changing content length, a viewport ref, and an RTL table example.
-  This component is a local unreleased preview after alpha.1.
+  This preview is included in the package starting with alpha.2.
 - `#devspace`: experiments that answer a specific implementation question.
 - Planned entries have a clear placeholder, not an advertised package export.
 

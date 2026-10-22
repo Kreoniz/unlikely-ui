@@ -2,7 +2,7 @@
 
 Status: first alpha published, 2026-10-20. M0, M1 fields/actions, and
 M2 overlay implementations exist with browser and packed-consumer checks.
-All catalogue entries are previews. The local source adds ScrollArea after the
+All catalogue entries are previews. Alpha.2 adds ScrollArea after the
 first alpha, bringing the catalogue to twenty-two. The owner selected the unscoped
 `unlikely-ui` name and MIT license. `0.1.0-alpha.1` is published on npm under
 `next`; npm also assigned `latest` on this first publication. See the
@@ -245,8 +245,8 @@ gate for an alpha candidate.
 
 ## Status
 
-- ScrollArea added locally on 2026-10-21 after the first alpha; it is not yet
-  published. It styles Base UI's native scroll viewport, includes vertical and
+- ScrollArea added on 2026-10-21 and included in alpha.2. It styles Base UI's
+  native scroll viewport, includes vertical and
   horizontal examples, and is used in showcase navigation and code panels.
 - M0: implemented and checked on 2026-10-19. Runtime scope `.u-theme`; `ui:`
   utility prefix and explicit CSS layers; ESM/types/CSS exports; packed
@@ -260,7 +260,9 @@ gate for an alpha candidate.
   are covered. The unscoped alpha and MIT license are selected, with build/publish
   hooks and release notes. `0.1.0-alpha.1` was published on 2026-10-20.
 - M3: Common controls, feedback and presentation are alpha previews, including
-  the Campus adoption set above. Switch, Tabs, source registry, and CI remain planned.
+  the Campus adoption set above. Switch, Tabs, and source registry remain planned.
+- GitHub Actions checks pull requests and deploys successful `main` builds to
+  the public showcase. npm publication remains a separate release action.
 - Expressive: PhysicalButton is an opt-in preview requested from a physical
   button reference. It adds a domed cap, configurable circular casing and plate,
   and an optional front light following aria-pressed or momentary pressure,

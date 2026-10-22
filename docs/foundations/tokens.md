@@ -300,10 +300,10 @@ but copied components stop receiving central fixes automatically; use it only
 if that ownership tradeoff is intentional. Keep shared components in the
 package and compose product-specific wrappers in each app by default.
 
-Example after the prepared alpha is published:
+Example for alpha.2:
 
 ```sh
-pnpm add -E unlikely-ui@0.1.0-alpha.1
+pnpm add -E unlikely-ui@0.1.0-alpha.2
 ```
 
 ```tsx
