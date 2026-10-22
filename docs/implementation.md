@@ -1,12 +1,12 @@
 # Implementation plan
 
-Status: first alpha published, 2026-10-20. M0, M1 fields/actions, and
+Status: alpha.2 published, 2026-10-22. M0, M1 fields/actions, and
 M2 overlay implementations exist with browser and packed-consumer checks.
 All catalogue entries are previews. Alpha.2 adds ScrollArea after the
 first alpha, bringing the catalogue to twenty-two. The owner selected the unscoped
-`unlikely-ui` name and MIT license. `0.1.0-alpha.1` is published on npm under
-`next`; npm also assigned `latest` on this first publication. See the
-[release record](./release-2026-10-20.md). The source registry is planned.
+`unlikely-ui` name and MIT license. `0.1.0-alpha.2` is published on npm under
+`next`; `latest` remains alpha.1 from the first publication. See the
+[release record](./release-2026-10-22.md). The source registry is planned.
 Campus migration is separate.
 
 ## Initial scope

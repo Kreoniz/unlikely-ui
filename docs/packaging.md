@@ -1,8 +1,8 @@
 # Packaging and source installation
 
-Status: unscoped `unlikely-ui@0.1.0-alpha.1` published, 2026-10-20.
+Status: unscoped `unlikely-ui@0.1.0-alpha.2` published, 2026-10-22.
 ESM, types, CSS, explicit exports and tarball consumer checks exist. MIT is the
-selected code/documentation license. The first alpha is available on npm;
+selected code/documentation license. Alpha.2 is available on npm under `next`;
 source registry installation is future work. See [the release workflow](./releasing.md).
 
 ## Initial decision

@@ -368,6 +368,9 @@ preview implementations, with compiled ESM/types/CSS, explicit exports, a local
 workspace and tarball consumer fixtures. The unscoped package was published as
 `0.1.0-alpha.1` on 2026-10-20 with MIT licensing and the `next` tag. npm also
 assigned `latest` on this first publication; the release record documents it.
+Alpha.2, published on 2026-10-22 under `next`, adds ScrollArea and a toast
+measurement fix without changing semantic token values. See
+[the alpha.2 record](../release-2026-10-22.md).
 See [implementation](../implementation.md), [showcase](../showcase.md)
 and [packaging](../packaging.md) for current scope.
 Further releases, registry source installation and Campus migration are separate.

@@ -83,6 +83,8 @@
 - The owner selected the unscoped `unlikely-ui` name and MIT license; the first
   published release is `0.1.0-alpha.1` on `next`, dated 2026-10-20. npm also assigned
   `latest` on first publication and rejected its removal; see `docs/releasing.md`.
+  The current `next` release is `0.1.0-alpha.2`, published on 2026-10-22 with
+  ScrollArea; `latest` remains alpha.1. See `docs/release-2026-10-22.md`.
   Further publication requires an explicit request. Do not publish during routine development.
 - Before a release, run `pnpm release:check` and inspect the tarball. Preserve
   `prepack`/`prepublishOnly` hooks and the explicit registry/access/tag settings.
