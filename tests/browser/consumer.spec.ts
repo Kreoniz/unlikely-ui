@@ -1,5 +1,65 @@
 import { test, expect } from '@playwright/test';
 
+test('packed common controls submit, select panels, and restore nested themes through Menu portals', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const controls = page.getByRole('region', { name: 'Packed common controls' });
+  const setting = controls.getByRole('switch', { name: 'Packed auto-save' });
+  const checkedThumbX = await setting
+    .locator('.u-switch-thumb')
+    .evaluate((element) => element.getBoundingClientRect().x);
+  await setting.focus();
+  await page.keyboard.press('Space');
+  await expect(setting).not.toBeChecked();
+  await expect
+    .poll(() =>
+      setting
+        .locator('.u-switch-thumb')
+        .evaluate((element) => element.getBoundingClientRect().x),
+    )
+    .toBeGreaterThan(checkedThumbX);
+  await controls
+    .getByRole('button', { name: 'Submit packed preference' })
+    .click();
+  await expect(controls.getByRole('status')).toHaveText('Preference: off.');
+  await controls
+    .getByRole('button', { name: 'Reset packed preference' })
+    .click();
+  await expect(setting).toBeChecked();
+  await controls.getByRole('tab', { name: 'Details', exact: true }).focus();
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('Enter');
+  await expect(
+    controls.getByRole('tabpanel', { name: 'Activity' }),
+  ).toContainText('Packed activity panel');
+  const trigger = controls.getByRole('button', { name: 'Packed actions' });
+  await trigger.click();
+  await expect(page.locator('.u-menu-theme')).toHaveAttribute(
+    'data-appearance',
+    'light',
+  );
+  await expect(page.getByRole('menu')).toHaveCSS('direction', 'rtl');
+  const duplicate = page.getByRole('menuitem', {
+    name: 'Duplicate packed project',
+  });
+  await duplicate.focus();
+  await expect(duplicate).toHaveCSS('background-color', 'rgb(214, 203, 238)');
+  await expect(duplicate).toHaveCSS('color', 'rgb(20, 32, 22)');
+  await page.keyboard.press('Enter');
+  await expect(controls.getByRole('status')).toHaveText(
+    'Packed duplicate selected.',
+  );
+  await expect(trigger).toBeFocused();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as unknown as { hydrationErrors: string[] }).hydrationErrors,
+    ),
+  ).toEqual([]);
+});
+
 test('packed scroll area has styled overflow and keyboard scrolling', async ({
   page,
 }) => {

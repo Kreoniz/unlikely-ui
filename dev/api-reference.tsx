@@ -11,9 +11,11 @@ const loaders = import.meta.glob<ApiDocument>('./generated/api/*.json', {
 function PropertyTable({
   properties,
   label,
+  linkBase,
 }: {
   properties: ApiProperty[];
   label: string;
+  linkBase?: string;
 }) {
   if (!properties.length) return <p className="api-empty">No properties.</p>;
   return (
@@ -23,26 +25,44 @@ function PropertyTable({
       aria-label={label}
       tabIndex={0}
     >
-      <table className="api-table">
+      <table className="api-table" role="table">
         <caption className="sr-only">{label}</caption>
-        <thead>
-          <tr>
-            <th scope="col">Property</th>
-            <th scope="col">Type / description</th>
-            <th scope="col">Default</th>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">
+              Property
+            </th>
+            <th role="columnheader" scope="col">
+              Type / description
+            </th>
+            <th role="columnheader" scope="col">
+              Default
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {properties.map((property) => (
-            <tr key={property.name}>
-              <th scope="row">
-                <code>{property.name}</code>
+            <tr
+              role="row"
+              key={property.name}
+              id={linkBase ? `api-property-${property.name}` : undefined}
+            >
+              <th role="rowheader" scope="row">
+                {linkBase ? (
+                  <a
+                    href={`${linkBase}&prop=${encodeURIComponent(property.name)}`}
+                  >
+                    <code>{property.name}</code>
+                  </a>
+                ) : (
+                  <code>{property.name}</code>
+                )}
                 <small>
                   {property.required ? 'Required' : 'Optional'}
                   {property.deprecated ? ' · Deprecated' : ''}
                 </small>
               </th>
-              <td>
+              <td role="cell" data-label="Type / description">
                 <code className="api-property-type">{property.type}</code>
                 {property.expandedType && (
                   <details className="api-expanded-type">
@@ -60,7 +80,7 @@ function PropertyTable({
                 {property.description && <p>{property.description}</p>}
                 <small>{property.origin}</small>
               </td>
-              <td>
+              <td role="cell" data-label="Default">
                 <code>{property.defaultValue || '—'}</code>
               </td>
             </tr>
@@ -71,11 +91,40 @@ function PropertyTable({
   );
 }
 
-function Reference({ document }: { document: ApiDocument }) {
-  const [partName, setPartName] = useState(document.parts[0]!.name);
-  const [query, setQuery] = useState('');
+function Reference({
+  document,
+  componentId,
+  partName,
+  propertyName,
+}: {
+  document: ApiDocument;
+  componentId: string;
+  partName: string | null;
+  propertyName: string | null;
+}) {
+  const [query, setQuery] = useState(propertyName ?? '');
   const [nativeOpen, setNativeOpen] = useState(false);
-  const part = document.parts.find((item) => item.name === partName)!;
+  const part =
+    document.parts.find((item) => item.name === partName) ?? document.parts[0]!;
+  const partLink = (name: string) =>
+    `#components/${componentId}/api?part=${encodeURIComponent(name)}`;
+  useEffect(() => {
+    setQuery(propertyName ?? '');
+    setNativeOpen(
+      Boolean(
+        propertyName &&
+        part.props.find((prop) => prop.name === propertyName)?.native,
+      ),
+    );
+  }, [part.name, propertyName]);
+  useEffect(() => {
+    if (propertyName)
+      requestAnimationFrame(() => {
+        window.document
+          .getElementById(`api-property-${propertyName}`)
+          ?.scrollIntoView({ block: 'start' });
+      });
+  }, [propertyName, nativeOpen]);
   const filtered = part.props.filter((property) =>
     `${property.name} ${property.type} ${property.description}`
       .toLowerCase()
@@ -83,6 +132,17 @@ function Reference({ document }: { document: ApiDocument }) {
   );
   const properties = filtered.filter((property) => !property.native);
   const native = filtered.filter((property) => property.native);
+  const otherParts = query.trim()
+    ? document.parts.filter(
+        (item) =>
+          item !== part &&
+          item.props.some((prop) =>
+            `${prop.name} ${prop.type} ${prop.description}`
+              .toLowerCase()
+              .includes(query.toLowerCase()),
+          ),
+      )
+    : [];
   return (
     <section
       className="api-reference"
@@ -93,13 +153,17 @@ function Reference({ document }: { document: ApiDocument }) {
         <CodeBlock
           code={`import { ${document.name} } from '${document.importPath}';`}
         />
-        <p>
-          Types come from the public TypeScript API. Defaults come from
-          parameter initializers and JSDoc. Conditional requirements remain in
-          the full type declarations. Complex inherited types use public indexed
-          access; their compiler expansions are available separately. Imports
-          and helper types are included in the full module declarations below.
-        </p>
+        <details className="reference-method">
+          <summary>About this reference</summary>
+          <p>
+            Types come from the public TypeScript API. Defaults come from
+            parameter initializers and JSDoc. Conditional requirements remain in
+            the full type declarations. Complex inherited types use public
+            indexed access; their compiler expansions are available separately.
+            Imports and helper types are included in the full module
+            declarations below.
+          </p>
+        </details>
       </div>
       {document.parts.length > 1 && (
         <div className="api-part-control">
@@ -108,9 +172,9 @@ function Reference({ document }: { document: ApiDocument }) {
             items={Object.fromEntries(
               document.parts.map((part) => [part.name, part.name]),
             )}
-            value={partName}
+            value={part.name}
             onValueChange={(value) => {
-              if (value) setPartName(value);
+              if (value) window.location.hash = partLink(value);
               setQuery('');
               setNativeOpen(false);
             }}
@@ -164,7 +228,11 @@ function Reference({ document }: { document: ApiDocument }) {
         )}
         {!!part.props.length && (
           <div className="api-search">
+            <label htmlFor="api-property-filter" className="api-filter-label">
+              Search {part.name} properties
+            </label>
             <Input
+              id="api-property-filter"
               aria-label="Filter API properties"
               placeholder="Find a property…"
               value={query}
@@ -180,6 +248,7 @@ function Reference({ document }: { document: ApiDocument }) {
           <PropertyTable
             properties={properties}
             label={`${part.name} component properties`}
+            linkBase={partLink(part.name)}
           />
         )}
         {!!native.length && (
@@ -193,6 +262,7 @@ function Reference({ document }: { document: ApiDocument }) {
               <PropertyTable
                 properties={native}
                 label={`${part.name} React and DOM properties`}
+                linkBase={partLink(part.name)}
               />
             )}
           </details>
@@ -201,6 +271,19 @@ function Reference({ document }: { document: ApiDocument }) {
           <p className="api-empty" role="status">
             No matching properties.
           </p>
+        )}
+        {otherParts.length > 0 && (
+          <div className="api-other-matches">
+            <p>Also found in:</p>
+            {otherParts.map((item) => (
+              <a
+                key={item.name}
+                href={`${partLink(item.name)}&prop=${encodeURIComponent(query)}`}
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
         )}
         {!part.props.length && part.kind === 'component' && (
           <p className="api-empty">This part takes no props.</p>
@@ -281,7 +364,15 @@ function Reference({ document }: { document: ApiDocument }) {
   );
 }
 
-export function ApiReference({ componentId }: { componentId: string }) {
+export function ApiReference({
+  componentId,
+  partName,
+  propertyName,
+}: {
+  componentId: string;
+  partName: string | null;
+  propertyName: string | null;
+}) {
   const [document, setDocument] = useState<ApiDocument | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -307,5 +398,12 @@ export function ApiReference({ componentId }: { componentId: string }) {
       </p>
     );
   if (!document) return <p role="status">Loading API reference…</p>;
-  return <Reference document={document} />;
+  return (
+    <Reference
+      document={document}
+      componentId={componentId}
+      partName={partName}
+      propertyName={propertyName}
+    />
+  );
 }

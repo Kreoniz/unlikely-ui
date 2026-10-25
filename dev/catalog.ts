@@ -4,6 +4,8 @@ interface CatalogEntry {
   category: string;
   status: 'preview' | 'planned';
   description: string;
+  aliases?: readonly string[];
+  unreleased?: boolean;
 }
 
 export const catalog: readonly CatalogEntry[] = [
@@ -41,6 +43,7 @@ export const catalog: readonly CatalogEntry[] = [
     category: 'Layout',
     status: 'preview',
     description: 'Content panels and an empty-state recipe.',
+    aliases: ['empty state', 'panel'],
   },
   {
     id: 'checkbox',
@@ -62,6 +65,7 @@ export const catalog: readonly CatalogEntry[] = [
     category: 'Forms',
     status: 'preview',
     description: 'A calendar in a popover, with a Today action.',
+    aliases: ['date picker', 'due date'],
   },
   {
     id: 'dialog',
@@ -69,6 +73,7 @@ export const catalog: readonly CatalogEntry[] = [
     category: 'Overlays',
     status: 'preview',
     description: 'Modal content with focus containment and dismissal.',
+    aliases: ['modal'],
   },
   {
     id: 'field',
@@ -83,6 +88,16 @@ export const catalog: readonly CatalogEntry[] = [
     category: 'Forms',
     status: 'preview',
     description: 'Single-line editing with predictable states.',
+  },
+  {
+    id: 'menu',
+    name: 'Menu',
+    category: 'Overlays',
+    status: 'preview',
+    unreleased: true,
+    description:
+      'Contextual action lists with keyboard navigation and focus return.',
+    aliases: ['dropdown menu', 'actions'],
   },
   {
     id: 'physical-button',
@@ -133,6 +148,24 @@ export const catalog: readonly CatalogEntry[] = [
     category: 'Feedback',
     status: 'preview',
     description: 'An accessible progress indicator.',
+  },
+  {
+    id: 'switch',
+    name: 'Switch',
+    category: 'Forms',
+    status: 'preview',
+    unreleased: true,
+    description: 'Immediately applied on/off settings with native form values.',
+    aliases: ['toggle'],
+  },
+  {
+    id: 'tabs',
+    name: 'Tabs',
+    category: 'Navigation',
+    status: 'preview',
+    unreleased: true,
+    description: 'Related panels with manual or automatic keyboard activation.',
+    aliases: [],
   },
   {
     id: 'textarea',

@@ -1,6 +1,8 @@
 # Component contracts
 
-Status: alpha previews for `0.1.0-alpha.2`, 2026-10-22. All examples require a
+Status: alpha preview contracts, updated 2026-10-25. Published alpha.2 contains
+22 components. Switch, Tabs, and Menu below are **unreleased checkout previews**,
+available in a locally built tarball and absent from published alpha.2. All examples require a
 `Theme` boundary and one import of `unlikely-ui/styles.css`.
 Each component is exported from the root and its matching kebab-case subpath.
 For app and agent setup, follow the [consumer guide](../USAGE.md).
@@ -227,8 +229,9 @@ presentation styles. Use CSS borders for ordinary layout edges and native `hr`
 for thematic breaks in content.
 There is no requirement to turn every layout element into a component.
 
-Prioritize Switch for boolean settings, Tabs for views with associated panels,
-and Menu for contextual actions when those uses arise. Full schedule views,
+Use Switch for immediately applied boolean settings, Tabs for views with
+associated panels, and Menu for contextual actions. These three are unreleased
+checkout previews; check your installed version before importing them. Full schedule views,
 group assignment and empty-state copy stay with the consuming app or a recipe.
 PhysicalButton belongs to the expressive set requested for playful surfaces.
 
@@ -459,3 +462,110 @@ Alert, Badge, Card, Skeleton and Spinner have presentation-only
 subpaths without client directives. The Card showcase contains an empty-state
 recipe assembled from Card, text and Button; no EmptyState component is exported.
 Illustrations and app-specific copy remain outside the library runtime.
+
+## Switch (unreleased)
+
+`Switch.Root` and `Switch.Thumb` retain Base UI's checked/defaultChecked,
+onCheckedChange, labeling, ref, disabled/readOnly, and native form behavior.
+Root includes the hidden form input. Supply an accessible label; use name/value
+and optional uncheckedValue when a form needs a submitted value. A form reset
+restores the uncontrolled default. Root's visible track is 40 × 24px; coarse
+pointers receive a non-overlapping 44px control box. Direction and selection
+roles follow Theme. No global preference persistence is installed.
+Field.Root invalid state gives the identifying track a danger border and retains
+the separate focus ring; use Field.Error for an associated explanation.
+
+```tsx
+import { Switch } from 'unlikely-ui/switch';
+
+<label>
+  <Switch.Root name="autosave" defaultChecked>
+    <Switch.Thumb />
+  </Switch.Root>
+  Auto-save drafts
+</label>;
+```
+
+Choose Checkbox when a boolean is an independent choice submitted as part of
+another action. The showcase includes both controlled and form/reset examples.
+
+## Tabs (unreleased)
+
+`Tabs.Root`, `List`, `Tab`, `Indicator`, and `Panel` retain Base UI composition.
+Each Tab value corresponds to a Panel value. Name the List. The default uses
+manual keyboard activation: arrows move focus; Enter/Space selects the focused
+tab. List.activateOnFocus opts into automatic activation. Root supports controlled
+value/onValueChange, defaultValue, and horizontal/vertical orientation. Use a
+valid enabled initial value for SSR. Indicator uses Base UI's measured geometry.
+Panels are associated with their tabs; preserve the upstream keepMounted behavior
+when retaining local panel state is important.
+
+```tsx
+import { Tabs } from 'unlikely-ui/tabs';
+
+<Tabs.Root defaultValue="account">
+  <Tabs.List aria-label="Preferences">
+    <Tabs.Tab value="account">Account</Tabs.Tab>
+    <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Panel value="account">Account settings</Tabs.Panel>
+  <Tabs.Panel value="notifications">Notification settings</Tabs.Panel>
+</Tabs.Root>;
+```
+
+Keep segmented RadioGroup for filtering one view. Use links for routed navigation,
+including the showcase's Examples/API pages. The initial styling is line tabs;
+no additional theme density mode or panel-navigation abstraction is introduced.
+
+## Menu (unreleased)
+
+`Menu.Root`, `Trigger`, `Content`, `Item`, `Group`, `GroupLabel`, and `Separator`
+compose Base UI's action menu. Content includes Portal, a restoring Theme, and
+Positioner; consumers do not add another portal. portalProps controls the portal;
+positionerProps defaults to fixed positioning, start alignment, an 8px gap, and
+16px collision padding. Popup props such as finalFocus remain available.
+Item.tone defaults to default; danger uses semantic destructive colors. Labels
+must identify actions independently of color. Disabled items retain Base UI's
+keyboard semantics. Arrows/typeahead navigate; Escape dismisses and restores
+focus. Trigger supports render={<Button />}. Submenus, command search, and
+checkbox/radio menu items are not part of this initial surface.
+
+```tsx
+import { Menu } from 'unlikely-ui/menu';
+import { Button } from 'unlikely-ui/button';
+
+<Menu.Root>
+  <Menu.Trigger render={<Button variant="secondary" />}>Actions</Menu.Trigger>
+  <Menu.Content>
+    <Menu.Group>
+      <Menu.GroupLabel>Project</Menu.GroupLabel>
+      <Menu.Item onClick={() => console.log('Duplicate')}>Duplicate</Menu.Item>
+    </Menu.Group>
+  </Menu.Content>
+</Menu.Root>;
+```
+
+The showcase demonstrates menu-to-dialog handoff. While opening the dialog,
+Menu.Content.finalFocus returns false; Dialog.Content.finalFocus points at the
+original menu trigger. Base UI owns containment and restoration. Nested Theme
+token overrides and RTL are restored inside portaled menus.
+
+## Complete form recipes
+
+The showcase's Recipes view demonstrates two app-owned compositions:
+
+- Required due date: controlled DatePicker, Field description/error IDs, a named
+  hidden input, FormData submission, clearing, and reset. Serialize a local date
+  from year/month/day rather than converting it through a UTC timestamp. Hidden
+  inputs alone do not implement required validation. DatePicker remains a
+  standalone selector; this pass does not add a form-state framework or widen
+  its public API.
+- Recoverable settings: preserve entered values, prevent duplicate submissions
+  with Button.loading, announce pending/failure/success, retain the dirty draft
+  after server failure, retry, and discard to the last saved values. The demo
+  transport deliberately fails once; replace it with the application's request.
+
+Dialog and empty-state pages offer complete runnable source in addition to
+short composition snippets. Example code still requires the setup described in
+[the consumer guide](../USAGE.md).

@@ -1,3 +1,6 @@
+import { EmptyState } from './empty-state.js';
+import emptyStateSource from './empty-state.tsx?raw';
+import { ExampleCode, consumerSource } from '../example-code.js';
 import { useState } from 'react';
 import { Toast } from '../../src/components/toast.js';
 import { Button } from '../../src/components/button.js';
@@ -288,45 +291,23 @@ export function CardExamples() {
 }
 
 export function EmptyStateExample() {
-  const [added, setAdded] = useState(false);
   return (
     <>
-      <Card.Root>
-        <Card.Content className="empty-state-recipe">
-          {added ? (
-            <>
-              <Badge tone="success">Group added</Badge>
-              <p>The example now contains a group.</p>
-              <Button variant="secondary" onClick={() => setAdded(false)}>
-                Reset example
-              </Button>
-            </>
-          ) : (
-            <>
-              <svg
-                viewBox="0 0 24 24"
-                width="32"
-                height="32"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                aria-hidden="true"
-              >
-                <path d="M3 5h18v15H3zM7 3v5m10-5v5M3 10h18" />
-              </svg>
-              <h2>No groups selected</h2>
-              <p>Add a group to view its schedule and compare availability.</p>
-              <Button onClick={() => setAdded(true)}>Add a group</Button>
-            </>
-          )}
-        </Card.Content>
-      </Card.Root>
-      <p className="specimen-note">
-        This is a composition recipe using Card, text, and Button. Illustrations
-        and product-specific behavior stay with the app.
-      </p>
-      <CodeBlock
-        code={`<Card.Root>\n  <Card.Content>\n    <h2>No groups selected</h2>\n    <p>Add a group to view its schedule.</p>\n    <Button onClick={openGroupPicker}>Add a group</Button>\n  </Card.Content>\n</Card.Root>`}
+      <section className="specimen">
+        <div className="specimen-heading">
+          <h2>Empty state</h2>
+        </div>
+        <div className="form-stage">
+          <EmptyState />
+        </div>
+        <p className="specimen-note">
+          A Card and Button recipe. Product copy and first-use behavior remain
+          in the app.
+        </p>
+      </section>
+      <ExampleCode
+        complete={consumerSource(emptyStateSource)}
+        code={`import { Card } from 'unlikely-ui/card';\nimport { Button } from 'unlikely-ui/button';\n\n// Supply your application's action. See Complete example for a runnable flow.\n<Card.Root>\n  <Card.Content>\n    <h2>No groups selected</h2>\n    <p>Add a group to view its schedule.</p>\n    <Button onClick={openGroupPicker}>Add a group</Button>\n  </Card.Content>\n</Card.Root>`}
       />
     </>
   );

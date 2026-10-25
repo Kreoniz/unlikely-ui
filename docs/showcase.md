@@ -1,6 +1,6 @@
 # Component workspace
 
-Status: preview showcase, 2026-10-21. The showcase is the daily development
+Status: preview showcase, updated 2026-10-25. The showcase is the daily development
 surface for unlikely ui, with a gallery of actual components and a devspace for
 new work. It is separate from the npm runtime. The public target is
 https://ui.kreoniz.ru; successful `main` builds deploy through GitHub Actions.
@@ -20,11 +20,13 @@ Vite/React and the Tailwind Vite plugin provide source and stylesheet updates.
 The dev and showcase build commands regenerate typed API references first.
 The workspace wordmark uses `dev/public/button-logo.png`: a large
 red cap, circular dark housing, and broad yellow hazard ring, facing the viewer
-directly without an indicator light. The wordmark uses a 52px logo with no
-subtitle. The overview has no large logo image.
+directly without an indicator light. The desktop wordmark uses a 52px logo;
+the compact mobile header uses 32px. Neither has a subtitle. The overview has
+no large logo image.
 The browser tab uses a simplified `dev/public/favicon.svg` and the title
-“unlikely ui — Playground”. Sidebar branding has 16px above/below it on desktop;
-the mobile header has 10px above the logo and before search.
+“unlikely ui — Playground” before React loads, then the current page name.
+Sidebar branding retains 16px spacing on desktop. On phones, a compact sticky
+brand/Components/appearance row is followed by the component search.
 The sidebar and page footer show the package version without local-development
 or publication-status labels.
 The foundations sheet embeds the same PNG separately. Inter and the logo are
@@ -35,7 +37,16 @@ is retained in `dev/public/fonts/Inter-LICENSE.txt`.
 
 - `#overview`: actual previews, entry into devspace and the next implementation
   set. Counts/status describe local work, not npm availability or API stability.
-- `#foundations`: semantic colors, type/spacing, category fills and geometry.
+- `#quick-start`: pinned setup, CSS/Theme imports, Tailwind layer order, a working
+  project form, and publication/compatibility context.
+- `#recipes`: complete save/failure/retry and required DatePicker/FormData recipes.
+  App-owned policy is explicit; both examples expose the actual preview source
+  with public package imports.
+- `#foundations`: semantic color pairings, actual type-token specimens, category
+  fills, geometry, scoped values, and synchronized light/dark control comparison.
+- `#components/switch`, `#components/tabs`, `#components/menu`: unreleased checkout
+  previews, with controlled/form-backed settings, associated panels, action
+  navigation, dialog handoff, and a nested RTL menu-theme example.
 - `#components/button`: interactive variants,
   sizes and disabled/loading states, plus examples and copyable code.
 - `#components/physical-button`: a tactile button with a circular base and domed
@@ -75,7 +86,14 @@ is retained in `dev/public/fonts/Inter-LICENSE.txt`.
 Each component page has an **API reference** link at
 `#components/<component>/api`. It lists prop types, required/optional status,
 declared defaults, source descriptions and origins. Compound components have a
-part/function picker. Search includes inherited props; React and DOM attributes
+part/function picker. Selection is preserved in `?part=Dialog.Content`; property
+links add `&prop=initialFocus`. Example headings use `?example=example-playground`.
+The “On this page” links scroll smoothly and focus the destination heading,
+including when selecting the current link again. Reduced-motion preferences and
+initial deep-link loads use instant scrolling.
+Search explicitly names its current part and points to matches in other parts.
+On phones, property rows stack into full-width named/type/default items.
+Generator methodology is available in a disclosure. Search includes inherited props; React and DOM attributes
 are expandable. Exported helper types retain their original declarations,
 including conditional requirements. Hooks and manager factories include their
 call signatures and return members.
@@ -124,7 +142,8 @@ another type model. Its relative imports resolve from the installed declaration
 file. Source declarations and runtime modules are not modified by doc generation.
 
 The component catalogue is alphabetical in the sidebar, search results and
-overview. The sidebar searches component names/categories. At widths up to 900px a
+overview. Search includes names, categories, descriptions, and explicit aliases.
+The mobile Components action remains in the sticky toolbar while reading. At widths up to 900px a
 Components button expands the complete catalogue; search also exposes matching
 components. Choosing an entry closes the menu, clears the query and focuses the
 main content. The preview toolbar stays available while scrolling on mobile.
@@ -195,3 +214,17 @@ explicit 600ms override. Every hover honors the selected delay, including
 movement between the two enabled triggers and repeated hover on one trigger.
 Keyboard focus opens immediately; Provider shares settings without an instant-open
 group phase.
+
+## Review follow-ups, 2026-10-25
+
+The showcase reset uses a zero-specificity rule in ui-base, allowing library
+component margins to win. Ordinary component geometry and canonical tokens are
+unchanged. Forms and calendars use quiet surfaces. Dialog and empty-state code
+provide Snippet/Complete example choices; complete source comes from the actual
+preview module. New controls are marked Unreleased, and the version links to
+setup/compatibility guidance. The overview demonstrates the existing project
+form in place of a duplicate Button teaser.
+
+For an already running showcase on a different port, use
+`UI_SHOWCASE_URL=http://127.0.0.1:5195 pnpm test:browser`. This opts out of the
+test runner's managed dev server; normal runs retain port 5177.

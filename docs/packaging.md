@@ -5,6 +5,10 @@ ESM, types, CSS, explicit exports and tarball consumer checks exist. MIT is the
 selected code/documentation license. Alpha.2 is available on npm under `next`;
 source registry installation is future work. See [the release workflow](./releasing.md).
 
+The current checkout adds unreleased `unlikely-ui/switch`, `unlikely-ui/tabs`,
+and `unlikely-ui/menu` exports. They are built into local tarballs but are not
+part of the published alpha.2. Publication and version selection remain separate.
+
 ## Initial decision
 
 Start with one npm package containing compiled ESM, declarations and CSS.
@@ -51,6 +55,7 @@ unlikely-ui/date-picker
 unlikely-ui/dialog
 unlikely-ui/field
 unlikely-ui/input
+unlikely-ui/menu        # unreleased checkout preview
 unlikely-ui/physical-button
 unlikely-ui/popover
 unlikely-ui/radio-group
@@ -58,6 +63,8 @@ unlikely-ui/scroll-area  # included starting with alpha.2
 unlikely-ui/select
 unlikely-ui/skeleton
 unlikely-ui/spinner
+unlikely-ui/switch      # unreleased checkout preview
+unlikely-ui/tabs        # unreleased checkout preview
 unlikely-ui/textarea
 unlikely-ui/theme
 unlikely-ui/toast

@@ -47,6 +47,11 @@ Preview components: `Alert`, `Badge`, `Button`, `Calendar`, `Card`, `Checkbox`,
 an explicit package export, with compiled ESM/types/CSS and isolated tarball
 consumer checks. All components are previews. See the [component contracts](./docs/components.md).
 ScrollArea is included starting with `0.1.0-alpha.2`.
+The current checkout also implements **Switch**, **Tabs**, and **Menu** as
+unreleased previews. They are not included in the published alpha.2; use a
+locally built tarball to evaluate them until a later release is requested.
+Quick start and complete form workflows are available in the showcase. Search
+includes descriptions/aliases, and examples and API parts have shareable links.
 The showcase supports mobile browsing through its Components menu. It follows
 the repository's `main` branch, which may include changes newer than npm.
 Every component page has Examples and API reference views. API references are

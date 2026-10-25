@@ -6,6 +6,11 @@ all components are previews. A local tarball supports integration before a
 registry release exists. Repository contributors follow the repository's
 `AGENTS.md` instead.
 
+The repository showcase can be newer than the installed version. Switch, Tabs,
+and Menu are currently unreleased previews in the checkout; they are absent
+from the published alpha.2. Consult the installed component contracts and
+[release notes](./CHANGELOG.md) before copying a newer example.
+
 ## Install and import
 
 Install the chosen tarball with pnpm, or pin an exact version after publication:

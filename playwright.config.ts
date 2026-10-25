@@ -23,8 +23,12 @@ export default defineConfig({
   projects: [
     {
       name: 'showcase',
-      testMatch: ['showcase.spec.ts', 'calendar-mobile.spec.ts'],
-      use: { baseURL: 'http://127.0.0.1:5177' },
+      testMatch: [
+        'showcase.spec.ts',
+        'calendar-mobile.spec.ts',
+        'improvements.spec.ts',
+      ],
+      use: { baseURL: process.env.UI_SHOWCASE_URL ?? 'http://127.0.0.1:5177' },
     },
     {
       name: 'consumer',
@@ -32,11 +36,12 @@ export default defineConfig({
       use: { baseURL: process.env.UI_CONSUMER_URL ?? 'http://127.0.0.1:5181' },
     },
   ],
-  webServer: process.env.UI_CONSUMER_URL
-    ? undefined
-    : {
-        command: 'pnpm dev',
-        url: 'http://127.0.0.1:5177',
-        reuseExistingServer: !process.env.CI,
-      },
+  webServer:
+    process.env.UI_CONSUMER_URL || process.env.UI_SHOWCASE_URL
+      ? undefined
+      : {
+          command: 'pnpm dev',
+          url: 'http://127.0.0.1:5177',
+          reuseExistingServer: !process.env.CI,
+        },
 });

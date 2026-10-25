@@ -8,9 +8,11 @@ import { Glyph } from './glyph.js';
 export function CodeBlock({
   code,
   language = 'tsx',
+  label,
 }: {
   code: string;
-  language?: 'tsx' | 'typescript';
+  language?: 'tsx' | 'typescript' | 'text';
+  label?: string;
 }) {
   const [feedback, setFeedback] = useState('');
   const [highlighted, setHighlighted] = useState<{
@@ -19,6 +21,7 @@ export function CodeBlock({
     tokens: Awaited<ReturnType<typeof highlight>>;
   } | null>(null);
   useEffect(() => {
+    if (language === 'text') return;
     let current = true;
     void import('./highlight.js')
       .then((module) => module.highlight(code, language))
@@ -47,7 +50,14 @@ export function CodeBlock({
   return (
     <div className="code-block">
       <div className="code-toolbar">
-        <span>{language === 'typescript' ? 'TS' : 'TSX'}</span>
+        <span>
+          {label ??
+            (language === 'typescript'
+              ? 'TS'
+              : language === 'text'
+                ? 'Text'
+                : 'TSX')}
+        </span>
         <Button size="sm" variant="ghost" onClick={copy}>
           <Glyph name="copy" size={14} />
           Copy
@@ -57,7 +67,7 @@ export function CodeBlock({
         <ScrollArea.Viewport
           className="code-viewport"
           role="group"
-          aria-label={`${language === 'typescript' ? 'TypeScript' : 'TSX'} code example`}
+          aria-label={`${label ?? (language === 'typescript' ? 'TypeScript' : language === 'text' ? 'Text' : 'TSX')} code example`}
         >
           <ScrollArea.Content>
             <pre data-highlighted={tokens ? 'true' : undefined}>

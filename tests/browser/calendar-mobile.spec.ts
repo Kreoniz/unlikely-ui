@@ -9,7 +9,7 @@ for (const width of [320, 390]) {
         hasTouch: true,
         isMobile: true,
         viewport: { width, height: 740 },
-        baseURL: 'http://127.0.0.1:5177',
+        baseURL: process.env.UI_SHOWCASE_URL ?? 'http://127.0.0.1:5177',
       });
       const page = await context.newPage();
       await page.goto('/#components/calendar');

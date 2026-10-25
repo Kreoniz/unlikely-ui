@@ -114,3 +114,23 @@ export type {
   TooltipTriggerProps,
   TooltipProviderProps,
 } from './components/tooltip.js';
+
+export { Menu } from './components/menu.js';
+export type {
+  MenuContentProps,
+  MenuItemProps,
+  MenuGroupLabelProps,
+  MenuSeparatorProps,
+} from './components/menu.js';
+
+export { Switch } from './components/switch.js';
+export type { SwitchRootProps, SwitchThumbProps } from './components/switch.js';
+
+export { Tabs } from './components/tabs.js';
+export type {
+  TabsRootProps,
+  TabsListProps,
+  TabsTabProps,
+  TabsPanelProps,
+  TabsIndicatorProps,
+} from './components/tabs.js';

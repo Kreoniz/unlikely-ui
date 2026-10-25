@@ -1,4 +1,7 @@
 import type { ButtonProps } from 'unlikely-ui/button';
+import type { SwitchRootProps } from 'unlikely-ui/switch';
+import type { TabsListProps, TabsTabProps } from 'unlikely-ui/tabs';
+import type { MenuContentProps, MenuItemProps } from 'unlikely-ui/menu';
 import type { PhysicalButtonProps } from 'unlikely-ui/physical-button';
 import type { ThemeTokens } from 'unlikely-ui/theme';
 import type { InputProps } from 'unlikely-ui/input';
@@ -40,6 +43,30 @@ const allowed: ThemeTokens = {
   '--u-physical-cap': '#ff4b40',
   '--u-physical-indicator': '#88f19e',
 };
+const setting: SwitchRootProps = {
+  checked: true,
+  name: 'setting',
+  onCheckedChange: (checked) => !checked,
+  inputRef: createRef<HTMLInputElement>(),
+  className: (state) => (state.checked ? 'checked' : undefined),
+};
+const tabList: TabsListProps = {
+  activateOnFocus: true,
+  ref: createRef<HTMLDivElement>(),
+};
+const tab: TabsTabProps = { value: 'activity', disabled: true };
+const menuContent: MenuContentProps = {
+  positionerProps: { align: 'end', side: 'bottom' },
+  portalProps: { keepMounted: true },
+  finalFocus: createRef<HTMLElement>(),
+};
+const menuItem: MenuItemProps = {
+  tone: 'danger',
+  onClick: (event) => event.preventDefault(),
+};
+// @ts-expect-error Menu tone describes default or destructive actions.
+const invalidMenuTone: MenuItemProps = { tone: 'success' };
+void [setting, tabList, tab, menuContent, menuItem, invalidMenuTone];
 const physical: PhysicalButtonProps = {
   size: 'lg',
   shape: 'round',

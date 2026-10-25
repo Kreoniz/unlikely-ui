@@ -1,5 +1,5 @@
 import { CheckControl } from '../controls.js';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../../src/components/button.js';
 import { Field } from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
@@ -120,67 +120,5 @@ export function FieldExamples({
         </div>
       </section>
     </>
-  );
-}
-
-export function ProjectForm({
-  onSave,
-  onCancel,
-}: {
-  onSave: (name: string) => void;
-  onCancel: () => void;
-}) {
-  const [name, setName] = useState('');
-  const [notes, setNotes] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const nameRef = useRef<HTMLElement>(null);
-  const invalid = submitted && !name.trim();
-  return (
-    <form
-      className="example-form"
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSubmitted(true);
-        if (!name.trim()) {
-          nameRef.current?.focus();
-          return;
-        }
-        onSave(name.trim());
-      }}
-    >
-      <Field.Root name="projectName" invalid={invalid}>
-        <Field.Label>Project name</Field.Label>
-        <Input
-          ref={nameRef}
-          value={name}
-          onValueChange={setName}
-          required
-          autoComplete="off"
-          placeholder="e.g. Campus"
-        />
-        <Field.Description>
-          Required. You can change this later.
-        </Field.Description>
-        <Field.Error match={invalid}>Enter a project name.</Field.Error>
-      </Field.Root>
-      <Field.Root name="notes">
-        <Field.Label>
-          Notes <span className="optional-label">(optional)</span>
-        </Field.Label>
-        <Textarea
-          value={notes}
-          onValueChange={setNotes}
-          rows={3}
-          placeholder="Describe the project…"
-        />
-      </Field.Root>
-      <div className="example-actions">
-        <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit">Create project</Button>
-      </div>
-    </form>
   );
 }

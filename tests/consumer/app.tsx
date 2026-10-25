@@ -22,6 +22,76 @@ import { Badge } from 'unlikely-ui/badge';
 import { Alert } from 'unlikely-ui/alert';
 import { Card } from 'unlikely-ui/card';
 import { ScrollArea } from 'unlikely-ui/scroll-area';
+import { Switch } from 'unlikely-ui/switch';
+import { Tabs } from 'unlikely-ui/tabs';
+import { Menu } from 'unlikely-ui/menu';
+
+function CommonControls() {
+  const [result, setResult] = useState('');
+  return (
+    <Theme
+      tokens={{
+        '--u-selection': 'var(--u-category-2)',
+        '--u-selection-ink': 'var(--u-category-ink)',
+      }}
+    >
+      <section aria-label="Packed common controls">
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            setResult(
+              `Preference: ${new FormData(event.currentTarget).get('autosave')}.`,
+            );
+          }}
+        >
+          <label>
+            <Switch.Root
+              name="autosave"
+              value="on"
+              uncheckedValue="off"
+              defaultChecked
+            >
+              <Switch.Thumb />
+            </Switch.Root>{' '}
+            Packed auto-save
+          </label>
+          <Button type="submit">Submit packed preference</Button>
+          <Button variant="secondary" type="reset">
+            Reset packed preference
+          </Button>
+        </form>
+        <Tabs.Root defaultValue="details">
+          <Tabs.List aria-label="Packed panels">
+            <Tabs.Tab value="details">Details</Tabs.Tab>
+            <Tabs.Tab value="activity">Activity</Tabs.Tab>
+            <Tabs.Indicator />
+          </Tabs.List>
+          <Tabs.Panel value="details">Packed details panel</Tabs.Panel>
+          <Tabs.Panel value="activity">Packed activity panel</Tabs.Panel>
+        </Tabs.Root>
+        <Menu.Root>
+          <Menu.Trigger render={<Button variant="secondary" />}>
+            Packed actions
+          </Menu.Trigger>
+          <Menu.Content>
+            <Menu.Group>
+              <Menu.GroupLabel>Packed project</Menu.GroupLabel>
+              <Menu.Item
+                onClick={() => setResult('Packed duplicate selected.')}
+              >
+                Duplicate packed project
+              </Menu.Item>
+              <Menu.Item disabled>Unavailable packed action</Menu.Item>
+            </Menu.Group>
+            <Menu.Separator />
+            <Menu.Item tone="danger">Archive packed project</Menu.Item>
+          </Menu.Content>
+        </Menu.Root>
+        <p role="status">{result}</p>
+      </section>
+    </Theme>
+  );
+}
 
 const referenceDate = new Date(2026, 9, 19);
 function Notifications() {
@@ -49,6 +119,7 @@ function AdoptionComponents() {
   const [pressed, setPressed] = useState(false);
   return (
     <section aria-label="Adoption components">
+      <CommonControls />
       <ScrollArea.Root
         style={{ height: 120, width: 240, maxWidth: '100%' }}
         data-testid="packed-scroll-area"

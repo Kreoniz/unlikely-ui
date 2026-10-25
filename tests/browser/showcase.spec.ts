@@ -334,7 +334,7 @@ test('mobile navigation exposes every component and closes after choosing one', 
   const menu = page.getByRole('button', { name: 'Components', exact: true });
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('.component-link:visible')).toHaveCount(22);
+  await expect(page.locator('.component-link:visible')).toHaveCount(25);
   await expect(
     page.locator('.component-link').filter({ hasText: /^ScrollArea$/ }),
   ).toBeVisible();
@@ -462,7 +462,7 @@ test('public overlays inherit nested themes and work on small touch screens', as
     viewport: { width: 320, height: 568 },
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:5177/#components/dialog');
+  await page.goto('/#components/dialog');
   for (const appearance of ['light', 'dark']) {
     const trigger = page
       .getByTestId(`overlay-${appearance}`)
@@ -523,7 +523,11 @@ test('popover edits and dismisses, tooltip supplements a named keyboard action',
   await expect(popup).not.toBeVisible();
   await page.goto('/#components/tooltip');
   const action = page.getByRole('button', { name: 'Add project', exact: true });
-  await page.getByRole('link', { name: 'API reference', exact: true }).focus();
+  await page
+    .getByRole('navigation', { name: 'On this page', exact: true })
+    .getByRole('link')
+    .last()
+    .focus();
   await page.keyboard.press('Tab');
   await expect(action).toBeFocused();
   await expect(page.getByRole('tooltip')).toHaveText('Create a new project');
@@ -548,7 +552,7 @@ test('touch sizing and reduced motion work with explicit control sizes', async (
     reducedMotion: 'reduce',
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:5177/#components/button');
+  await page.goto('/#components/button');
   const stage = page.getByRole('region', {
     name: 'Interactive button playground',
   });
@@ -789,7 +793,7 @@ test('date picker fits a narrow touch viewport, closes on selection and restores
     viewport: { width: 320, height: 740 },
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:5177/#components/date-picker');
+  await page.goto('/#components/date-picker');
   const trigger = page.getByRole('button', { name: /^Дата расписания:/ });
   await trigger.scrollIntoViewIfNeeded();
   const scrollBefore = await page.evaluate(() => scrollY);
@@ -828,7 +832,7 @@ test('date picker fits a narrow touch viewport, closes on selection and restores
   await expect(trigger).toHaveText('Выберите дату');
   await page.getByRole('checkbox', { name: 'Disabled', exact: true }).check();
   await expect(trigger).toBeDisabled();
-  await page.goto('http://127.0.0.1:5177/#components/combobox');
+  await page.goto('/#components/combobox');
   const input = page.getByRole('combobox', { name: 'Group name' });
   await input.fill('CS');
   const lastOption = page.getByRole('option', { name: /CS-201/ });
@@ -1036,7 +1040,7 @@ test('toast stack expands on touch and stays within a narrow viewport with reduc
     viewport: { width: 320, height: 740 },
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:5177/#components/toast');
+  await page.goto('/#components/toast');
   await page.getByRole('button', { name: 'Show stack', exact: true }).tap();
   const front = page.locator('.u-toast').filter({ hasText: 'Groups saved' });
   const back = page.locator('.u-toast').filter({ hasText: 'Schedule updated' });
@@ -1205,7 +1209,7 @@ test('physical button fits mobile at every size, supports touch and respects red
     viewport: { width: 320, height: 740 },
   });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:5177/#components/physical-button');
+  await page.goto('/#components/physical-button');
   const stage = page.getByRole('region', {
     name: 'Physical button playground',
   });

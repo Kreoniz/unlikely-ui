@@ -7,7 +7,9 @@ first alpha, bringing the catalogue to twenty-two. The owner selected the unscop
 `unlikely-ui` name and MIT license. `0.1.0-alpha.2` is published on npm under
 `next`; `latest` remains alpha.1 from the first publication. See the
 [release record](./release-2026-10-22.md). The source registry is planned.
-Campus migration is separate.
+Campus migration is separate. On 2026-10-25, the checkout adds unreleased
+Switch, Tabs and Menu previews (twenty-five catalogue entries), adoption and
+form recipes, and showcase review fixes. These additions are not published.
 
 ## Initial scope
 
@@ -55,6 +57,7 @@ unlikely-ui/
       dialog.tsx
       field.tsx
       input.tsx
+      menu.tsx
       physical-button.tsx
       popover.tsx
       radio-group.tsx
@@ -62,6 +65,8 @@ unlikely-ui/
       select.tsx
       skeleton.tsx
       spinner.tsx
+      switch.tsx
+      tabs.tsx
       textarea.tsx
       toast.tsx
       tooltip.tsx
@@ -203,7 +208,7 @@ is not an alpha requirement. Publishing is a separate release action.
 ## M3 — Common controls and presentation
 
 Select, RadioGroup (including segmented selection), and Checkbox are alpha previews.
-Next candidates: Switch and Tabs.
+The checkout now adds Switch, Tabs, and Menu as unreleased previews.
 Implement keyboard and controlled-state examples with each, and validate the
 styled integration rather than retesting Base UI internals wholesale.
 
@@ -260,7 +265,8 @@ gate for an alpha candidate.
   are covered. The unscoped alpha and MIT license are selected, with build/publish
   hooks and release notes. `0.1.0-alpha.1` was published on 2026-10-20.
 - M3: Common controls, feedback and presentation are alpha previews, including
-  the Campus adoption set above. Switch, Tabs, and source registry remain planned.
+  the Campus adoption set above. Switch, Tabs, and Menu are implemented as
+  unreleased checkout previews. The source registry remains planned.
 - GitHub Actions checks pull requests and deploys successful `main` builds to
   the public showcase. npm publication remains a separate release action.
 - Expressive: PhysicalButton is an opt-in preview requested from a physical

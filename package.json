@@ -87,6 +87,10 @@
       "types": "./dist/components/input.d.ts",
       "import": "./dist/components/input.js"
     },
+    "./menu": {
+      "types": "./dist/components/menu.d.ts",
+      "import": "./dist/components/menu.js"
+    },
     "./physical-button": {
       "types": "./dist/components/physical-button.d.ts",
       "import": "./dist/components/physical-button.js"
@@ -116,6 +120,14 @@
       "import": "./dist/components/spinner.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./switch": {
+      "types": "./dist/components/switch.d.ts",
+      "import": "./dist/components/switch.js"
+    },
+    "./tabs": {
+      "types": "./dist/components/tabs.d.ts",
+      "import": "./dist/components/tabs.js"
+    },
     "./tailwind.css": "./dist/tailwind.css",
     "./textarea": {
       "types": "./dist/components/textarea.d.ts",

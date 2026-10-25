@@ -7,55 +7,11 @@ import { Theme } from '../../src/theme.js';
 import { Field } from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
 import { Select } from '../../src/components/select.js';
-import { ProjectForm } from './fields.js';
+import { ProjectDialog } from './project-dialog.js';
+import projectDialogSource from './project-dialog.tsx?raw';
+import { ExampleCode, consumerSource } from '../example-code.js';
 import { CodeBlock } from '../code-block.js';
 import { Glyph } from '../glyph.js';
-
-export function ProjectDialog() {
-  const [open, setOpen] = useState(false);
-  const [saved, setSaved] = useState('');
-  return (
-    <>
-      <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Trigger render={<Button />}>New project</Dialog.Trigger>
-        <Dialog.Content>
-          <Dialog.Title>Create project</Dialog.Title>
-          <Dialog.Description>
-            Add a name and optional notes.
-          </Dialog.Description>
-          <ProjectForm
-            onSave={(name) => {
-              setSaved(`Created ${name}.`);
-              setOpen(false);
-            }}
-            onCancel={() => setOpen(false)}
-          />
-          <div className="dialog-help">
-            <Popover.Root>
-              <Popover.Trigger render={<Button variant="ghost" size="sm" />}>
-                Project visibility
-              </Popover.Trigger>
-              <Popover.Content>
-                <Popover.Title>Private by default</Popover.Title>
-                <Popover.Description>
-                  Only invited members can access this example project.
-                </Popover.Description>
-                <Popover.Close
-                  render={<Button variant="secondary" size="sm" />}
-                >
-                  Close details
-                </Popover.Close>
-              </Popover.Content>
-            </Popover.Root>
-          </div>
-        </Dialog.Content>
-      </Dialog.Root>
-      <p className="playground-feedback" role="status">
-        {saved || 'Open the dialog to complete the form.'}
-      </p>
-    </>
-  );
-}
 
 function PreferencesPopover() {
   const [open, setOpen] = useState(false);
@@ -224,7 +180,10 @@ export function OverlayExamples({
               : 'Every hover uses the selected delay, including when moving between buttons. Keyboard focus opens immediately. Keep essential information available without hover.'}
         </p>
       </section>
-      <CodeBlock
+      <ExampleCode
+        complete={
+          kind === 'dialog' ? consumerSource(projectDialogSource) : undefined
+        }
         code={
           kind === 'dialog'
             ? `import { Dialog } from 'unlikely-ui/dialog';\nimport { Button } from 'unlikely-ui/button';\n\n<Dialog.Root>\n  <Dialog.Trigger render={<Button />}>New project</Dialog.Trigger>\n  <Dialog.Content>\n    <Dialog.Title>Create project</Dialog.Title>\n    <Dialog.Description>Add project details.</Dialog.Description>\n    {/* Form content */}\n    <Dialog.Close render={<Button variant="secondary" />}>\n      Cancel\n    </Dialog.Close>\n  </Dialog.Content>\n</Dialog.Root>`

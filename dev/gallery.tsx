@@ -25,6 +25,14 @@ import { CodeBlock } from './code-block.js';
 import { ApiReference } from './api-reference.js';
 import { Glyph } from './glyph.js';
 import { catalog } from './catalog.js';
+import { ExampleLinks } from './example-links.js';
+import { Foundations } from './foundations.js';
+import { QuickStart } from './quick-start.js';
+import { Workflows } from './workflows.js';
+import { SwitchExamples } from './examples/switch.js';
+import { TabsExamples } from './examples/tabs.js';
+import { MenuExamples } from './examples/menu.js';
+import { ProjectDialog } from './examples/project-dialog.js';
 
 function currentPage() {
   return window.location.hash.slice(1) || 'overview';
@@ -37,103 +45,10 @@ function savedAppearance(): Appearance {
     return 'light';
   }
 }
-const roles = [
-  'canvas',
-  'surface',
-  'surface-raised',
-  'well',
-  'ink',
-  'muted',
-  'line-soft',
-  'line',
-  'accent',
-  'accent-soft',
-  'focus',
-] as const;
-
-function Foundations() {
-  return (
-    <>
-      <div className="page-intro">
-        <span className="eyebrow">FOUNDATIONS</span>
-        <h1>Design tokens</h1>
-        <p>
-          Semantic colors, typography, spacing, and geometry used by the
-          components.
-        </p>
-      </div>
-      <section className="specimen">
-        <div className="specimen-heading">
-          <h2>Semantic colors</h2>
-          <span className="quiet-label">SCOPED CSS VARIABLES</span>
-        </div>
-        <div className="token-grid">
-          {roles.map((role) => (
-            <div className="token-swatch" key={role}>
-              <div style={{ background: `var(--u-${role})` }} />
-              <code>--u-{role}</code>
-            </div>
-          ))}
-        </div>
-      </section>
-      <div className="two-column">
-        <section className="specimen">
-          <div className="specimen-heading">
-            <h2>Type &amp; rhythm</h2>
-          </div>
-          <p className="type-heading">Typography sample</p>
-          <p className="type-body">
-            Body · 16 / 24
-            <br />
-            Controls · 14 / 20
-            <br />
-            Metadata · 12 / 16
-          </p>
-          <div className="spacing-scale">
-            {[4, 8, 12, 16, 24, 32].map((n) => (
-              <div key={n}>
-                <span style={{ width: n, height: n }} />
-                <code>{n}</code>
-              </div>
-            ))}
-          </div>
-        </section>
-        <section className="specimen">
-          <div className="specimen-heading">
-            <h2>Categories & geometry</h2>
-          </div>
-          <div className="category-row">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <span key={n} style={{ background: `var(--u-category-${n})` }}>
-                Group {String.fromCharCode(64 + n)}
-              </span>
-            ))}
-          </div>
-          <p className="specimen-note">
-            Category fills keep their identity. Status, selection and primary
-            actions have their own meanings.
-          </p>
-          <div className="radius-row">
-            {[6, 8, 12].map((n, i) => (
-              <div key={n}>
-                <span style={{ borderRadius: n }} />
-                <small>
-                  {['Control', 'Card', 'Dialog'][i]} · {n}
-                </small>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-      <CodeBlock
-        code={`import { Theme } from 'unlikely-ui/theme';\nimport 'unlikely-ui/styles.css';\n\n<Theme appearance="dark">\n  <YourApp />\n</Theme>`}
-      />
-    </>
-  );
-}
-
 export function Gallery() {
-  const [page, setPage] = useState(currentPage);
+  const [route, setRoute] = useState(currentPage);
+  const [page = 'overview', parameters] = route.split('?');
+  const routeParams = new URLSearchParams(parameters);
   const [appearance, setAppearance] = useState<Appearance>(savedAppearance);
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
@@ -147,30 +62,49 @@ export function Gallery() {
   }, [appearance]);
   useEffect(() => {
     const change = () => {
-      setPage(currentPage());
+      const next = currentPage();
+      setRoute(next);
       setQuery('');
       setNavOpen(false);
-      window.scrollTo(0, 0);
     };
     window.addEventListener('hashchange', change);
     return () => window.removeEventListener('hashchange', change);
   }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
   const entry = catalog.find(
     (item) =>
       page === `components/${item.id}` || page === `components/${item.id}/api`,
   );
   const apiView = page.endsWith('/api');
   const filtered = catalog.filter((item) =>
-    `${item.name} ${item.category}`.toLowerCase().includes(query.toLowerCase()),
+    `${item.name} ${item.category} ${item.description} ${item.aliases?.join(' ') ?? ''}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
   );
   const title =
     entry?.name ??
-    { overview: 'Overview', foundations: 'Foundations', devspace: 'Devspace' }[
-      page
-    ] ??
+    {
+      overview: 'Overview',
+      foundations: 'Foundations',
+      devspace: 'Devspace',
+      'quick-start': 'Quick start',
+      recipes: 'Recipes',
+    }[page] ??
     'Overview';
+  useEffect(() => {
+    document.title = `${title} — unlikely ui`;
+    const target = new URLSearchParams(route.split('?')[1]).get('recipe');
+    if (target)
+      requestAnimationFrame(() =>
+        document.getElementById(target)?.scrollIntoView({ block: 'start' }),
+      );
+  }, [route, title]);
   const valid =
-    ['overview', 'foundations', 'devspace'].includes(page) || Boolean(entry);
+    ['overview', 'foundations', 'devspace', 'quick-start', 'recipes'].includes(
+      page,
+    ) || Boolean(entry);
   return (
     <Theme appearance={appearance} className="workspace">
       <a
@@ -209,16 +143,6 @@ export function Gallery() {
                   <img src="/button-logo.png" width={52} height={52} alt="" />
                   <span>unlikely ui</span>
                 </a>
-                <Button
-                  className="mobile-nav-toggle"
-                  variant="secondary"
-                  size="sm"
-                  aria-expanded={navOpen}
-                  aria-controls="workspace-navigation"
-                  onClick={() => setNavOpen((value) => !value)}
-                >
-                  Components <Glyph name="layers" size={16} />
-                </Button>
               </div>
               <label className="search-field">
                 <Glyph name="search" size={17} />
@@ -234,6 +158,8 @@ export function Gallery() {
                 {(
                   [
                     { id: 'overview', label: 'Overview', icon: 'grid' },
+                    { id: 'quick-start', label: 'Quick start', icon: 'arrow' },
+                    { id: 'recipes', label: 'Recipes', icon: 'layers' },
                     { id: 'foundations', label: 'Foundations', icon: 'layers' },
                     { id: 'devspace', label: 'Devspace', icon: 'flask' },
                   ] as const
@@ -275,7 +201,12 @@ export function Gallery() {
                 )}
               </nav>
               <div className="sidebar-footer">
-                <span className="version-pill">v{packageMetadata.version}</span>
+                <a
+                  href="#quick-start?recipe=compatibility"
+                  className="version-pill"
+                >
+                  v{packageMetadata.version}
+                </a>
               </div>
             </ScrollArea.Content>
           </ScrollArea.Viewport>
@@ -288,7 +219,22 @@ export function Gallery() {
             Workspace <span>/</span>
             <strong>{title}</strong>
           </div>
+          <a href="#overview" className="mobile-brand brand-lockup">
+            <img src="/button-logo.png" width={32} height={32} alt="" />
+            <span>unlikely ui</span>
+          </a>
           <div className="global-controls">
+            <Button
+              className="mobile-nav-toggle"
+              variant="secondary"
+              size="sm"
+              aria-expanded={navOpen}
+              aria-controls="workspace-navigation"
+              onClick={() => setNavOpen((value) => !value)}
+            >
+              Components <Glyph name="layers" size={16} />
+            </Button>
+
             <Button
               variant="ghost"
               size="icon"
@@ -334,11 +280,10 @@ export function Gallery() {
                     </Button>
                     <Button
                       variant="ghost"
-                      render={<a href="#devspace" />}
+                      render={<a href="#quick-start" />}
                       nativeButton={false}
                     >
-                      <Glyph name="flask" />
-                      Open devspace
+                      Start using unlikely ui
                     </Button>
                   </div>
                 </div>
@@ -379,39 +324,17 @@ export function Gallery() {
                     <span className="status-tag preview">Preview</span>
                     <span className="quiet-label">ACTIONS</span>
                   </div>
-                  <div className="card-stage icon-stage">
-                    <Button
-                      size="icon-sm"
-                      variant="secondary"
-                      aria-label="Add something"
-                      onClick={() => setNotice('Add action triggered.')}
-                    >
-                      <Glyph name="plus" />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="primary"
-                      aria-label="Confirm something"
-                      onClick={() =>
-                        setNotice('Confirmation action triggered.')
-                      }
-                    >
-                      <Glyph name="check" />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="ghost"
-                      aria-label="Adjust something"
-                      onClick={() => setNotice('Adjustment action triggered.')}
-                    >
-                      <Glyph name="sliders" />
-                    </Button>
+                  <div className="card-stage composition-stage">
+                    <ProjectDialog />
                   </div>
-                  <a href="#components/button" className="card-title">
-                    Icon actions
+                  <a href="#components/dialog" className="card-title">
+                    Project form
                     <Glyph name="arrow" size={16} />
                   </a>
-                  <p>Icon actions with required accessible names.</p>
+                  <p>
+                    Fields, validation, a dialog, and a themed popover working
+                    together.
+                  </p>
                 </article>
                 <article className="component-card">
                   <div className="card-top">
@@ -474,8 +397,12 @@ export function Gallery() {
                 </a>
                 <div className="next-up">
                   <span className="eyebrow">UP NEXT · M3</span>
-                  <h3>Selection controls</h3>
-                  <p>Switch and Tabs.</p>
+                  <h3>Complete workflows</h3>
+                  <p>
+                    <a href="#recipes">
+                      Date fields, save failures, and recovery →
+                    </a>
+                  </p>
                 </div>
               </div>
               <div className="workspace-notice" role="status">
@@ -483,7 +410,9 @@ export function Gallery() {
               </div>
             </>
           )}
-          {page === 'foundations' && <Foundations />}
+          {page === 'quick-start' && <QuickStart />}
+          {page === 'recipes' && <Workflows />}
+          {page === 'foundations' && <Foundations appearance={appearance} />}
           {page === 'devspace' && (
             <>
               <div className="page-intro">
@@ -519,6 +448,11 @@ export function Gallery() {
                     {entry.status === 'planned' ? 'Planned' : 'Preview'}
                   </span>
                 </div>
+                {entry.unreleased && (
+                  <span className="quiet-label">
+                    Unreleased · repository preview
+                  </span>
+                )}
                 <h1>{entry.name}</h1>
                 <p>{entry.description}</p>
               </div>
@@ -540,10 +474,19 @@ export function Gallery() {
                 </a>
               </nav>
               {apiView ? (
-                <ApiReference key={entry.id} componentId={entry.id} />
+                <ApiReference
+                  key={entry.id}
+                  componentId={entry.id}
+                  partName={routeParams.get('part')}
+                  propertyName={routeParams.get('prop')}
+                />
               ) : (
-                <>
+                <div className="component-examples" key={entry.id}>
+                  <ExampleLinks componentId={entry.id} />
                   {entry.id === 'button' && <ButtonExamples />}
+                  {entry.id === 'switch' && <SwitchExamples />}
+                  {entry.id === 'tabs' && <TabsExamples />}
+                  {entry.id === 'menu' && <MenuExamples />}
                   {entry.id === 'physical-button' && <PhysicalButtonExamples />}
                   {entry.id === 'combobox' && <ComboboxExamples />}
                   {entry.id === 'scroll-area' && <ScrollAreaExamples />}
@@ -615,7 +558,7 @@ export function Gallery() {
                       </Button>
                     </section>
                   )}
-                </>
+                </div>
               )}
             </>
           )}
