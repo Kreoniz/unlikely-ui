@@ -1,0 +1,459 @@
+.allocation {
+  --allocation-ink: var(--u-physical-ink);
+  --allocation-shell: var(--u-physical-casing);
+  container: allocation / inline-size;
+  min-inline-size: 0;
+}
+.allocation-paint-0 {
+  --allocation-paint: var(--u-physical-indicator);
+}
+.allocation-paint-1 {
+  --allocation-paint: var(--u-physical-inset);
+}
+.allocation-paint-2 {
+  --allocation-paint: var(--u-physical-cap);
+}
+.allocation-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.5rem;
+  margin-block: 2rem 2.5rem;
+}
+.allocation-track {
+  position: relative;
+  min-inline-size: 0;
+  padding: 5px;
+}
+.allocation-track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--allocation-shell), white 25%);
+  border-radius: 21px;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--allocation-shell), white 18%),
+    var(--allocation-shell) 70%
+  );
+  box-shadow:
+    inset 0 1px 1px color-mix(in srgb, white, transparent 65%),
+    0 3px 0 color-mix(in srgb, var(--allocation-shell), black 20%),
+    0 8px 12px -5px color-mix(in srgb, var(--allocation-shell), transparent 65%);
+}
+.allocation-bar {
+  position: relative;
+  display: flex;
+  gap: 3px;
+  height: clamp(72px, 8cqi, 112px);
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--allocation-shell);
+}
+.allocation-segment {
+  position: relative;
+  container: allocation-segment / inline-size;
+  min-inline-size: 0;
+  border-radius: 11px;
+  overflow: hidden;
+  color: var(--allocation-ink);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--allocation-paint), white 15%),
+    var(--allocation-paint) 75%
+  );
+  box-shadow:
+    inset 0 1px 1px color-mix(in srgb, white, transparent 40%),
+    inset 0 -2px 1px
+      color-mix(in srgb, var(--allocation-shell), transparent 85%);
+}
+.allocation-segment[data-empty] {
+  display: none;
+}
+.allocation-segment-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 22px;
+  overflow: hidden;
+}
+.allocation-segment-name {
+  font-size: 1.0625rem;
+  font-weight: 550;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.allocation-segment-value {
+  font-size: 2rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.allocation-segment-value small {
+  font: inherit;
+}
+.allocation-segment-lock {
+  position: absolute;
+  inset: 10px 10px auto auto;
+  width: 12px;
+}
+.allocation svg {
+  width: 14px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  flex: none;
+}
+.allocation-total {
+  display: grid;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.25;
+}
+.allocation-total strong {
+  font-size: 2rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.allocation-slider {
+  position: absolute;
+  inset-block: 5px;
+  pointer-events: none;
+}
+.allocation-slider:focus-within,
+.allocation-slider[data-dragging] {
+  z-index: 2;
+}
+.allocation-slider-control {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.allocation-grip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: ew-resize;
+  outline: none;
+}
+.allocation-grip-face {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: clamp(44px, 5.4cqi, 64px);
+  border: 1px solid var(--allocation-shell);
+  border-radius: 9px;
+  color: color-mix(in srgb, var(--allocation-shell), white 20%);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--u-physical-inset), white 10%),
+    color-mix(in srgb, var(--u-physical-inset), var(--allocation-shell) 18%)
+  );
+  box-shadow:
+    inset 1px 1px 1px color-mix(in srgb, white, transparent 35%),
+    0 3px 0 color-mix(in srgb, var(--allocation-shell), black 20%),
+    0 4px 5px color-mix(in srgb, var(--allocation-shell), transparent 60%);
+  transition:
+    background var(--u-duration-fast),
+    translate var(--u-duration-fast);
+}
+.allocation-grip-face > span {
+  height: 29px;
+  width: 9px;
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 1px,
+    transparent 1px 4px
+  );
+  opacity: 0.75;
+}
+.allocation-grip:is(:hover, :focus-visible, [data-dragging])
+  .allocation-grip-face {
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--u-physical-cap), white 15%),
+    var(--u-physical-cap)
+  );
+  color: var(--allocation-ink);
+}
+.allocation-grip:focus-visible .allocation-grip-face {
+  outline: 2px solid var(--allocation-ink);
+  outline-offset: 4px;
+}
+.allocation-grip[data-dragging] .allocation-grip-face {
+  translate: 0 2px;
+}
+.allocation-grip::before {
+  content: '';
+  position: absolute;
+  inset-block: -14px;
+  border-inline-start: 1px dashed var(--u-muted);
+  opacity: 0;
+  pointer-events: none;
+}
+.allocation-grip::after {
+  content: '↔';
+  position: absolute;
+  inset-block-start: -28px;
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  color: var(--u-ink);
+}
+.allocation-grip[data-dragging]::before,
+.allocation-grip[data-dragging]::after {
+  opacity: 1;
+}
+.allocation-grip[data-disabled] {
+  cursor: default;
+  touch-action: auto;
+}
+.allocation-grip[data-disabled] .allocation-grip-face {
+  opacity: var(--u-opacity-disabled);
+}
+.allocation-fixed-divider {
+  position: absolute;
+  inset-block: 5px;
+  border-inline-start: 2px solid var(--allocation-shell);
+  pointer-events: none;
+}
+.allocation-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.allocation-value {
+  min-width: 0;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--u-line-soft);
+}
+.allocation-value-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-block-end: 0.5rem;
+}
+.allocation-value-heading label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 600;
+}
+.allocation-value-heading label i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--allocation-paint);
+  border: 1px solid color-mix(in srgb, var(--allocation-shell), transparent 60%);
+}
+.allocation-lock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: var(--u-radius-sm);
+  background: transparent;
+  color: var(--u-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.allocation-lock[aria-pressed='true'] {
+  background: var(--u-selection);
+  color: var(--u-selection-ink);
+  border-color: var(--u-selection-border);
+}
+.allocation-lock:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 2px;
+}
+.allocation-entry {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.allocation-entry > span {
+  font-size: 14px;
+  color: var(--u-muted);
+}
+.allocation-value-help {
+  font-size: 12px;
+  color: var(--u-muted);
+  margin-block: 0.5rem 0;
+  overflow-wrap: anywhere;
+}
+.allocation-demo-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.allocation-demo-toolbar fieldset {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.allocation-demo-toolbar legend {
+  font-size: 12px;
+  color: var(--u-muted);
+  margin-bottom: 6px;
+}
+.allocation-demo-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  min-height: 44px;
+}
+.allocation-demo-toolbar input {
+  accent-color: var(--u-accent-text);
+}
+.allocation-demo-toolbar button {
+  color: var(--u-ink);
+  background: var(--u-surface);
+  border: 1px solid var(--u-line);
+  border-radius: var(--u-radius-sm);
+  min-height: 40px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.allocation-demo-toolbar button:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 2px;
+}
+@container allocation (max-width: 640px) {
+  .allocation-segment-content {
+    padding-inline: 12px;
+  }
+  .allocation-segment-name {
+    font-size: 0.875rem;
+  }
+  .allocation-segment-value {
+    font-size: 1.625rem;
+  }
+}
+@container allocation (max-width: 480px) {
+  .allocation-overview {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-block: 1.5rem;
+  }
+  .allocation-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .allocation-total strong {
+    font-size: 1.5rem;
+  }
+  .allocation-bar {
+    height: 72px;
+  }
+  .allocation-segment-content {
+    padding-inline: 11px 4px;
+  }
+  .allocation-grip-face {
+    width: 16px;
+    height: 44px;
+    border-radius: 7px;
+  }
+  .allocation-segment-name {
+    font-size: 0.75rem;
+  }
+  .allocation-segment-value {
+    font-size: 1.375rem;
+  }
+  .allocation-values {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .allocation-value {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0 12px;
+    padding-block: 0.5rem;
+  }
+  .allocation-value-heading {
+    margin: 0;
+  }
+  .allocation-value-help {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+}
+@container allocation (max-width: 320px) {
+  .allocation-lock {
+    padding-inline: 0;
+  }
+  .allocation-lock > span {
+    display: none;
+  }
+  .allocation-segment-content {
+    padding-inline: 10px 2px;
+  }
+  .allocation-segment-value {
+    font-size: 1.125rem;
+  }
+}
+@container allocation-segment (max-width: 66px) {
+  .allocation-segment-name {
+    display: none;
+  }
+  .allocation-segment-lock {
+    display: none;
+  }
+}
+@container allocation-segment (max-width: 52px) {
+  .allocation-segment-value {
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .allocation-grip-face {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .allocation-track::before,
+  .allocation-segment,
+  .allocation-grip-face {
+    background: Canvas;
+    border: 1px solid CanvasText;
+    color: CanvasText;
+    box-shadow: none;
+  }
+  .allocation-segment + .allocation-segment {
+    border-inline-start: 2px solid CanvasText;
+  }
+  .allocation-grip:focus-visible .allocation-grip-face {
+    outline-color: Highlight;
+  }
+}

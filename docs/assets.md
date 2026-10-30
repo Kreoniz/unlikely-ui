@@ -24,7 +24,16 @@ The [reference capture](./brand/red-button/2026-10-20/component-reference.png)
 records the component used for generation. Its cap label was omitted and the
 indicator illuminated for the capture.
 
-The wordmark uses the detailed PNG. `dev/public/favicon.svg` is a separately
+The wordmark, README and portable sheet use `dev/public/button-logo-small.png`,
+a 192×192 display derivative; the original PNG and its provenance stay intact.
+Regenerate it with the existing ffmpeg tool when the original changes:
+
+```sh
+ffmpeg -v error -y -i dev/public/button-logo.png -vf scale=192:192:flags=lanczos -frames:v 1 -compression_level 9 dev/public/button-logo-small.png
+```
+
+Inspect transparency and small-size rendering in both appearances afterward.
+`dev/public/favicon.svg` is a separately
 authored small-size version for browser tabs: a large red face with a subtle
 radial highlight, a continuous dark outline, and four broad yellow ring
 segments. The geometry uses a 32-unit canvas and minimal transparent padding;
@@ -47,9 +56,20 @@ development asset. Its accompanying notice is preserved unchanged in
 `dev/public/fonts/Inter-LICENSE.txt`. The font retains its SIL Open Font License;
 it is not relicensed under the project's MIT grant. Upstream: [Inter](https://rsms.me/inter/).
 
+## App-study display font
+
+The app studies added `dev/public/fonts/ManropeVariable.ttf` on 2026-10-30
+for display typography, alongside Inter body text. It is an app-owned font
+choice, passed through Theme.tokens so portals share it; it is excluded from npm.
+The original SIL Open Font License is retained in `Manrope-OFL.txt` beside it.
+Source: [Google Fonts' Manrope metadata](https://github.com/google/fonts/blob/6157dfaa640ca5738b4d1a7070fe389c3036d7fc/ofl/manrope/METADATA.pb),
+font and OFL files at the same pinned revision `6157dfaa640ca5738b4d1a7070fe389c3036d7fc`.
+The metadata lists Cyrillic and Latin coverage. The font is not relicensed
+under the project's MIT grant and the component package still requests no fonts.
+
 ## README images
 
-The README reuses `dev/public/button-logo.png` without another editable copy.
+The README reuses the same generated display derivative; it has no editable logo copy.
 `docs/images/showcase-dark.png` is an actual browser capture of
 https://ui.kreoniz.ru/#overview in dark mode, at 1440×1050 CSS pixels and 2× pixel
 density. Refresh it with `mise exec -- pnpm readme:screenshot`; the script uses

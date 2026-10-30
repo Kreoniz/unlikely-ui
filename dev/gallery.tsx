@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { CheckoutNotice } from './checkout-notice.js';
+import { StudyBoundary, StudyUnavailable } from './study-boundary.js';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import packageMetadata from '../package.json' with { type: 'json' };
 import { Theme } from '../src/theme.js';
 import type { Appearance } from '../src/theme.js';
@@ -33,6 +35,16 @@ import { SwitchExamples } from './examples/switch.js';
 import { TabsExamples } from './examples/tabs.js';
 import { MenuExamples } from './examples/menu.js';
 import { ProjectDialog } from './examples/project-dialog.js';
+const AppStudies = lazy(() =>
+  import('./experiments/app-studies/index.js').then((module) => ({
+    default: module.AppStudies,
+  })),
+);
+const SignatureStudies = lazy(() =>
+  import('./experiments/signature/index.js').then((module) => ({
+    default: module.SignatureStudies,
+  })),
+);
 
 function currentPage() {
   return window.location.hash.slice(1) || 'overview';
@@ -91,6 +103,8 @@ export function Gallery() {
       devspace: 'Devspace',
       'quick-start': 'Quick start',
       recipes: 'Recipes',
+      'apps/desk': 'Margin — App study',
+      'apps/settings': 'Dispatch — App study',
     }[page] ??
     'Overview';
   useEffect(() => {
@@ -105,6 +119,34 @@ export function Gallery() {
     ['overview', 'foundations', 'devspace', 'quick-start', 'recipes'].includes(
       page,
     ) || Boolean(entry);
+  if (page === 'apps/desk' || page === 'apps/settings') {
+    return (
+      <StudyBoundary
+        fallback={
+          <Theme appearance={appearance}>
+            <main>
+              <StudyUnavailable />
+            </main>
+          </Theme>
+        }
+      >
+        <Suspense
+          fallback={
+            <Theme appearance={appearance}>
+              <p role="status">Loading app studies…</p>
+            </Theme>
+          }
+        >
+          <AppStudies
+            screen={page === 'apps/desk' ? 'desk' : 'settings'}
+            params={routeParams}
+            appearance={appearance}
+            onAppearanceChange={setAppearance}
+          />
+        </Suspense>
+      </StudyBoundary>
+    );
+  }
   return (
     <Theme appearance={appearance} className="workspace">
       <a
@@ -140,7 +182,12 @@ export function Gallery() {
             <ScrollArea.Content className="sidebar-content">
               <div className="sidebar-heading">
                 <a href="#overview" className="brand-lockup">
-                  <img src="/button-logo.png" width={52} height={52} alt="" />
+                  <img
+                    src="/button-logo-small.png"
+                    width={52}
+                    height={52}
+                    alt=""
+                  />
                   <span>unlikely ui</span>
                 </a>
               </div>
@@ -160,6 +207,7 @@ export function Gallery() {
                     { id: 'overview', label: 'Overview', icon: 'grid' },
                     { id: 'quick-start', label: 'Quick start', icon: 'arrow' },
                     { id: 'recipes', label: 'Recipes', icon: 'layers' },
+                    { id: 'apps/desk', label: 'App studies', icon: 'grid' },
                     { id: 'foundations', label: 'Foundations', icon: 'layers' },
                     { id: 'devspace', label: 'Devspace', icon: 'flask' },
                   ] as const
@@ -220,7 +268,7 @@ export function Gallery() {
             <strong>{title}</strong>
           </div>
           <a href="#overview" className="mobile-brand brand-lockup">
-            <img src="/button-logo.png" width={32} height={32} alt="" />
+            <img src="/button-logo-small.png" width={32} height={32} alt="" />
             <span>unlikely ui</span>
           </a>
           <div className="global-controls">
@@ -396,7 +444,7 @@ export function Gallery() {
                   <Glyph name="arrow" />
                 </a>
                 <div className="next-up">
-                  <span className="eyebrow">UP NEXT · M3</span>
+                  <span className="eyebrow">RECIPES</span>
                   <h3>Complete workflows</h3>
                   <p>
                     <a href="#recipes">
@@ -410,6 +458,7 @@ export function Gallery() {
               </div>
             </>
           )}
+          {(entry || page === 'recipes') && <CheckoutNotice />}
           {page === 'quick-start' && <QuickStart />}
           {page === 'recipes' && <Workflows />}
           {page === 'foundations' && <Foundations appearance={appearance} />}
@@ -423,18 +472,29 @@ export function Gallery() {
                   can change before they join the library.
                 </p>
               </div>
-              <ThemePortalExperiment />
-              <section className="devspace-guidance">
-                <Glyph name="flask" />
-                <div>
-                  <h3>From experiment to component</h3>
-                  <p>
-                    Explore a real question here. Validate states, naming,
-                    keyboard use and theming. Then move the settled
-                    implementation into the library.
-                  </p>
-                </div>
-              </section>
+              <StudyBoundary fallback={<StudyUnavailable />}>
+                <Suspense
+                  fallback={
+                    <p role="status" className="devspace-loading">
+                      Loading experiments…
+                    </p>
+                  }
+                >
+                  <SignatureStudies studyId={routeParams.get('study')} />
+                  <ThemePortalExperiment />
+                  <section className="devspace-guidance">
+                    <Glyph name="flask" />
+                    <div>
+                      <h3>From experiment to component</h3>
+                      <p>
+                        Explore a real question here. Validate states, naming,
+                        keyboard use and theming. Then move the settled
+                        implementation into the library.
+                      </p>
+                    </div>
+                  </section>
+                </Suspense>
+              </StudyBoundary>
             </>
           )}
           {entry && (

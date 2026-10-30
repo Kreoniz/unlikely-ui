@@ -1,8 +1,26 @@
 import { useRef, useState } from 'react';
 import { Button } from '../../src/components/button.js';
-import { Dialog } from '../../src/components/dialog.js';
-import { Popover } from '../../src/components/popover.js';
-import { Field } from '../../src/components/field.js';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '../../src/components/dialog.js';
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from '../../src/components/popover.js';
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
 import { Textarea } from '../../src/components/textarea.js';
 
@@ -21,6 +39,7 @@ export function ProjectForm({
   return (
     <form
       className="example-form"
+      style={{ display: 'grid', gap: 'var(--u-space-5)' }}
       noValidate
       onSubmit={(event) => {
         event.preventDefault();
@@ -32,8 +51,8 @@ export function ProjectForm({
         onSave(name.trim());
       }}
     >
-      <Field.Root name="projectName" invalid={invalid}>
-        <Field.Label>Project name</Field.Label>
+      <Field name="projectName" invalid={invalid}>
+        <FieldLabel>Project name</FieldLabel>
         <Input
           ref={nameRef}
           value={name}
@@ -42,23 +61,37 @@ export function ProjectForm({
           autoComplete="off"
           placeholder="e.g. Campus"
         />
-        <Field.Description>
+        <FieldDescription>
           Required. You can change this later.
-        </Field.Description>
-        <Field.Error match={invalid}>Enter a project name.</Field.Error>
-      </Field.Root>
-      <Field.Root name="notes">
-        <Field.Label>
-          Notes <span className="optional-label">(optional)</span>
-        </Field.Label>
+        </FieldDescription>
+        <FieldError match={invalid}>Enter a project name.</FieldError>
+      </Field>
+      <Field name="notes">
+        <FieldLabel>
+          Notes{' '}
+          <span
+            className="optional-label"
+            style={{ color: 'var(--u-muted)', fontWeight: 400 }}
+          >
+            (optional)
+          </span>
+        </FieldLabel>
         <Textarea
           value={notes}
           onValueChange={setNotes}
           rows={3}
           placeholder="Describe the project…"
         />
-      </Field.Root>
-      <div className="example-actions">
+      </Field>
+      <div
+        className="example-actions"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-end',
+          gap: 'var(--u-space-2)',
+        }}
+      >
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
@@ -73,13 +106,11 @@ export function ProjectDialog() {
   const [saved, setSaved] = useState('');
   return (
     <>
-      <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Trigger render={<Button />}>New project</Dialog.Trigger>
-        <Dialog.Content>
-          <Dialog.Title>Create project</Dialog.Title>
-          <Dialog.Description>
-            Add a name and optional notes.
-          </Dialog.Description>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger render={<Button />}>New project</DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Create project</DialogTitle>
+          <DialogDescription>Add a name and optional notes.</DialogDescription>
           <ProjectForm
             onSave={(name) => {
               setSaved(`Created ${name}.`);
@@ -87,27 +118,41 @@ export function ProjectDialog() {
             }}
             onCancel={() => setOpen(false)}
           />
-          <div className="dialog-help">
-            <Popover.Root>
-              <Popover.Trigger render={<Button variant="ghost" size="sm" />}>
+          <div
+            className="dialog-help"
+            style={{
+              marginTop: 'var(--u-space-4)',
+              borderTop: '1px solid var(--u-line-soft)',
+              paddingTop: 'var(--u-space-3)',
+            }}
+          >
+            <Popover>
+              <PopoverTrigger render={<Button variant="ghost" size="sm" />}>
                 Project visibility
-              </Popover.Trigger>
-              <Popover.Content>
-                <Popover.Title>Private by default</Popover.Title>
-                <Popover.Description>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverTitle>Private by default</PopoverTitle>
+                <PopoverDescription>
                   Only invited members can access this example project.
-                </Popover.Description>
-                <Popover.Close
-                  render={<Button variant="secondary" size="sm" />}
-                >
+                </PopoverDescription>
+                <PopoverClose render={<Button variant="secondary" size="sm" />}>
                   Close details
-                </Popover.Close>
-              </Popover.Content>
-            </Popover.Root>
+                </PopoverClose>
+              </PopoverContent>
+            </Popover>
           </div>
-        </Dialog.Content>
-      </Dialog.Root>
-      <p className="playground-feedback" role="status">
+        </DialogContent>
+      </Dialog>
+      <p
+        className="playground-feedback"
+        style={{
+          fontSize: 'var(--u-type-caption-size)',
+          color: 'var(--u-muted)',
+          textAlign: 'center',
+          overflowWrap: 'anywhere',
+        }}
+        role="status"
+      >
         {saved || 'Open the dialog to complete the form.'}
       </p>
     </>

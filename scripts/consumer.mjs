@@ -1,6 +1,8 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { posix, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { waitForFixture } from './consumer-server.mjs';
 
 const root = process.cwd();
 const target = resolve('.local/consumer');
@@ -49,12 +51,15 @@ const consumerDocuments = [
 const allowedFiles = new Set([
   'package/package.json',
   'package/LICENSE',
+  'package/THIRD_PARTY_NOTICES.md',
   ...consumerDocuments.map((file) => `package/${file}`),
 ]);
 for (const file of packedFiles) {
   if (!file.startsWith('package/dist/') && !allowedFiles.has(file))
     throw new Error(`Unexpected file in the package: ${file}`);
 }
+if (!packedFiles.has('package/THIRD_PARTY_NOTICES.md'))
+  throw new Error('shadcn MIT notice missing from the package');
 if (!packedFiles.has('package/LICENSE'))
   throw new Error('MIT license missing from the package');
 const packedManifest = JSON.parse(
@@ -108,6 +113,47 @@ for (const file of consumerDocuments) {
 await rm(target, { recursive: true, force: true });
 await mkdir(target, { recursive: true });
 await cp('tests/consumer', target, { recursive: true });
+// Compile the actual complete recipes against the packed public API. No gallery CSS.
+await mkdir(resolve(target, 'copied'), { recursive: true });
+for (const name of [
+  'project-dialog',
+  'recoverable-settings',
+  'due-date-form',
+  'empty-state',
+  'multiple-groups',
+]) {
+  const source = await readFile(`dev/examples/${name}.tsx`, 'utf8');
+  await writeFile(
+    resolve(target, 'copied', `${name}.tsx`),
+    source
+      .replace(/\.\.\/\.\.\/src\/components\/([\w-]+)\.js/g, 'unlikely-ui/$1')
+      .replace(/\.\.\/\.\.\/src\/theme\.js/g, 'unlikely-ui/theme'),
+  );
+}
+await mkdir(resolve(target, 'copied/app-studies'), { recursive: true });
+for (const name of [
+  'desk.tsx',
+  'settings.tsx',
+  'types.ts',
+  'desk.css',
+  'settings.css',
+]) {
+  const source = await readFile(`dev/experiments/app-studies/${name}`, 'utf8');
+  await writeFile(
+    resolve(target, 'copied/app-studies', name),
+    source.replace(
+      /\.\.\/\.\.\/\.\.\/src\/components\/([\w-]+)\.js/g,
+      'unlikely-ui/$1',
+    ),
+  );
+}
+await mkdir(resolve(target, 'copied/reading-room'), { recursive: true });
+for (const name of ['app.tsx', 'app.css']) {
+  await cp(
+    `tests/adoption/reading-room/${name}`,
+    resolve(target, 'copied/reading-room', name),
+  );
+}
 const devNames = [
   'vite',
   'typescript',
@@ -147,11 +193,12 @@ await writeFile(
       module: 'NodeNext',
       moduleResolution: 'NodeNext',
       jsx: 'react-jsx',
+      types: ['vite/client'],
       strict: true,
       skipLibCheck: true,
       outDir: 'compiled',
     },
-    include: ['app.tsx', 'types.ts'],
+    include: ['app.tsx', 'types.ts', 'copied/**/*.tsx'],
   }),
 );
 run(
@@ -168,42 +215,44 @@ run(
 run('pnpm', ['exec', 'tsc'], { cwd: target });
 run(process.execPath, ['ssr.mjs'], { cwd: target });
 for (const mode of ['plain', 'tailwind']) {
+  const identity = `${randomUUID()}:${mode}`;
   const env = {
     ...process.env,
     CONSUMER_TAILWIND: mode === 'tailwind' ? '1' : '0',
     UI_CONSUMER_URL: 'http://127.0.0.1:5181',
     UI_CONSUMER_MODE: mode,
+    UI_CONSUMER_BUILD: identity,
   };
   run('pnpm', ['exec', 'vite', 'build'], { cwd: target, env });
   const server = spawn('pnpm', ['exec', 'vite', 'preview'], {
     cwd: target,
     env,
-    stdio: 'ignore',
+    stdio: ['ignore', 'pipe', 'pipe'],
     detached: true,
   });
+  const stopped = new Promise((resolve) => server.once('close', resolve));
+  let startupOutput = '';
+  const recordOutput = (chunk) => {
+    startupOutput = (startupOutput + chunk.toString()).slice(-4000);
+  };
+  server.stdout.on('data', recordOutput);
+  server.stderr.on('data', recordOutput);
   try {
-    let ready = false;
-    for (let attempt = 0; attempt < 100; attempt++) {
-      try {
-        const response = await fetch(env.UI_CONSUMER_URL);
-        if (response.ok) {
-          ready = true;
-          break;
-        }
-      } catch {}
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-    if (!ready) throw new Error('Consumer fixture did not start');
+    await waitForFixture(
+      server,
+      env.UI_CONSUMER_URL,
+      identity,
+      () => startupOutput,
+    );
     run('pnpm', ['exec', 'playwright', 'test', '--project=consumer'], {
       cwd: root,
       env,
     });
   } finally {
     try {
-      process.kill(-server.pid, 'SIGTERM');
+      if (server.pid) process.kill(-server.pid, 'SIGTERM');
     } catch {}
-    if (server.exitCode === null && server.signalCode === null)
-      await new Promise((resolve) => server.once('exit', resolve));
+    await stopped;
   }
 }
 console.log(

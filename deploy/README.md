@@ -60,7 +60,10 @@ rejects unsafe paths, links, devices, duplicate names, oversized archives, and
 immutable asset collisions. It switches `current` atomically after unpacking,
 keeping `previous` for rollback. Hashed chunks stay available across releases
 for already-open pages. The client verifies every public file against the build
-artifact and rolls back on a failed verification. Indexes use `no-cache`;
+artifact and requests a guarded rollback on failed verification or an ambiguous
+transport failure. If rollback cannot be confirmed, the job reports that public
+state needs reconciliation; an unreachable host or killed runner cannot guarantee
+recovery. Indexes use `no-cache`;
 hashed assets use one-year immutable caching.
 
 ## Rollback and maintenance

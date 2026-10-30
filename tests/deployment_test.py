@@ -2,7 +2,11 @@
 
 import importlib.util
 import io
+import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import tarfile
 import tempfile
 import unittest
@@ -77,6 +81,94 @@ class DeploymentTest(unittest.TestCase):
         receive.rollback(self.site, second)
         self.assertEqual((self.site / 'current/index.html').read_bytes(), b'first')
         self.assertEqual((self.site / 'assets/new.js').read_bytes(), b'new')
+
+
+class PublishClientTest(unittest.TestCase):
+    """Stub transport/verification only; never contact a server or read credentials."""
+
+    def run_client(self, phase, rollback_fails=False):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / '.local/showcase').mkdir(parents=True)
+            (root / '.local/showcase/index.html').write_text('fixture')
+            (root / 'bin').mkdir()
+            (root / 'deploy').mkdir()
+            log = root / 'calls.jsonl'
+            ssh = root / 'bin/ssh'
+            ssh.write_text(f'#!{sys.executable}\n' + '''
+import json, os, pathlib, sys
+command = sys.argv[-1]
+root = pathlib.Path.cwd()
+with open(os.environ['PUBLISH_TEST_LOG'], 'a') as log:
+    log.write(json.dumps({'command': command, 'key': sys.argv[sys.argv.index('-i') + 1]}) + '\\n')
+if command.startswith('deploy '):
+    sys.stdin.buffer.read()
+    if os.environ['PUBLISH_TEST_PHASE'] != 'before':
+        (root / 'promoted').touch()
+    if os.environ['PUBLISH_TEST_PHASE'] in ('before', 'after'):
+        sys.exit(255)
+else:
+    if os.environ['PUBLISH_TEST_ROLLBACK_FAIL'] == '1' or not (root / 'promoted').exists():
+        sys.exit(1)
+    (root / 'promoted').unlink()
+''')
+            ssh.chmod(0o755)
+            (root / 'deploy/verify.py').write_text('''
+import json, os, sys
+with open(os.environ['PUBLISH_TEST_LOG'], 'a') as log:
+    log.write(json.dumps({'command': 'verify'}) + '\\n')
+sys.exit(1 if os.environ['PUBLISH_TEST_PHASE'] == 'verification' else 0)
+''')
+            release = 'a' * 40 + '-1-1'
+            environment = {
+                **os.environ,
+                'PATH': str(root / 'bin') + os.pathsep + os.environ['PATH'],
+                'DEPLOY_HOST': 'fixture.invalid', 'DEPLOY_USER': 'fixture',
+                'DEPLOY_KEY': 'fake-test-key', 'DEPLOY_KNOWN_HOSTS': 'fake-test-host',
+                'RELEASE_ID': release, 'SITE_URL': 'https://fixture.invalid',
+                'PUBLISH_TEST_PHASE': phase,
+                'PUBLISH_TEST_ROLLBACK_FAIL': '1' if rollback_fails else '0',
+                'PUBLISH_TEST_LOG': str(log),
+            }
+            script = Path(__file__).resolve().parents[1] / 'deploy/publish.sh'
+            result = subprocess.run(['bash', str(script)], cwd=root, env=environment, capture_output=True, text=True)
+            calls = [json.loads(line) for line in log.read_text().splitlines()]
+            for call in calls:
+                if 'key' in call:
+                    self.assertFalse(Path(call['key']).parent.exists(), 'credential directory must be cleaned')
+            return result, [call['command'] for call in calls], (root / 'promoted').exists(), release
+
+    def test_failure_before_promotion_requests_guarded_reconciliation(self):
+        result, calls, promoted, release = self.run_client('before')
+        self.assertEqual(result.returncode, 255)
+        self.assertEqual(calls, [f'deploy {release}', f'rollback {release}'])
+        self.assertFalse(promoted)
+        self.assertIn('needs reconciliation', result.stderr)
+
+    def test_failure_after_promotion_requests_rollback(self):
+        result, calls, promoted, release = self.run_client('after')
+        self.assertEqual(result.returncode, 255)
+        self.assertEqual(calls, [f'deploy {release}', f'rollback {release}'])
+        self.assertFalse(promoted)
+
+    def test_verification_failure_requests_rollback(self):
+        result, calls, promoted, release = self.run_client('verification')
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(calls, [f'deploy {release}', 'verify', f'rollback {release}'])
+        self.assertFalse(promoted)
+
+    def test_failed_rollback_preserves_failure_and_reports_uncertainty(self):
+        result, calls, promoted, release = self.run_client('after', rollback_fails=True)
+        self.assertEqual(result.returncode, 255)
+        self.assertEqual(calls[-1], f'rollback {release}')
+        self.assertTrue(promoted)
+        self.assertIn('needs reconciliation', result.stderr)
+
+    def test_success_verifies_without_rollback(self):
+        result, calls, promoted, release = self.run_client('success')
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(calls, [f'deploy {release}', 'verify'])
+        self.assertTrue(promoted)
 
 
 if __name__ == '__main__':

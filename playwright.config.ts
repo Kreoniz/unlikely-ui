@@ -27,6 +27,8 @@ export default defineConfig({
         'showcase.spec.ts',
         'calendar-mobile.spec.ts',
         'improvements.spec.ts',
+        'app-studies.spec.ts',
+        'signature-*.spec.ts',
       ],
       use: { baseURL: process.env.UI_SHOWCASE_URL ?? 'http://127.0.0.1:5177' },
     },

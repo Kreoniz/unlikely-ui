@@ -18,6 +18,7 @@ import type { CheckboxProps } from 'unlikely-ui/checkbox';
 import type { RadioGroupProps } from 'unlikely-ui/radio-group';
 import type { SelectContentProps } from 'unlikely-ui/select';
 import type { ComboboxInputProps } from 'unlikely-ui/combobox';
+import type { ComboboxChipProps } from 'unlikely-ui/combobox';
 import type { CalendarProps } from 'unlikely-ui/calendar';
 import type { DatePickerProps } from 'unlikely-ui/date-picker';
 import type { ToastViewportProps } from 'unlikely-ui/toast';
@@ -136,9 +137,15 @@ const select: SelectContentProps = {
 };
 void [checkbox, radio, select];
 const combobox: ComboboxInputProps = {
+  showClear: true,
   size: 'sm',
   ref: createRef<HTMLInputElement>(),
 };
+// @ts-expect-error Removable chips require a value-specific accessible action name.
+const unnamedChip: ComboboxChipProps = {};
+const staticChip: ComboboxChipProps = { showRemove: false };
+const namedChip: ComboboxChipProps = { removeLabel: 'Remove Design' };
+void [unnamedChip, staticChip, namedChip];
 const calendar: CalendarProps = {
   selected: new Date(),
   onSelect: (date) => date?.getDate(),

@@ -1,12 +1,37 @@
 import { useState } from 'react';
 import { Button } from '../../src/components/button.js';
-import { Dialog } from '../../src/components/dialog.js';
-import { Popover } from '../../src/components/popover.js';
-import { Tooltip } from '../../src/components/tooltip.js';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '../../src/components/dialog.js';
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from '../../src/components/popover.js';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../src/components/tooltip.js';
 import { Theme } from '../../src/theme.js';
-import { Field } from '../../src/components/field.js';
+import { Field, FieldLabel } from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
-import { Select } from '../../src/components/select.js';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../src/components/select.js';
 import { ProjectDialog } from './project-dialog.js';
 import projectDialogSource from './project-dialog.tsx?raw';
 import { ExampleCode, consumerSource } from '../example-code.js';
@@ -19,15 +44,13 @@ function PreferencesPopover() {
   const [saved, setSaved] = useState('');
   return (
     <>
-      <Popover.Root open={open} onOpenChange={setOpen}>
-        <Popover.Trigger render={<Button variant="secondary" />}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger render={<Button variant="secondary" />}>
           Edit display name
-        </Popover.Trigger>
-        <Popover.Content>
-          <Popover.Title>Display name</Popover.Title>
-          <Popover.Description>
-            Shown next to your activity.
-          </Popover.Description>
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverTitle>Display name</PopoverTitle>
+          <PopoverDescription>Shown next to your activity.</PopoverDescription>
           <form
             className="example-form"
             onSubmit={(e) => {
@@ -36,24 +59,24 @@ function PreferencesPopover() {
               setOpen(false);
             }}
           >
-            <Field.Root>
-              <Field.Label>Your name</Field.Label>
+            <Field>
+              <FieldLabel>Your name</FieldLabel>
               <Input
                 required
                 value={name}
                 onValueChange={setName}
                 autoComplete="nickname"
               />
-            </Field.Root>
+            </Field>
             <div className="example-actions">
-              <Popover.Close render={<Button variant="secondary" />}>
+              <PopoverClose render={<Button variant="secondary" />}>
                 Cancel
-              </Popover.Close>
+              </PopoverClose>
               <Button type="submit">Save name</Button>
             </div>
           </form>
-        </Popover.Content>
-      </Popover.Root>
+        </PopoverContent>
+      </Popover>
       <p className="playground-feedback" role="status">
         {saved || 'Edit a value without leaving the page.'}
       </p>
@@ -64,10 +87,10 @@ function PreferencesPopover() {
 function TooltipExample({ delay }: { delay?: number }) {
   const [count, setCount] = useState(0);
   return (
-    <Tooltip.Provider delay={delay}>
+    <TooltipProvider delay={delay}>
       <div className="tooltip-examples">
-        <Tooltip.Root>
-          <Tooltip.Trigger
+        <Tooltip>
+          <TooltipTrigger
             render={
               <Button
                 size="icon"
@@ -78,11 +101,11 @@ function TooltipExample({ delay }: { delay?: number }) {
             }
           >
             <Glyph name="plus" />
-          </Tooltip.Trigger>
-          <Tooltip.Content>Create a new project</Tooltip.Content>
-        </Tooltip.Root>
-        <Tooltip.Root>
-          <Tooltip.Trigger
+          </TooltipTrigger>
+          <TooltipContent>Create a new project</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger
             render={
               <Button
                 size="icon"
@@ -92,26 +115,26 @@ function TooltipExample({ delay }: { delay?: number }) {
             }
           >
             <Glyph name="sliders" />
-          </Tooltip.Trigger>
-          <Tooltip.Content>Manage project settings</Tooltip.Content>
-        </Tooltip.Root>
-        <Tooltip.Root disabled>
-          <Tooltip.Trigger
+          </TooltipTrigger>
+          <TooltipContent>Manage project settings</TooltipContent>
+        </Tooltip>
+        <Tooltip disabled>
+          <TooltipTrigger
             render={
               <Button size="icon" aria-label="Unavailable action" disabled />
             }
           >
             <Glyph name="sliders" />
-          </Tooltip.Trigger>
-          <Tooltip.Content>This action is unavailable</Tooltip.Content>
-        </Tooltip.Root>
+          </TooltipTrigger>
+          <TooltipContent>This action is unavailable</TooltipContent>
+        </Tooltip>
       </div>
       <p className="playground-feedback" role="status">
         {count
           ? `Added ${count} ${count === 1 ? 'project' : 'projects'}.`
           : 'Hover or focus the add button. Press Escape to dismiss.'}
       </p>
-    </Tooltip.Provider>
+    </TooltipProvider>
   );
 }
 
@@ -149,9 +172,9 @@ export function OverlayExamples({
         </div>
         {kind === 'tooltip' && (
           <div className="playground-controls">
-            <Field.Root>
-              <Field.Label>Hover delay</Field.Label>
-              <Select.Root
+            <Field>
+              <FieldLabel>Hover delay</FieldLabel>
+              <Select
                 value={tooltipDelay}
                 onValueChange={(value) => value && setTooltipDelay(value)}
                 items={{
@@ -160,16 +183,16 @@ export function OverlayExamples({
                   '600': '600 ms',
                 }}
               >
-                <Select.Trigger size="sm">
-                  <Select.Value />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Item value="default">Default (300 ms)</Select.Item>
-                  <Select.Item value="0">Instant</Select.Item>
-                  <Select.Item value="600">600 ms</Select.Item>
-                </Select.Content>
-              </Select.Root>
-            </Field.Root>
+                <SelectTrigger size="sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default (300 ms)</SelectItem>
+                  <SelectItem value="0">Instant</SelectItem>
+                  <SelectItem value="600">600 ms</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
           </div>
         )}
         <p className="specimen-note">
@@ -186,10 +209,10 @@ export function OverlayExamples({
         }
         code={
           kind === 'dialog'
-            ? `import { Dialog } from 'unlikely-ui/dialog';\nimport { Button } from 'unlikely-ui/button';\n\n<Dialog.Root>\n  <Dialog.Trigger render={<Button />}>New project</Dialog.Trigger>\n  <Dialog.Content>\n    <Dialog.Title>Create project</Dialog.Title>\n    <Dialog.Description>Add project details.</Dialog.Description>\n    {/* Form content */}\n    <Dialog.Close render={<Button variant="secondary" />}>\n      Cancel\n    </Dialog.Close>\n  </Dialog.Content>\n</Dialog.Root>`
+            ? `import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from 'unlikely-ui/dialog';\nimport { Button } from 'unlikely-ui/button';\n\n<Dialog>\n  <DialogTrigger render={<Button />}>New project</DialogTrigger>\n  <DialogContent>\n    <DialogTitle>Create project</DialogTitle>\n    <DialogDescription>Add project details.</DialogDescription>\n    {/* Form content */}\n    <DialogClose render={<Button variant="secondary" />}>\n      Cancel\n    </DialogClose>\n  </DialogContent>\n</Dialog>`
             : kind === 'popover'
-              ? `import { Popover } from 'unlikely-ui/popover';\nimport { Button } from 'unlikely-ui/button';\n\n<Popover.Root>\n  <Popover.Trigger render={<Button variant="secondary" />}>\n    Edit profile\n  </Popover.Trigger>\n  <Popover.Content positionerProps={{ align: 'start' }}>\n    <Popover.Title>Profile</Popover.Title>\n    <Popover.Description>Edit your display name.</Popover.Description>\n    {/* Profile fields */}\n  </Popover.Content>\n</Popover.Root>`
-              : `import { Tooltip } from 'unlikely-ui/tooltip';\nimport { Button } from 'unlikely-ui/button';\n\n<Tooltip.Provider${tooltipDelay === 'default' ? '' : ` delay={${tooltipDelay}}`}>\n  <Tooltip.Root>\n    <Tooltip.Trigger render={<Button size="icon" aria-label="Add project" />}>\n      <PlusIcon />\n    </Tooltip.Trigger>\n    <Tooltip.Content>Create a new project</Tooltip.Content>\n  </Tooltip.Root>\n</Tooltip.Provider>`
+              ? `import { Popover, PopoverClose, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from 'unlikely-ui/popover';\nimport { Button } from 'unlikely-ui/button';\n\n<Popover>\n  <PopoverTrigger render={<Button variant="secondary" />}>\n    Edit profile\n  </PopoverTrigger>\n  <PopoverContent positionerProps={{ align: 'start' }}>\n    <PopoverTitle>Profile</PopoverTitle>\n    <PopoverDescription>Edit your display name.</PopoverDescription>\n    {/* Profile fields */}\n  </PopoverContent>\n</Popover>`
+              : `import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'unlikely-ui/tooltip';\nimport { Button } from 'unlikely-ui/button';\n\n<TooltipProvider${tooltipDelay === 'default' ? '' : ` delay={${tooltipDelay}}`}>\n  <Tooltip>\n    <TooltipTrigger render={<Button size="icon" aria-label="Add project" />}>\n      <PlusIcon />\n    </TooltipTrigger>\n    <TooltipContent>Create a new project</TooltipContent>\n  </Tooltip>\n</TooltipProvider>`
         }
       />
       {kind !== 'tooltip' && (

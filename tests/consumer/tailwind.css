@@ -2,3 +2,4 @@
 @import 'tailwindcss' source(none);
 @source './app.tsx';
 @import 'unlikely-ui/styles.css';
+@import 'unlikely-ui/tailwind.css';

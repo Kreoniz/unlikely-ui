@@ -10,10 +10,15 @@ export default defineConfig({
     {
       name: 'fixture-ssr',
       transformIndexHtml: (html) =>
-        html.replace(
-          '<!--ssr-->',
-          readFileSync(new URL('./ssr.html', import.meta.url), 'utf8'),
-        ),
+        html
+          .replace(
+            '<!--ssr-->',
+            readFileSync(new URL('./ssr.html', import.meta.url), 'utf8'),
+          )
+          .replace(
+            '</head>',
+            `<meta name="consumer-build" content="${process.env.UI_CONSUMER_BUILD ?? 'manual'}"></head>`,
+          ),
     },
   ],
   resolve: {

@@ -154,8 +154,8 @@ test('button actions, loading names, native link composition and preview control
     .getByRole('checkbox', { name: 'Disabled', exact: true })
     .uncheck();
   await stage.getByRole('combobox', { name: 'Variant' }).click();
-  await page.getByRole('option', { name: 'danger', exact: true }).click();
-  await expect(action).toHaveAttribute('data-variant', 'danger');
+  await page.getByRole('option', { name: 'destructive', exact: true }).click();
+  await expect(action).toHaveAttribute('data-variant', 'destructive');
   await stage.getByRole('radio', { name: 'sm', exact: true }).check();
   await expect(action).toHaveCSS('min-block-size', '32px');
   await page.getByRole('button', { name: 'Switch to dark appearance' }).click();
@@ -281,8 +281,12 @@ test('representative showcase pages and the open popup pass automated accessibil
             : 'Switch to light appearance',
       });
       if (await changeAppearance.count()) await changeAppearance.click();
-      if (route === 'devspace')
+      if (route === 'devspace') {
+        expect((await new AxeBuilder({ page }).analyze()).violations).toEqual(
+          [],
+        );
         await page.getByRole('button', { name: 'Open themed popover' }).click();
+      }
       if (route === 'components/dialog')
         await page
           .getByRole('region', { name: 'Overlay playground' })
@@ -307,6 +311,11 @@ test('representative showcase pages and the open popup pass automated accessibil
       if (route === 'components/toast')
         await page.getByRole('button', { name: 'Show stack' }).click();
       let scan = new AxeBuilder({ page });
+      if (route === 'devspace')
+        // Base UI's aria-hidden Tab-routing sentinels intentionally have tabIndex
+        // 0. Their pointer/keyboard routing is exercised below; keep the complete
+        // closed-page scan and audit all other open-page content without them.
+        scan = scan.exclude('[data-base-ui-focus-guard]');
       if (route === 'components/combobox')
         scan = scan
           .include('.u-combobox-popup')
@@ -323,6 +332,40 @@ test('representative showcase pages and the open popup pass automated accessibil
           .toEqual([]);
       }
     }
+  }
+});
+
+test('themed popover routes Tab around its sentinels after pointer and keyboard opening', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#devspace');
+  const trigger = page.getByRole('button', {
+    name: 'Open themed popover',
+    exact: true,
+  });
+  const popup = page.locator('.experiment-popup');
+  const close = page.getByRole('button', { name: 'Got it', exact: true });
+  for (const method of ['pointer', 'keyboard']) {
+    if (method === 'pointer') await trigger.click();
+    else {
+      await trigger.focus();
+      await page.keyboard.press('Enter');
+    }
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(trigger).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.locator('[data-base-ui-focus-guard]:focus')).toHaveCount(
+      0,
+    );
+    await expect(popup).toBeHidden();
+    await trigger.click();
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(trigger).toBeFocused();
   }
 });
 
@@ -436,6 +479,10 @@ test('dialog form validates, contains focus, supports nested popovers and return
   await details.getByRole('button', { name: 'Close details' }).click();
   await expect(
     dialog.getByRole('button', { name: 'Project visibility' }),
+  ).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(
+    dialog.getByRole('button', { name: 'Close', exact: true }),
   ).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(name).toBeFocused();
@@ -633,7 +680,7 @@ test('opening and closing a popover preserves page scroll and focus', async ({
   expect(await page.evaluate(() => scrollY)).toBe(before);
 });
 
-test('overlays animate on entry and exit, tooltip arrow follows its side, reduced motion disables transitions', async ({
+test('popover has transition duration and dismisses, tooltip arrow follows its side, reduced motion disables transitions', async ({
   page,
 }) => {
   await page.goto('/#components/popover');
@@ -673,9 +720,28 @@ test('overlays animate on entry and exit, tooltip arrow follows its side, reduce
 test('async combobox supports search, empty and error states, clearing, and dialog focus', async ({
   page,
 }) => {
+  const readErrors = await recordRuntimeErrors(page);
   await page.goto('/#components/combobox');
   const stage = page.getByRole('region', { name: 'Async group search' });
   const input = stage.getByRole('combobox', { name: 'Group name' });
+  const options = stage.getByRole('button', {
+    name: 'Show options',
+    exact: true,
+  });
+  await expect(input).toHaveAccessibleName('Group name');
+  await expect(input).toHaveAccessibleDescription(
+    /Search the example directory/,
+  );
+  await expect(options).toHaveAccessibleName('Show options');
+  await options.click();
+  // Base UI hides adjacent actions from the accessibility tree while open.
+  const openTrigger = stage.locator('[data-slot="combobox-trigger"]');
+  await expect(openTrigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(openTrigger).toHaveAttribute(
+    'aria-controls',
+    (await page.getByRole('listbox').getAttribute('id')) ?? '',
+  );
+  await input.press('Escape');
   await input.fill('CS');
   await expect(page.getByRole('option')).toHaveCount(3);
   await input.press('ArrowDown');
@@ -713,6 +779,7 @@ test('async combobox supports search, empty and error states, clearing, and dial
   await expect(nestedInput).toBeFocused();
   await dialog.getByRole('button', { name: 'Close search' }).click();
   await expect(trigger).toBeFocused();
+  expect(await readErrors()).toEqual([]);
 });
 
 test('calendar localizes, navigates with the keyboard, highlights weeks and returns to today', async ({
@@ -909,12 +976,19 @@ test('loading, retry and empty-state examples expose meaningful states and respe
     page.getByRole('status').filter({ hasText: 'Retry requested' }),
   ).toBeVisible();
   await page.goto('/#components/card');
-  await page.getByRole('button', { name: 'Add a group', exact: true }).click();
+  await page.getByRole('button', { name: 'Add a group', exact: true }).focus();
+  await page.keyboard.press('Enter');
   await expect(page.getByText('Group added', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Reset example' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Reset example' }),
+  ).toBeFocused();
+  await page.keyboard.press('Enter');
   await expect(
     page.getByRole('heading', { name: 'No groups selected' }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Add a group', exact: true }),
+  ).toBeFocused();
 });
 
 test('mixed-height toast stacks settle without resize errors when expanded, collapsed and resized', async ({

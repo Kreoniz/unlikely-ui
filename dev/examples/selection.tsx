@@ -1,9 +1,24 @@
 import { useId, useState } from 'react';
 import { Button } from '../../src/components/button.js';
 import { Checkbox } from '../../src/components/checkbox.js';
-import { RadioGroup } from '../../src/components/radio-group.js';
-import { Select } from '../../src/components/select.js';
-import { Field } from '../../src/components/field.js';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../src/components/radio-group.js';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../src/components/select.js';
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldItem,
+  FieldLabel,
+} from '../../src/components/field.js';
 import { CodeBlock } from '../code-block.js';
 
 const languages = [
@@ -41,66 +56,66 @@ export function SelectionExamples({
           }}
         >
           {kind === 'select' && (
-            <Field.Root name="language">
-              <Field.Label>Language</Field.Label>
-              <Select.Root
+            <Field name="language">
+              <FieldLabel>Language</FieldLabel>
+              <Select
                 name="language"
                 value={language}
                 onValueChange={setLanguage}
                 items={languages}
               >
-                <Select.Trigger>
-                  <Select.Value placeholder="Choose a language" />
-                </Select.Trigger>
-                <Select.Content>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a language" />
+                </SelectTrigger>
+                <SelectContent>
                   {languages.map((item) => (
-                    <Select.Item
+                    <SelectItem
                       key={item.value}
                       value={item.value}
                       disabled={item.value === 'fr'}
                     >
                       {item.label}
-                    </Select.Item>
+                    </SelectItem>
                   ))}
-                </Select.Content>
-              </Select.Root>
-              <Field.Description>
+                </SelectContent>
+              </Select>
+              <FieldDescription>
                 Français is unavailable in this example. Type to find an option.
-              </Field.Description>
-            </Field.Root>
+              </FieldDescription>
+            </Field>
           )}
           {kind === 'radio-group' && (
-            <Field.Root name="schedule">
+            <Field name="schedule">
               <div id={scheduleLabel} className="u-field-label">
                 Delivery schedule
               </div>
-              <RadioGroup.Root
+              <RadioGroup
                 aria-labelledby={scheduleLabel}
                 name="schedule"
                 value={schedule}
                 onValueChange={setSchedule}
               >
                 {['daily', 'weekly', 'monthly'].map((value) => (
-                  <Field.Item
+                  <FieldItem
                     key={value}
                     render={<label className="choice-label" />}
                   >
-                    <RadioGroup.Item value={value} />
+                    <RadioGroupItem value={value} />
                     {value}
-                  </Field.Item>
+                  </FieldItem>
                 ))}
-                <Field.Item render={<label className="choice-label" />}>
-                  <RadioGroup.Item value="yearly" disabled />
+                <FieldItem render={<label className="choice-label" />}>
+                  <RadioGroupItem value="yearly" disabled />
                   yearly (unavailable)
-                </Field.Item>
-              </RadioGroup.Root>
-              <Field.Description>
+                </FieldItem>
+              </RadioGroup>
+              <FieldDescription>
                 Arrow keys change the selected option.
-              </Field.Description>
-            </Field.Root>
+              </FieldDescription>
+            </Field>
           )}
           {kind === 'checkbox' && (
-            <Field.Root name="updates">
+            <Field name="updates">
               <label className="choice-label">
                 <Checkbox
                   name="updates"
@@ -109,10 +124,10 @@ export function SelectionExamples({
                 />
                 Email updates
               </label>
-              <Field.Description>
+              <FieldDescription>
                 Optional. Submitted only when selected.
-              </Field.Description>
-            </Field.Root>
+              </FieldDescription>
+            </Field>
           )}
           <div className="example-actions">
             <Button type="submit" variant="secondary">
@@ -143,76 +158,74 @@ export function SelectionExamples({
                 <Checkbox disabled defaultChecked />
                 Disabled checkbox
               </label>
-              <Field.Root invalid>
+              <Field invalid>
                 <label className="choice-label">
                   <Checkbox />
                   Required agreement
                 </label>
-                <Field.Error match>
-                  Accept the agreement to continue.
-                </Field.Error>
-              </Field.Root>
+                <FieldError match>Accept the agreement to continue.</FieldError>
+              </Field>
             </>
           ) : kind === 'radio-group' ? (
             <>
-              <RadioGroup.Root
+              <RadioGroup
                 aria-label="Disabled schedule"
                 defaultValue="weekly"
                 disabled
               >
                 <label className="choice-label">
-                  <RadioGroup.Item value="weekly" />
+                  <RadioGroupItem value="weekly" />
                   Disabled radio
                 </label>
-              </RadioGroup.Root>
-              <Field.Root invalid>
+              </RadioGroup>
+              <Field invalid>
                 <div className="u-field-label">Required schedule</div>
-                <RadioGroup.Root aria-label="Required schedule">
-                  <Field.Item render={<label className="choice-label" />}>
-                    <RadioGroup.Item value="daily" />
+                <RadioGroup aria-label="Required schedule">
+                  <FieldItem render={<label className="choice-label" />}>
+                    <RadioGroupItem value="daily" />
                     daily
-                  </Field.Item>
-                  <Field.Item render={<label className="choice-label" />}>
-                    <RadioGroup.Item value="weekly" />
+                  </FieldItem>
+                  <FieldItem render={<label className="choice-label" />}>
+                    <RadioGroupItem value="weekly" />
                     weekly
-                  </Field.Item>
-                </RadioGroup.Root>
-                <Field.Error match>Choose a schedule.</Field.Error>
-              </Field.Root>
+                  </FieldItem>
+                </RadioGroup>
+                <FieldError match>Choose a schedule.</FieldError>
+              </Field>
             </>
           ) : (
             <>
-              <Field.Root disabled>
-                <Field.Label>Unavailable language</Field.Label>
-                <Select.Root items={languages} defaultValue="en">
-                  <Select.Trigger>
-                    <Select.Value />
-                  </Select.Trigger>
-                  <Select.Content>
+              <Field disabled>
+                <FieldLabel>Unavailable language</FieldLabel>
+                <Select items={languages} defaultValue="en">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
                     {languages.map((i) => (
-                      <Select.Item key={i.value} value={i.value}>
+                      <SelectItem key={i.value} value={i.value}>
                         {i.label}
-                      </Select.Item>
+                      </SelectItem>
                     ))}
-                  </Select.Content>
-                </Select.Root>
-              </Field.Root>
-              <Field.Root invalid>
-                <Field.Label>Required language</Field.Label>
-                <Select.Root items={languages}>
-                  <Select.Trigger>
-                    <Select.Value placeholder="Choose a language" />
-                  </Select.Trigger>
-                  <Select.Content>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field invalid>
+                <FieldLabel>Required language</FieldLabel>
+                <Select items={languages}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a language" />
+                  </SelectTrigger>
+                  <SelectContent>
                     {languages.map((i) => (
-                      <Select.Item key={i.value} value={i.value}>
+                      <SelectItem key={i.value} value={i.value}>
                         {i.label}
-                      </Select.Item>
+                      </SelectItem>
                     ))}
-                  </Select.Content>
-                </Select.Root>
-                <Field.Error match>Choose a language.</Field.Error>
-              </Field.Root>
+                  </SelectContent>
+                </Select>
+                <FieldError match>Choose a language.</FieldError>
+              </Field>
             </>
           )}
         </div>
@@ -223,17 +236,17 @@ export function SelectionExamples({
             <h2>Segmented selection</h2>
           </div>
           <div className="form-stage">
-            <RadioGroup.Root
+            <RadioGroup
               variant="segmented"
               aria-label="Schedule filter"
               defaultValue="free"
             >
-              <RadioGroup.Item value="campus">On campus</RadioGroup.Item>
-              <RadioGroup.Item value="free">Free time</RadioGroup.Item>
-              <RadioGroup.Item value="remote" disabled>
+              <RadioGroupItem value="campus">On campus</RadioGroupItem>
+              <RadioGroupItem value="free">Free time</RadioGroupItem>
+              <RadioGroupItem value="remote" disabled>
                 Remote
-              </RadioGroup.Item>
-            </RadioGroup.Root>
+              </RadioGroupItem>
+            </RadioGroup>
             <p className="specimen-note">
               Uses radio semantics and arrow-key navigation for a choice that
               updates the same view.
@@ -244,9 +257,9 @@ export function SelectionExamples({
       <CodeBlock
         code={
           kind === 'select'
-            ? `<Field.Root name="language">\n  <Field.Label>Language</Field.Label>\n  <Select.Root items={languages}>\n    <Select.Trigger><Select.Value placeholder="Choose a language" /></Select.Trigger>\n    <Select.Content>\n      {languages.map(item => (\n        <Select.Item key={item.value} value={item.value}>{item.label}</Select.Item>\n      ))}\n    </Select.Content>\n  </Select.Root>\n</Field.Root>`
+            ? `<Field name="language">\n  <FieldLabel>Language</FieldLabel>\n  <Select items={languages}>\n    <SelectTrigger><SelectValue placeholder="Choose a language" /></SelectTrigger>\n    <SelectContent>\n      {languages.map(item => (\n        <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>\n      ))}\n    </SelectContent>\n  </Select>\n</Field>`
             : kind === 'radio-group'
-              ? `<RadioGroup.Root aria-label="Schedule" defaultValue="weekly">\n  <label><RadioGroup.Item value="daily" />Daily</label>\n  <label><RadioGroup.Item value="weekly" />Weekly</label>\n</RadioGroup.Root>`
+              ? `<RadioGroup aria-label="Schedule" defaultValue="weekly">\n  <label><RadioGroupItem value="daily" />Daily</label>\n  <label><RadioGroupItem value="weekly" />Weekly</label>\n</RadioGroup>`
               : `<label>\n  <Checkbox checked={checked} onCheckedChange={setChecked} />\n  Email updates\n</label>`
         }
       />

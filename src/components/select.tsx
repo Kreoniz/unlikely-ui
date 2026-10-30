@@ -1,5 +1,7 @@
 'use client';
 
+// Adapted from shadcn/ui (MIT); see THIRD_PARTY_NOTICES.md.
+
 import { Select as BaseSelect } from '@base-ui/react/select';
 import type { ComponentPropsWithRef } from 'react';
 import { Theme } from '../theme.js';
@@ -12,9 +14,13 @@ export interface SelectTriggerProps extends ComponentPropsWithRef<
   /** Visual size of the trigger. */
   size?: TextControlSize;
 }
-export interface SelectContentProps extends ComponentPropsWithRef<
-  typeof BaseSelect.Popup
-> {
+export interface SelectContentProps
+  extends
+    ComponentPropsWithRef<typeof BaseSelect.Popup>,
+    Pick<
+      BaseSelect.Positioner.Props,
+      'align' | 'alignOffset' | 'side' | 'sideOffset' | 'alignItemWithTrigger'
+    > {
   /** Props for the Base UI portal. */
   portalProps?: ComponentPropsWithRef<typeof BaseSelect.Portal>;
   /** Positioning overrides; item alignment is disabled by default to avoid page scrolling. */
@@ -22,14 +28,15 @@ export interface SelectContentProps extends ComponentPropsWithRef<
 }
 export type SelectItemProps = ComponentPropsWithRef<typeof BaseSelect.Item>;
 
-function SelectTrigger({
+export function SelectTrigger({
   className,
-  size = 'md',
+  size = 'default',
   children,
   ...props
 }: SelectTriggerProps) {
   return (
     <BaseSelect.Trigger
+      data-slot="select-trigger"
       {...props}
       data-size={size}
       className={stateClass(
@@ -54,24 +61,33 @@ function SelectTrigger({
     </BaseSelect.Trigger>
   );
 }
-function SelectContent({
+export function SelectContent({
   className,
   children,
   portalProps,
   positionerProps,
+  side = 'bottom',
+  sideOffset = 4,
+  align = 'center',
+  alignOffset = 0,
+  alignItemWithTrigger = false,
   ...props
 }: SelectContentProps) {
   return (
     <BaseSelect.Portal {...portalProps}>
       <Theme className="u-select-theme">
         <BaseSelect.Positioner
+          side={side}
+          align={align}
+          alignOffset={alignOffset}
           positionMethod="fixed"
-          alignItemWithTrigger={false}
-          sideOffset={6}
+          alignItemWithTrigger={alignItemWithTrigger}
+          sideOffset={sideOffset}
           collisionPadding={16}
           {...positionerProps}
         >
           <BaseSelect.Popup
+            data-slot="select-content"
             {...props}
             className={stateClass(
               'u-select-popup ui:bg-u-raised ui:text-u-ink ui:border ui:border-solid ui:border-u-line',
@@ -87,9 +103,10 @@ function SelectContent({
     </BaseSelect.Portal>
   );
 }
-function SelectItem({ className, children, ...props }: SelectItemProps) {
+export function SelectItem({ className, children, ...props }: SelectItemProps) {
   return (
     <BaseSelect.Item
+      data-slot="select-item"
       {...props}
       className={stateClass('u-select-item', className)}
     >
@@ -111,7 +128,68 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
   );
 }
 
-export const Select = {
+function SelectRoot<Value, Multiple extends boolean | undefined = false>(
+  props: BaseSelect.Root.Props<Value, Multiple>,
+) {
+  return <BaseSelect.Root {...props} />;
+}
+export const SelectValue = BaseSelect.Value;
+export const SelectGroup = BaseSelect.Group;
+export function SelectLabel({
+  className,
+  ...props
+}: BaseSelect.GroupLabel.Props) {
+  return (
+    <BaseSelect.GroupLabel
+      {...props}
+      data-slot="select-label"
+      className={stateClass('u-menu-label', className)}
+    />
+  );
+}
+export function SelectSeparator({
+  className,
+  ...props
+}: BaseSelect.Separator.Props) {
+  return (
+    <BaseSelect.Separator
+      {...props}
+      data-slot="select-separator"
+      className={stateClass('u-menu-separator', className)}
+    />
+  );
+}
+export function SelectScrollUpButton({
+  className,
+  children,
+  ...props
+}: ComponentPropsWithRef<typeof BaseSelect.ScrollUpArrow>) {
+  return (
+    <BaseSelect.ScrollUpArrow
+      {...props}
+      data-slot="select-scroll-up-button"
+      className={stateClass('u-select-scroll-arrow', className)}
+    >
+      {children ?? '⌃'}
+    </BaseSelect.ScrollUpArrow>
+  );
+}
+export function SelectScrollDownButton({
+  className,
+  children,
+  ...props
+}: ComponentPropsWithRef<typeof BaseSelect.ScrollDownArrow>) {
+  return (
+    <BaseSelect.ScrollDownArrow
+      {...props}
+      data-slot="select-scroll-down-button"
+      className={stateClass('u-select-scroll-arrow', className)}
+    >
+      {children ?? '⌄'}
+    </BaseSelect.ScrollDownArrow>
+  );
+}
+export const Select = Object.assign(SelectRoot, {
   Root: BaseSelect.Root,
   Trigger: SelectTrigger,
   Value: BaseSelect.Value,
@@ -119,4 +197,4 @@ export const Select = {
   Item: SelectItem,
   Group: BaseSelect.Group,
   GroupLabel: BaseSelect.GroupLabel,
-};
+});

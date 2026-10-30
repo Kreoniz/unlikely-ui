@@ -1,0 +1,67 @@
+.signature-spatial-studies {
+  display: grid;
+  gap: 2rem;
+}
+.signature-spatial-study {
+  min-width: 0;
+  color: var(--u-ink);
+  background: var(--u-surface);
+  border: 1px solid var(--u-line-soft);
+}
+.signature-spatial-body {
+  padding: clamp(20px, 3vw, 40px);
+}
+.signature-spatial-study header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+}
+.signature-spatial-study header span {
+  color: var(--u-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+.signature-spatial-scene-header h3 {
+  margin: 1rem 0;
+  font: 650 clamp(30px, 4vw, 46px)/1.05 var(--u-font-display);
+  letter-spacing: -0.04em;
+}
+.signature-spatial-study p {
+  line-height: 1.5;
+}
+.signature-spatial-study input[type='range'] {
+  min-width: 0;
+  width: 100%;
+  accent-color: var(--u-accent-text);
+  min-height: 44px;
+}
+.signature-spatial-study input[type='number'] {
+  box-sizing: border-box;
+  width: 5.5rem;
+  min-height: 44px;
+  border: 1px solid var(--u-line);
+  border-radius: 6px;
+  padding: 0.5rem;
+  background: var(--u-surface);
+  color: var(--u-ink);
+  font: inherit;
+}
+.signature-spatial-study input:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 2px;
+}
+.signature-spatial-study input:disabled {
+  opacity: var(--u-opacity-disabled);
+}
+.signature-spatial-switch {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 1rem;
+  min-height: 44px;
+}
+.signature-spatial-switch input {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--u-accent-text);
+}

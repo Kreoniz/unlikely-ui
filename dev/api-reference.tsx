@@ -1,12 +1,39 @@
 import { useEffect, useState } from 'react';
-import type { ApiDocument, ApiProperty } from './api-types.js';
+import type { ReactNode } from 'react';
+import { expandApi } from './api-types.js';
+import type {
+  ApiDocument,
+  ApiProperty,
+  StoredApiDocument,
+} from './api-types.js';
 import { Select } from '../src/components/select.js';
 import { Input } from '../src/components/input.js';
 import { CodeBlock } from './code-block.js';
 
-const loaders = import.meta.glob<ApiDocument>('./generated/api/*.json', {
+const loaders = import.meta.glob<StoredApiDocument>('./generated/api/*.json', {
   import: 'default',
 });
+
+function LazyDetails({
+  summary,
+  children,
+  className = 'api-declaration',
+}: {
+  summary: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <details
+      className={className}
+      onToggle={(event) => setOpen(event.currentTarget.open)}
+    >
+      <summary>{summary}</summary>
+      {open && children}
+    </details>
+  );
+}
 
 function PropertyTable({
   properties,
@@ -65,8 +92,10 @@ function PropertyTable({
               <td role="cell" data-label="Type / description">
                 <code className="api-property-type">{property.type}</code>
                 {property.expandedType && (
-                  <details className="api-expanded-type">
-                    <summary>Compiler expansion</summary>
+                  <LazyDetails
+                    className="api-expanded-type"
+                    summary="Compiler expansion"
+                  >
                     <p>
                       Upstream internal names may appear here. Use the public
                       type above in application code.
@@ -75,7 +104,7 @@ function PropertyTable({
                       language="typescript"
                       code={property.expandedType}
                     />
-                  </details>
+                  </LazyDetails>
                 )}
                 {property.description && <p>{property.description}</p>}
                 <small>{property.origin}</small>
@@ -151,7 +180,7 @@ function Reference({
       <div className="api-intro">
         <h2>API reference</h2>
         <CodeBlock
-          code={`import { ${document.name} } from '${document.importPath}';`}
+          code={`import { ${part.name.split('.')[0]} } from '${document.importPath}';`}
         />
         <details className="reference-method">
           <summary>About this reference</summary>
@@ -183,11 +212,27 @@ function Reference({
               <Select.Value />
             </Select.Trigger>
             <Select.Content>
-              {document.parts.map((part) => (
-                <Select.Item key={part.name} value={part.name}>
-                  {part.name}
-                </Select.Item>
-              ))}
+              {document.parts
+                .filter((part) => !part.compatibility)
+                .map((part) => (
+                  <Select.Item key={part.name} value={part.name}>
+                    {part.name}
+                  </Select.Item>
+                ))}
+              {document.parts.some((part) => part.compatibility) && (
+                <Select.Group>
+                  <Select.GroupLabel className="u-menu-label">
+                    Compatibility and explicit composition
+                  </Select.GroupLabel>
+                  {document.parts
+                    .filter((part) => part.compatibility)
+                    .map((part) => (
+                      <Select.Item key={part.name} value={part.name}>
+                        {part.name}
+                      </Select.Item>
+                    ))}
+                </Select.Group>
+              )}
             </Select.Content>
           </Select.Root>
         </div>
@@ -205,20 +250,28 @@ function Reference({
         {part.description && (
           <p className="api-description">{part.description}</p>
         )}
+        {part.compatibility && (
+          <p className="api-description">
+            Compound compatibility or explicit composition surface. Prefer the
+            named parts for new code; bare inputs and explicit roots retain
+            their documented differences.
+          </p>
+        )}
         <div className="api-source">
           <code>
             {part.source.startsWith('node_modules/')
               ? 'Inherited library declaration'
               : part.source}
           </code>
-          {part.props.some(
-            (prop) =>
-              prop.origin === 'Base UI' || prop.origin === 'React DayPicker',
-          ) && (
-            <a href={document.upstream} target="_blank" rel="noreferrer">
-              Upstream reference ↗
-            </a>
-          )}
+          {document.upstream &&
+            part.props.some(
+              (prop) =>
+                prop.origin === 'Base UI' || prop.origin === 'React DayPicker',
+            ) && (
+              <a href={document.upstream} target="_blank" rel="noreferrer">
+                Upstream reference ↗
+              </a>
+            )}
         </div>
         {part.kind === 'function' && (
           <CodeBlock
@@ -298,13 +351,12 @@ function Reference({
           </>
         )}
         {part.kind === 'component' && (
-          <details className="api-declaration">
-            <summary>Full component signature</summary>
+          <LazyDetails summary="Full component signature">
             <CodeBlock
               language="typescript"
               code={part.signatures.join('\n\n')}
             />
-          </details>
+          </LazyDetails>
         )}
       </section>
       {!!document.types.length && (
@@ -313,8 +365,7 @@ function Reference({
             <h3>Exported types</h3>
           </div>
           {document.types.map((type) => (
-            <details className="api-declaration" key={type.name}>
-              <summary>{type.name}</summary>
+            <LazyDetails key={type.name} summary={type.name}>
               {type.description && (
                 <p className="api-description">{type.description}</p>
               )}
@@ -325,7 +376,7 @@ function Reference({
                   label={`${type.name} properties`}
                 />
               )}
-            </details>
+            </LazyDetails>
           ))}
         </section>
       )}
@@ -350,15 +401,14 @@ function Reference({
         aria-label="Module declarations"
         id="module-declarations"
       >
-        <details className="api-declaration">
-          <summary>Full module declarations</summary>
+        <LazyDetails summary="Full module declarations">
           <p className="api-description">
             Emitted by TypeScript, including required imports and helper
             declarations. Relative imports are resolved from this component's
             installed declaration file.
           </p>
           <CodeBlock language="typescript" code={document.declaration} />
-        </details>
+        </LazyDetails>
       </section>
     </section>
   );
@@ -381,7 +431,7 @@ export function ApiReference({
     if (loader)
       void loader()
         .then((value) => {
-          if (current) setDocument(value);
+          if (current) setDocument(expandApi(value));
         })
         .catch(() => {
           if (current) setFailed(true);

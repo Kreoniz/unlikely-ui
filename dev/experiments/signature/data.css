@@ -1,0 +1,399 @@
+.signature-data-studies {
+  display: grid;
+  gap: 2rem;
+}
+.signature-data-study {
+  min-inline-size: 0;
+}
+.signature-data-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  padding: clamp(20px, 3vw, 40px);
+  background: var(--u-well);
+}
+.signature-data-receipt-layout {
+  grid-template-areas: 'device inputs' 'device output';
+  row-gap: 0;
+  align-items: start;
+}
+.signature-data-receipt-inputs {
+  grid-area: inputs;
+}
+.signature-data-receipt-output {
+  grid-area: output;
+}
+.signature-data-device-scene {
+  grid-area: device;
+  display: grid;
+  align-self: start;
+  place-items: start center;
+  min-inline-size: 0;
+  padding-block: 18px 8px;
+}
+.signature-data-receipt {
+  --receipt-shell: var(--u-physical-casing);
+  --receipt-plate: var(--u-physical-plate);
+  --receipt-paper: var(--u-physical-inset);
+  position: relative;
+  isolation: isolate;
+  inline-size: min(100%, 250px);
+  min-block-size: 300px;
+  box-sizing: border-box;
+  padding-block-start: 60px;
+  color: var(--u-physical-ink);
+}
+.signature-data-printer {
+  position: absolute;
+  inset: 0 0 auto;
+  block-size: 202px;
+  border: 1px solid color-mix(in srgb, var(--receipt-plate), black 65%);
+  border-radius: 28px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--receipt-plate), var(--receipt-paper) 27%),
+    color-mix(in srgb, var(--receipt-plate), var(--receipt-paper) 12%) 55%,
+    var(--receipt-plate)
+  );
+  box-shadow:
+    inset 0 2px 1px color-mix(in srgb, var(--receipt-paper), transparent 50%),
+    inset 0 -4px 3px color-mix(in srgb, var(--receipt-shell), black 12%),
+    0 5px 0 var(--receipt-shell),
+    0 13px 16px -6px color-mix(in srgb, var(--receipt-shell), transparent 55%);
+}
+.signature-data-printer::before {
+  content: '';
+  position: absolute;
+  inset: 6px 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--receipt-paper), transparent 82%);
+  border-radius: 22px;
+  box-shadow: 0 1px 1px color-mix(in srgb, black, transparent 70%);
+}
+.signature-data-printer-rim {
+  position: absolute;
+  inset: 47px 18px auto;
+  block-size: 35px;
+  border: 1px solid color-mix(in srgb, var(--receipt-paper), transparent 72%);
+  border-radius: 18px;
+  background: var(--receipt-shell);
+  box-shadow:
+    inset 0 2px 3px black,
+    0 2px 0 color-mix(in srgb, var(--receipt-paper), transparent 70%);
+}
+.signature-data-printer-rim::after {
+  content: '';
+  position: absolute;
+  inset: 9px 9px 10px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--receipt-shell), black 70%);
+  box-shadow:
+    inset 0 2px 3px black,
+    0 1px 1px color-mix(in srgb, var(--receipt-paper), transparent 75%);
+}
+.signature-data-printer-light {
+  position: absolute;
+  inset: auto 23px 24px auto;
+  inline-size: 18px;
+  block-size: 18px;
+  border: 2px solid var(--receipt-shell);
+  border-radius: 50%;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--receipt-paper), var(--receipt-plate) 35%),
+    color-mix(in srgb, var(--receipt-paper), var(--receipt-plate) 65%)
+  );
+  box-shadow: 0 1px 1px
+    color-mix(in srgb, var(--receipt-paper), transparent 60%);
+}
+.signature-data-receipt[data-issued] .signature-data-printer-light {
+  background: var(--u-physical-indicator);
+  box-shadow:
+    inset 0 1px 2px color-mix(in srgb, var(--receipt-paper), transparent 30%),
+    0 0 5px color-mix(in srgb, var(--u-physical-indicator), transparent 60%);
+}
+.signature-data-output {
+  position: relative;
+  margin-inline: 34px;
+  overflow: visible;
+  clip-path: inset(0 -32px -120px);
+}
+.signature-data-slip {
+  position: relative;
+  padding: 25px 15px 20px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--receipt-paper), var(--receipt-shell) 35%),
+    var(--receipt-paper) 14px,
+    color-mix(in srgb, var(--receipt-paper), white 6%) 65%,
+    color-mix(in srgb, var(--receipt-paper), var(--receipt-plate) 4%)
+  );
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 5px),
+    96% 100%,
+    92% calc(100% - 5px),
+    88% 100%,
+    84% calc(100% - 5px),
+    80% 100%,
+    76% calc(100% - 5px),
+    72% 100%,
+    68% calc(100% - 5px),
+    64% 100%,
+    60% calc(100% - 5px),
+    56% 100%,
+    52% calc(100% - 5px),
+    48% 100%,
+    44% calc(100% - 5px),
+    40% 100%,
+    36% calc(100% - 5px),
+    32% 100%,
+    28% calc(100% - 5px),
+    24% 100%,
+    20% calc(100% - 5px),
+    16% 100%,
+    12% calc(100% - 5px),
+    8% 100%,
+    4% calc(100% - 5px),
+    0 100%
+  );
+  transform: translateY(-100%);
+  transform-origin: top center;
+  font: 12px/1.5 var(--u-font-mono);
+}
+.signature-data-receipt-header {
+  text-align: center;
+}
+.signature-data-receipt-check {
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  color: var(--u-physical-plate);
+  background: var(--u-physical-indicator);
+}
+.signature-data-receipt-check svg {
+  inline-size: 27px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.signature-data-receipt-header h3 {
+  margin: 0;
+  font: 650 18px/1.25 var(--u-font);
+  letter-spacing: -0.04em;
+}
+.signature-data-receipt-header p {
+  margin: 4px 0 16px;
+  font: 16px/1.5 var(--u-font);
+}
+.signature-data-rows {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-block: 12px;
+  border-block-start: 1px dashed
+    color-mix(in srgb, currentColor, transparent 65%);
+}
+.signature-data-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  gap: 8px;
+  align-items: baseline;
+}
+.signature-data-row dt,
+.signature-data-row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.signature-data-row dd {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.signature-data-total {
+  font-weight: 700;
+}
+.signature-data-receipt-footer {
+  padding-block-start: 10px;
+  border-block-start: 1px dashed
+    color-mix(in srgb, currentColor, transparent 65%);
+  overflow-wrap: anywhere;
+  text-align: center;
+  font-size: 10px;
+}
+.signature-data-side {
+  min-inline-size: 0;
+}
+.signature-data-side h3,
+.signature-data-note-picker legend {
+  margin: 0 0 10px;
+  font: 650 24px/1.15 var(--u-font-display);
+  letter-spacing: -0.035em;
+}
+.signature-data-side p {
+  margin: 0 0 16px;
+  color: var(--u-muted);
+}
+.signature-data-note-picker {
+  min-inline-size: 0;
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+}
+.signature-data-note-picker label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-block-size: 44px;
+  font-size: 14px;
+}
+.signature-data-note-picker input {
+  inline-size: 18px;
+  block-size: 18px;
+  margin: 0;
+  accent-color: var(--u-ink);
+}
+.signature-data-note-picker input:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 3px;
+}
+.signature-data-export-actions,
+.signature-data-counter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px;
+}
+.signature-data-export-actions {
+  min-block-size: 44px;
+}
+.signature-data-export-actions > a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 10px;
+  color: var(--u-ink);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.signature-data-export-actions > a:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.signature-data-side .signature-data-operation-status {
+  min-block-size: 3em;
+  margin-block: 14px 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.signature-data-operation-status[data-error] {
+  color: var(--u-danger);
+}
+.signature-data-counter-layout {
+  grid-template-columns: minmax(260px, 1.2fr) minmax(0, 1fr);
+}
+.signature-data-counter-scene {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  min-inline-size: 0;
+  padding-block: 20px;
+}
+.signature-data-counter-label,
+.signature-data-counter-caption {
+  color: var(--u-muted);
+  font: 11px/1.25 var(--u-font-mono);
+  letter-spacing: 0.14em;
+}
+.signature-data-count-field {
+  display: grid;
+  gap: 8px;
+  margin-block-start: 20px;
+  font-size: 13px;
+}
+.signature-data-count-field input {
+  box-sizing: border-box;
+  inline-size: min(100%, 10rem);
+  min-block-size: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--u-line);
+  border-radius: 6px;
+  color: var(--u-ink);
+  background: var(--u-surface);
+  font: 16px/1.5 var(--u-font-mono);
+  direction: ltr;
+}
+.signature-data-count-field input:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .signature-data-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .signature-data-receipt-layout {
+    grid-template-areas: 'inputs' 'device' 'output';
+    row-gap: 8px;
+  }
+  .signature-data-receipt-inputs .signature-data-note-picker {
+    margin-block-end: 6px;
+  }
+  .signature-data-receipt-inputs .signature-data-note-picker legend {
+    font-size: 18px;
+    line-height: 22px;
+    margin-block-end: 4px;
+  }
+  .signature-data-receipt-inputs .signature-data-note-picker p {
+    font-size: 14px;
+    line-height: 20px;
+    margin-block-end: 4px;
+  }
+  .signature-data-device-scene {
+    min-block-size: 380px;
+    padding-block-start: 0;
+  }
+}
+@media (forced-colors: active) {
+  .signature-data-printer,
+  .signature-data-printer-rim,
+  .signature-data-slip {
+    border: 1px solid CanvasText;
+  }
+  .signature-data-receipt-check {
+    border: 1px solid CanvasText;
+  }
+}
+
+.signature-data-timing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+  margin-block: 20px;
+  font-size: 12px;
+  color: var(--u-muted);
+}
+.signature-data-timing > span {
+  grid-column: 1 / -1;
+}
+.signature-data-timing input {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--u-accent-text);
+}
+.signature-data-timing output {
+  font-variant-numeric: tabular-nums;
+}
+.signature-data-timing input:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 3px;
+}

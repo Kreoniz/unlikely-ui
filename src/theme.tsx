@@ -13,6 +13,7 @@ interface ThemeSettings {
   appearance: Appearance;
   tokens: ThemeTokens;
   dir?: 'ltr' | 'rtl';
+  lang?: string;
 }
 
 const ThemeContext = createContext<ThemeSettings>({
@@ -20,13 +21,18 @@ const ThemeContext = createContext<ThemeSettings>({
   tokens: {},
 });
 
-export interface ThemeProps extends Omit<ComponentPropsWithRef<'div'>, 'dir'> {
+export interface ThemeProps extends Omit<
+  ComponentPropsWithRef<'div'>,
+  'dir' | 'lang'
+> {
   /** Scoped appearance; inherits the parent, with light at the outermost scope. */
   appearance?: Appearance;
   /** Semantic CSS token overrides, merged with the parent and inherited by portals. */
   tokens?: ThemeTokens;
   /** Text direction, also forwarded to Base UI and portaled descendants. */
   dir?: 'ltr' | 'rtl';
+  /** HTML language tag, inherited by nested themes and portals; does not change the document locale. */
+  lang?: string;
 }
 
 /** A local theme boundary. An empty Theme inside a portal inherits its opener's settings. */
@@ -34,6 +40,7 @@ export function Theme({
   appearance,
   tokens,
   dir,
+  lang,
   className,
   style,
   children,
@@ -44,9 +51,10 @@ export function Theme({
     () => ({
       appearance: appearance ?? parent.appearance,
       dir: dir ?? parent.dir,
+      lang: lang ?? parent.lang,
       tokens: { ...parent.tokens, ...tokens },
     }),
-    [appearance, dir, tokens, parent],
+    [appearance, dir, lang, tokens, parent],
   );
 
   const scope = (
@@ -55,6 +63,7 @@ export function Theme({
       className={['u-theme', className].filter(Boolean).join(' ')}
       data-appearance={value.appearance}
       dir={value.dir}
+      lang={value.lang}
       style={{ ...value.tokens, ...style } as CSSProperties}
     >
       {children}

@@ -443,6 +443,24 @@
       "kind": "physical button label"
     },
     {
+      "appearance": "light",
+      "foreground": "--u-physical-ink",
+      "background": "--u-physical-inset",
+      "ratio": 16.14,
+      "minimum": 4.5,
+      "pass": true,
+      "kind": "physical inset label"
+    },
+    {
+      "appearance": "light",
+      "foreground": "--u-physical-ink",
+      "background": "--u-physical-indicator",
+      "ratio": 12.78,
+      "minimum": 4.5,
+      "pass": true,
+      "kind": "physical mint label"
+    },
+    {
       "appearance": "dark",
       "foreground": "--u-ink",
       "background": "--u-canvas",
@@ -882,6 +900,24 @@
       "minimum": 4.5,
       "pass": true,
       "kind": "physical button label"
+    },
+    {
+      "appearance": "dark",
+      "foreground": "--u-physical-ink",
+      "background": "--u-physical-inset",
+      "ratio": 16.14,
+      "minimum": 4.5,
+      "pass": true,
+      "kind": "physical inset label"
+    },
+    {
+      "appearance": "dark",
+      "foreground": "--u-physical-ink",
+      "background": "--u-physical-indicator",
+      "ratio": 12.78,
+      "minimum": 4.5,
+      "pass": true,
+      "kind": "physical mint label"
     }
   ]
 }

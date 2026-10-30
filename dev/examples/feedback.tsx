@@ -4,11 +4,24 @@ import { ExampleCode, consumerSource } from '../example-code.js';
 import { useState } from 'react';
 import { Toast } from '../../src/components/toast.js';
 import { Button } from '../../src/components/button.js';
-import { Alert } from '../../src/components/alert.js';
+import {
+  Alert,
+  AlertActions,
+  AlertDescription,
+  AlertTitle,
+} from '../../src/components/alert.js';
 import { Badge } from '../../src/components/badge.js';
 import { Skeleton } from '../../src/components/skeleton.js';
 import { Spinner } from '../../src/components/spinner.js';
-import { Card } from '../../src/components/card.js';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardAction,
+} from '../../src/components/card.js';
 import { CheckControl } from '../controls.js';
 import { CodeBlock } from '../code-block.js';
 import type { StatusTone } from '../../src/components/badge.js';
@@ -163,37 +176,37 @@ export function AlertExamples() {
   return (
     <>
       <div className="example-form">
-        <Alert.Root tone="warning">
-          <Alert.Title>Working offline</Alert.Title>
-          <Alert.Description>
+        <Alert tone="warning">
+          <AlertTitle>Working offline</AlertTitle>
+          <AlertDescription>
             Saved schedules are available. They may differ from the current
             timetable.
-          </Alert.Description>
-        </Alert.Root>
-        <Alert.Root tone="danger">
-          <Alert.Title>
+          </AlertDescription>
+        </Alert>
+        <Alert tone="danger">
+          <AlertTitle>
             {retry ? 'Retry requested' : 'Some schedules are unavailable'}
-          </Alert.Title>
-          <Alert.Description>
+          </AlertTitle>
+          <AlertDescription>
             {retry
               ? 'The example retry action was triggered.'
               : 'Try loading the missing schedules again.'}
-          </Alert.Description>
-          <Alert.Actions>
+          </AlertDescription>
+          <AlertActions>
             <Button variant="secondary" onClick={() => setRetry(true)}>
               Retry
             </Button>
-          </Alert.Actions>
-        </Alert.Root>
-        <Alert.Root tone="info">
-          <Alert.Title>Application update available</Alert.Title>
-          <Alert.Description>
+          </AlertActions>
+        </Alert>
+        <Alert tone="info">
+          <AlertTitle>Application update available</AlertTitle>
+          <AlertDescription>
             Reload when you are ready to use the new version.
-          </Alert.Description>
-        </Alert.Root>
+          </AlertDescription>
+        </Alert>
       </div>
       <CodeBlock
-        code={`<Alert.Root tone="warning">\n  <Alert.Title>Working offline</Alert.Title>\n  <Alert.Description>Saved schedules are available.</Alert.Description>\n</Alert.Root>`}
+        code={`<Alert tone="warning">\n  <AlertTitle>Working offline</AlertTitle>\n  <AlertDescription>Saved schedules are available.</AlertDescription>\n</Alert>`}
       />
     </>
   );
@@ -224,12 +237,12 @@ export function LoadingExamples({ spinner = false }: { spinner?: boolean }) {
               )}
             </div>
           ) : (
-            <Card.Root
+            <Card
               role="region"
               aria-busy={loading}
               aria-label="Schedule preview"
             >
-              <Card.Content>
+              <CardContent>
                 {loading ? (
                   <div className="skeleton-example">
                     <Skeleton style={{ width: '55%', height: 20 }} />
@@ -242,8 +255,8 @@ export function LoadingExamples({ spinner = false }: { spinner?: boolean }) {
                     <p>Three classes are available today.</p>
                   </>
                 )}
-              </Card.Content>
-            </Card.Root>
+              </CardContent>
+            </Card>
           )}
           <p role="status" className="playground-feedback">
             {loading ? 'Loading the example…' : 'The example is ready.'}
@@ -263,28 +276,37 @@ export function LoadingExamples({ spinner = false }: { spinner?: boolean }) {
 
 export function CardExamples() {
   const [joined, setJoined] = useState(false);
+  const [compact, setCompact] = useState(false);
   return (
     <>
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Study group</Card.Title>
-          <Card.Description>
+      <CheckControl checked={compact} onCheckedChange={setCompact}>
+        Compact panel
+      </CheckControl>
+      <Card size={compact ? 'sm' : 'default'}>
+        <CardHeader>
+          <CardTitle>Study group</CardTitle>
+          <CardDescription>
             A composition of presentation and action components.
-          </Card.Description>
-        </Card.Header>
-        <Card.Content>
+          </CardDescription>
+          <CardAction>
+            <Button variant="ghost" size="sm" onClick={() => setJoined(false)}>
+              Reset
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
           <Badge category={2}>Group B</Badge>
           <p>Wednesday · 14:00–16:00</p>
-        </Card.Content>
-        <Card.Footer>
+        </CardContent>
+        <CardFooter>
           <Button onClick={() => setJoined(!joined)}>
             {joined ? 'Leave group' : 'Join group'}
           </Button>
           <span role="status">{joined ? 'Joined the example group.' : ''}</span>
-        </Card.Footer>
-      </Card.Root>
+        </CardFooter>
+      </Card>
       <CodeBlock
-        code={`<Card.Root>\n  <Card.Header>\n    <Card.Title>Study group</Card.Title>\n    <Card.Description>Meeting details</Card.Description>\n  </Card.Header>\n  <Card.Content>Wednesday · 14:00–16:00</Card.Content>\n  <Card.Footer><Button>Join group</Button></Card.Footer>\n</Card.Root>`}
+        code={`<Card>\n  <CardHeader>\n    <CardTitle>Study group</CardTitle>\n    <CardDescription>Meeting details</CardDescription>\n  </CardHeader>\n  <CardContent>Wednesday · 14:00–16:00</CardContent>\n  <CardFooter><Button>Join group</Button></CardFooter>\n</Card>`}
       />
     </>
   );
@@ -307,7 +329,7 @@ export function EmptyStateExample() {
       </section>
       <ExampleCode
         complete={consumerSource(emptyStateSource)}
-        code={`import { Card } from 'unlikely-ui/card';\nimport { Button } from 'unlikely-ui/button';\n\n// Supply your application's action. See Complete example for a runnable flow.\n<Card.Root>\n  <Card.Content>\n    <h2>No groups selected</h2>\n    <p>Add a group to view its schedule.</p>\n    <Button onClick={openGroupPicker}>Add a group</Button>\n  </Card.Content>\n</Card.Root>`}
+        code={`import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'unlikely-ui/card';\nimport { Button } from 'unlikely-ui/button';\n\n// Supply your application's action. See Complete example for a runnable flow.\n<Card>\n  <CardContent>\n    <h2>No groups selected</h2>\n    <p>Add a group to view its schedule.</p>\n    <Button onClick={openGroupPicker}>Add a group</Button>\n  </CardContent>\n</Card>`}
       />
     </>
   );

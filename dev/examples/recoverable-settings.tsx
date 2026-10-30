@@ -1,7 +1,12 @@
 import { useRef, useState } from 'react';
-import { Alert } from '../../src/components/alert.js';
+import {
+  Alert,
+  AlertActions,
+  AlertDescription,
+  AlertTitle,
+} from '../../src/components/alert.js';
 import { Button } from '../../src/components/button.js';
-import { Field } from '../../src/components/field.js';
+import { Field, FieldError, FieldLabel } from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
 import { Textarea } from '../../src/components/textarea.js';
 
@@ -25,8 +30,6 @@ export function RecoverableSettings() {
       nameRef.current?.focus();
       return;
     }
-    // Retry disappears during the request; keep keyboard focus on the busy action.
-    saveRef.current?.focus();
     const draft = { name: name.trim(), notes };
     inFlight.current = true;
     setPending(true);
@@ -45,11 +48,11 @@ export function RecoverableSettings() {
     }
     inFlight.current = false;
     setPending(false);
-    requestAnimationFrame(() => saveRef.current?.focus());
   }
   return (
     <form
       className="example-form"
+      style={{ display: 'grid', gap: 'var(--u-space-5)' }}
       aria-label="Recoverable settings"
       noValidate
       onSubmit={(event) => {
@@ -57,46 +60,64 @@ export function RecoverableSettings() {
         void save();
       }}
     >
-      <Field.Root invalid={invalid && !name.trim()}>
-        <Field.Label>Workspace name</Field.Label>
+      <Field invalid={invalid && !name.trim()}>
+        <FieldLabel>Workspace name</FieldLabel>
         <Input
           ref={nameRef}
           value={name}
-          onValueChange={setName}
+          onValueChange={(value) => {
+            setName(value);
+            setMessage('');
+          }}
           readOnly={pending}
           required
         />
-        <Field.Error match={invalid && !name.trim()}>
+        <FieldError match={invalid && !name.trim()}>
           Enter a workspace name.
-        </Field.Error>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>Workspace notes</Field.Label>
+        </FieldError>
+      </Field>
+      <Field>
+        <FieldLabel>Workspace notes</FieldLabel>
         <Textarea
           value={notes}
-          onValueChange={setNotes}
+          onValueChange={(value) => {
+            setNotes(value);
+            setMessage('');
+          }}
           readOnly={pending}
           rows={3}
         />
-      </Field.Root>
+      </Field>
       {failed && (
-        <Alert.Root tone="danger" role="alert">
-          <Alert.Title>Your changes haven’t been saved</Alert.Title>
-          <Alert.Description>
+        <Alert tone="danger" role="alert">
+          <AlertTitle>Your changes haven’t been saved</AlertTitle>
+          <AlertDescription>
             The example server didn’t respond. Your draft is still here.
-          </Alert.Description>
-          <Alert.Actions>
+          </AlertDescription>
+          <AlertActions>
             <Button
               type="button"
               variant="secondary"
-              onClick={() => void save()}
+              onClick={() => {
+                // Retry disappears; establish its persistent fallback before starting.
+                saveRef.current?.focus();
+                void save();
+              }}
             >
               Try again
             </Button>
-          </Alert.Actions>
-        </Alert.Root>
+          </AlertActions>
+        </Alert>
       )}
-      <div className="example-actions">
+      <div
+        className="example-actions"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-end',
+          gap: 'var(--u-space-2)',
+        }}
+      >
         <Button
           type="button"
           variant="secondary"
@@ -114,7 +135,7 @@ export function RecoverableSettings() {
           Save changes
         </Button>
       </div>
-      <p role="status">
+      <p role="status" style={{ overflowWrap: 'anywhere' }}>
         {message || (dirty ? 'Unsaved changes.' : 'No unsaved changes.')}
       </p>
     </form>

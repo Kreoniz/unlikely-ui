@@ -43,10 +43,13 @@ export type TooltipTriggerProps<Payload = unknown> = Omit<
    */
   closeDelay?: number;
 };
-export interface TooltipContentProps extends Omit<
-  ComponentPropsWithRef<typeof BaseTooltip.Popup>,
-  'id'
-> {
+export interface TooltipContentProps
+  extends
+    Omit<ComponentPropsWithRef<typeof BaseTooltip.Popup>, 'id'>,
+    Pick<
+      BaseTooltip.Positioner.Props,
+      'side' | 'sideOffset' | 'align' | 'alignOffset'
+    > {
   /** Props for the Base UI portal. */
   portalProps?: ComponentPropsWithRef<typeof BaseTooltip.Portal>;
   /** Positioning overrides for the popup and its directional arrow. */
@@ -60,7 +63,7 @@ const TooltipContext = createContext<{
 } | null>(null);
 const TooltipTimingContext = createContext({ delay: 300, closeDelay: 0 });
 
-function TooltipProvider({
+export function TooltipProvider({
   delay = 300,
   closeDelay = 0,
   children,
@@ -106,7 +109,7 @@ function TooltipRoot<Payload>({
   );
 }
 
-function TooltipTrigger<Payload>({
+export function TooltipTrigger<Payload>({
   id: idProp,
   delay,
   closeDelay,
@@ -134,11 +137,15 @@ function TooltipTrigger<Payload>({
   );
 }
 
-function TooltipContent({
+export function TooltipContent({
   className,
   children,
   portalProps,
   positionerProps,
+  side = 'top',
+  sideOffset = 8,
+  align = 'center',
+  alignOffset = 0,
   ...props
 }: TooltipContentProps) {
   const tooltip = useContext(TooltipContext);
@@ -146,12 +153,16 @@ function TooltipContent({
     <BaseTooltip.Portal {...portalProps}>
       <Theme className="u-tooltip-theme">
         <BaseTooltip.Positioner
+          side={side}
+          align={align}
+          alignOffset={alignOffset}
           positionMethod="fixed"
-          sideOffset={8}
+          sideOffset={sideOffset}
           collisionPadding={16}
           {...positionerProps}
         >
           <BaseTooltip.Popup
+            data-slot="tooltip-content"
             role="tooltip"
             {...props}
             id={tooltip?.id}
@@ -169,9 +180,9 @@ function TooltipContent({
   );
 }
 
-export const Tooltip = {
+export const Tooltip = Object.assign(TooltipRoot, {
   Provider: TooltipProvider,
   Root: TooltipRoot,
   Trigger: TooltipTrigger,
   Content: TooltipContent,
-};
+});

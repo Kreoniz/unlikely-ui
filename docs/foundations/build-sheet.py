@@ -75,6 +75,8 @@ for name, tokens in THEMES.items():
     for state in ("hover", "pressed"):
         check(name, tokens, "--u-danger", f"--u-danger-soft-{state}", 4.5, "danger button text")
     check(name, tokens, "--u-physical-ink", "--u-physical-cap", 4.5, "physical button label")
+    check(name, tokens, "--u-physical-ink", "--u-physical-inset", 4.5, "physical inset label")
+    check(name, tokens, "--u-physical-ink", "--u-physical-indicator", 4.5, "physical mint label")
 
 ROOT.joinpath("contrast.json").write_text(json.dumps({
     "method": "WCAG relative luminance, opaque sRGB; palette checks only",
@@ -88,8 +90,8 @@ ROLES = (
     ("ink", "Primary text"), ("muted", "Secondary text"), ("line", "Control border"),
     ("accent", "Accent fill"), ("accent-text", "Accent text"),
 )
-BRAND_MARK = ROOT.joinpath("../../dev/public/button-logo.png")
-assert BRAND_MARK.is_file(), "The review sheet needs dev/public/button-logo.png"
+BRAND_MARK = ROOT.joinpath("../../dev/public/button-logo-small.png")
+assert BRAND_MARK.is_file(), "The review sheet needs dev/public/button-logo-small.png"
 MARK_URI = "data:image/png;base64," + base64.b64encode(BRAND_MARK.read_bytes()).decode("ascii")
 samples = []
 for name, tokens in THEMES.items():

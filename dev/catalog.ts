@@ -28,7 +28,8 @@ export const catalog: readonly CatalogEntry[] = [
     name: 'Button',
     category: 'Actions',
     status: 'preview',
-    description: 'Actions with primary, secondary, ghost, and danger variants.',
+    description:
+      'Actions with standard, outline, secondary, ghost, destructive, and link variants.',
   },
   {
     id: 'calendar',
@@ -94,10 +95,9 @@ export const catalog: readonly CatalogEntry[] = [
     name: 'Menu',
     category: 'Overlays',
     status: 'preview',
-    unreleased: true,
     description:
       'Contextual action lists with keyboard navigation and focus return.',
-    aliases: ['dropdown menu', 'actions'],
+    aliases: ['DropdownMenu', 'dropdown menu', 'actions'],
   },
   {
     id: 'physical-button',
@@ -154,7 +154,6 @@ export const catalog: readonly CatalogEntry[] = [
     name: 'Switch',
     category: 'Forms',
     status: 'preview',
-    unreleased: true,
     description: 'Immediately applied on/off settings with native form values.',
     aliases: ['toggle'],
   },
@@ -163,7 +162,6 @@ export const catalog: readonly CatalogEntry[] = [
     name: 'Tabs',
     category: 'Navigation',
     status: 'preview',
-    unreleased: true,
     description: 'Related panels with manual or automatic keyboard activation.',
     aliases: [],
   },
@@ -197,3 +195,49 @@ export const catalog: readonly CatalogEntry[] = [
     description: 'Supplementary text on hover or keyboard focus.',
   },
 ];
+
+/** Checkout-only experiments; deliberately separate from package components. */
+export const experiments = [
+  {
+    id: 'allocation-bar-study',
+    name: 'Allocation bar',
+    description:
+      'A reference-led material allocation editor with fixed totals and amount locks.',
+    status: 'experimental',
+  },
+  {
+    id: 'guarded-action-study',
+    name: 'Guarded action',
+    description:
+      'A protective hinged cover over a separate coral action button.',
+    status: 'experimental',
+  },
+  {
+    id: 'radial-menu-study',
+    name: 'Radial menu',
+    description:
+      'Six contextual wedge sectors with real note actions and a list alternative.',
+    status: 'experimental',
+  },
+  {
+    id: 'receipt-study',
+    name: 'Receipt',
+    description:
+      'An olive output slot issuing a keepable receipt after a real export.',
+    status: 'experimental',
+  },
+  {
+    id: 'split-flap-study',
+    name: 'Split-flap',
+    description:
+      'A mechanical three-digit tally with folding leaves and hinge hardware.',
+    status: 'experimental',
+  },
+  {
+    id: 'xy-pad-study',
+    name: 'XY pad',
+    description:
+      'Signed CSS offsets with a coral puck, exact entry and live shadow preview.',
+    status: 'experimental',
+  },
+] as const;

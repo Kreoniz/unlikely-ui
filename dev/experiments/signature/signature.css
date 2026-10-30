@@ -1,0 +1,7 @@
+.signature-studies-scenes {
+  display: grid;
+  gap: 2rem;
+}
+.signature-studies-scenes .specimen {
+  scroll-margin-block-start: 90px;
+}

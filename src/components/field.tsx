@@ -14,14 +14,16 @@ export type FieldErrorProps = ComponentPropsWithRef<typeof BaseField.Error>;
 function FieldRoot({ className, ...props }: FieldRootProps) {
   return (
     <BaseField.Root
+      data-slot="field"
       {...props}
       className={stateClass('u-field ui:grid ui:gap-2', className)}
     />
   );
 }
-function FieldLabel({ className, ...props }: FieldLabelProps) {
+export function FieldLabel({ className, ...props }: FieldLabelProps) {
   return (
     <BaseField.Label
+      data-slot="field-label"
       {...props}
       className={stateClass(
         'u-field-label ui:text-u-ink ui:font-medium',
@@ -30,24 +32,33 @@ function FieldLabel({ className, ...props }: FieldLabelProps) {
     />
   );
 }
-function FieldDescription({ className, ...props }: FieldDescriptionProps) {
+export function FieldDescription({
+  className,
+  ...props
+}: FieldDescriptionProps) {
   return (
     <BaseField.Description
+      data-slot="field-description"
       {...props}
       className={stateClass('u-field-description ui:text-u-muted', className)}
     />
   );
 }
-function FieldError({ className, ...props }: FieldErrorProps) {
+export function FieldError({ className, ...props }: FieldErrorProps) {
   return (
     <BaseField.Error
+      data-slot="field-error"
       {...props}
       className={stateClass('u-field-error ui:text-u-danger', className)}
     />
   );
 }
 
-export const Field = {
+export const FieldControl = BaseField.Control;
+export const FieldItem = BaseField.Item;
+export const FieldValidity = BaseField.Validity;
+/** A named field retaining Base UI's association and validation behavior. */
+export const Field = Object.assign(FieldRoot, {
   Root: FieldRoot,
   Label: FieldLabel,
   Description: FieldDescription,
@@ -55,4 +66,4 @@ export const Field = {
   Control: BaseField.Control,
   Item: BaseField.Item,
   Validity: BaseField.Validity,
-};
+});

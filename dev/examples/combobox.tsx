@@ -1,8 +1,30 @@
+import { MultipleGroups } from './multiple-groups.js';
+import multipleGroupsSource from './multiple-groups.tsx?raw';
+import { consumerSource } from '../example-code.js';
 import { useEffect, useState } from 'react';
-import { Combobox } from '../../src/components/combobox.js';
-import { Field } from '../../src/components/field.js';
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxStatus,
+  ComboboxEmpty,
+  ComboboxList,
+  ComboboxItem,
+} from '../../src/components/combobox.js';
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from '../../src/components/field.js';
 import { Button } from '../../src/components/button.js';
-import { Dialog } from '../../src/components/dialog.js';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '../../src/components/dialog.js';
 import { Spinner } from '../../src/components/spinner.js';
 import { CheckControl } from '../controls.js';
 import { CodeBlock } from '../code-block.js';
@@ -48,8 +70,8 @@ export function GroupSearch() {
   }, [query, fail]);
   return (
     <div className="example-form">
-      <Field.Root>
-        <Combobox.Root
+      <Field>
+        <Combobox
           items={items}
           filter={null}
           value={selected}
@@ -60,27 +82,16 @@ export function GroupSearch() {
           itemToStringValue={(item) => item.id}
           isItemEqualToValue={(a, b) => a.id === b.id}
         >
-          <Field.Label>Group name</Field.Label>
-          <Combobox.InputGroup className="combobox-example-input">
-            <Combobox.Input
-              placeholder="e.g. CS-101"
-              aria-busy={loading || undefined}
-              autoComplete="off"
-            />
-            <Combobox.Clear
-              render={
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  aria-label="Clear group search"
-                />
-              }
-            >
-              ×
-            </Combobox.Clear>
-          </Combobox.InputGroup>
-          <Combobox.Content positionerProps={{ align: 'start' }}>
-            <Combobox.Status>
+          <FieldLabel>Group name</FieldLabel>
+          <ComboboxInput
+            placeholder="e.g. CS-101"
+            aria-busy={loading || undefined}
+            autoComplete="off"
+            showClear
+            clearLabel="Clear group search"
+          />
+          <ComboboxContent positionerProps={{ align: 'start' }}>
+            <ComboboxStatus>
               {loading ? (
                 <span className="inline-status">
                   <Spinner label={null} size="sm" />
@@ -90,29 +101,29 @@ export function GroupSearch() {
                 error ||
                 (query.trim().length < 2 ? 'Enter at least 2 characters.' : '')
               )}
-            </Combobox.Status>
-            <Combobox.Empty>
+            </ComboboxStatus>
+            <ComboboxEmpty>
               {!loading && !error && query.trim().length >= 2
                 ? 'No groups found.'
                 : undefined}
-            </Combobox.Empty>
-            <Combobox.List>
+            </ComboboxEmpty>
+            <ComboboxList>
               {(group: Group) => (
-                <Combobox.Item key={group.id} value={group}>
+                <ComboboxItem key={group.id} value={group}>
                   <strong>{group.label}</strong>
                   <small className="option-description">
                     {group.description}
                   </small>
-                </Combobox.Item>
+                </ComboboxItem>
               )}
-            </Combobox.List>
-          </Combobox.Content>
-          <Field.Description>
+            </ComboboxList>
+          </ComboboxContent>
+          <FieldDescription>
             Search the example directory. Requests and debouncing belong to the
             app.
-          </Field.Description>
-        </Combobox.Root>
-      </Field.Root>
+          </FieldDescription>
+        </Combobox>
+      </Field>
       <CheckControl checked={fail} onCheckedChange={setFail}>
         Simulate search error
       </CheckControl>
@@ -140,28 +151,37 @@ export function ComboboxExamples() {
           <h2>Search in a dialog</h2>
         </div>
         <div className="playground-stage">
-          <Dialog.Root>
-            <Dialog.Trigger render={<Button variant="secondary" />}>
+          <Dialog>
+            <DialogTrigger render={<Button variant="secondary" />}>
               Find a group
-            </Dialog.Trigger>
-            <Dialog.Content>
-              <Dialog.Title>Find a group</Dialog.Title>
-              <Dialog.Description>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Find a group</DialogTitle>
+              <DialogDescription>
                 Search and select using the keyboard.
-              </Dialog.Description>
+              </DialogDescription>
               <GroupSearch />
               <div className="example-actions">
-                <Dialog.Close render={<Button variant="secondary" />}>
+                <DialogClose render={<Button variant="secondary" />}>
                   Close search
-                </Dialog.Close>
+                </DialogClose>
               </div>
-            </Dialog.Content>
-          </Dialog.Root>
+            </DialogContent>
+          </Dialog>
         </div>
       </section>
       <CodeBlock
-        code={`import { Combobox } from 'unlikely-ui/combobox';\n\n<Combobox.Root items={results} filter={null}\n  inputValue={query} onInputValueChange={setQuery}\n  value={selected} onValueChange={setSelected}\n  itemToStringLabel={item => item.label}>\n  <Combobox.Input aria-label="Group name" />\n  <Combobox.Content>\n    <Combobox.Status>{loading ? 'Searching…' : error}</Combobox.Status>\n    <Combobox.Empty>{!loading && !error ? 'No groups found.' : null}</Combobox.Empty>\n    <Combobox.List>{item => (\n      <Combobox.Item key={item.id} value={item}>{item.label}</Combobox.Item>\n    )}</Combobox.List>\n  </Combobox.Content>\n</Combobox.Root>`}
+        code={`import { Combobox, ComboboxInput, ComboboxContent, ComboboxStatus, ComboboxEmpty, ComboboxList, ComboboxItem } from 'unlikely-ui/combobox';\n\n<Combobox items={results} filter={null}\n  inputValue={query} onInputValueChange={setQuery}\n  value={selected} onValueChange={setSelected}\n  itemToStringLabel={item => item.label}>\n  <ComboboxInput aria-label="Group name" />\n  <ComboboxContent>\n    <ComboboxStatus>{loading ? 'Searching…' : error}</ComboboxStatus>\n    <ComboboxEmpty>{!loading && !error ? 'No groups found.' : null}</ComboboxEmpty>\n    <ComboboxList>{item => (\n      <ComboboxItem key={item.id} value={item}>{item.label}</ComboboxItem>\n    )}</ComboboxList>\n  </ComboboxContent>\n</Combobox>`}
       />
+      <section className="specimen" aria-label="Multiple group selection">
+        <div className="specimen-heading">
+          <h2>Multiple selection</h2>
+        </div>
+        <div className="form-stage">
+          <MultipleGroups />
+        </div>
+      </section>
+      <CodeBlock code={consumerSource(multipleGroupsSource)} />
     </>
   );
 }

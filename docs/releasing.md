@@ -15,7 +15,8 @@ Run from the repository root with the pinned mise runtime and pnpm version:
 mise exec -- pnpm install --frozen-lockfile
 mise exec -- pnpm release:check
 mise exec -- pnpm pack --pack-destination .local/packages
-tar -tzf .local/packages/unlikely-ui-0.1.0-alpha.2.tgz
+ui_release_version=$(mise exec -- node -p "require('./package.json').version")
+tar -tzf ".local/packages/unlikely-ui-${ui_release_version}.tgz"
 ```
 
 `release:check` checks TypeScript, generated API extraction, token contrast,
@@ -30,7 +31,7 @@ uses `--prefer-offline` so fresh runners can fetch missing dependency metadata.
 `npm publish` from this directory. Neither hook runs on consumer installation.
 Do not bypass these hooks for an actual release.
 
-The allowlist ships `dist/`, README, LICENSE, CHANGELOG, `USAGE.md`,
+The allowlist ships `dist/`, README, LICENSE, THIRD_PARTY_NOTICES, CHANGELOG, `USAGE.md`,
 `docs/components.md`, and package metadata. Consumer checks inspect the actual
 tarball, verify export targets and local guide links, and reject extra files.
 The gallery, source tooling, asset explorations, fonts, and mascot stay out of
@@ -74,12 +75,13 @@ the actual publish.
 Verify the registry after publishing:
 
 ```sh
-mise exec -- npm view unlikely-ui@0.1.0-alpha.2 version license dist.integrity --json --registry=https://registry.npmjs.org/
+ui_release_version=$(mise exec -- node -p "require('./package.json').version")
+mise exec -- npm view "unlikely-ui@${ui_release_version}" version license dist.integrity --json --registry=https://registry.npmjs.org/
 mise exec -- npm dist-tag ls unlikely-ui --registry=https://registry.npmjs.org/
 ```
 
 Only after that succeeds, record the publication date in the repository's
-release evidence and install in apps with `pnpm add -E unlikely-ui@0.1.0-alpha.2`.
+release evidence and install that verified exact version in apps.
 Keep app lockfiles committed. Shipped consumer guidance is publication-neutral;
 registry availability is established by the verification above.
 

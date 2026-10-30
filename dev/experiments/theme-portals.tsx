@@ -28,8 +28,8 @@ export function ThemePortalExperiment() {
         <span className="status-tag experimental">Experimental</span>
       </div>
       <p className="specimen-note">
-        A Base UI popover specimen testing inherited settings. This is not a
-        published Popover component.
+        This gallery-only theme-inheritance specimen tests nested settings and
+        portaled content.
       </p>
       <div className="experiment-controls">
         <Button

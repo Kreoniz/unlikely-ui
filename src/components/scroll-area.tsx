@@ -1,5 +1,7 @@
 'use client';
 
+// Adapted from shadcn/ui (MIT); see THIRD_PARTY_NOTICES.md.
+
 import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
 import type { ComponentPropsWithRef } from 'react';
 import { stateClass } from '../lib/state-class.js';
@@ -34,7 +36,10 @@ function ScrollAreaRoot({ className, ...props }: ScrollAreaRootProps) {
 }
 
 /** Native scrolling surface. Put the accessible region name, scroll handlers and viewport ref here. */
-function ScrollAreaViewport({ className, ...props }: ScrollAreaViewportProps) {
+export function ScrollAreaViewport({
+  className,
+  ...props
+}: ScrollAreaViewportProps) {
   return (
     <BaseScrollArea.Viewport
       {...props}
@@ -44,7 +49,10 @@ function ScrollAreaViewport({ className, ...props }: ScrollAreaViewportProps) {
 }
 
 /** Observes content size changes and leaves room for the overlaid scrollbars. */
-function ScrollAreaContent({ className, ...props }: ScrollAreaContentProps) {
+export function ScrollAreaContent({
+  className,
+  ...props
+}: ScrollAreaContentProps) {
   return (
     <BaseScrollArea.Content
       {...props}
@@ -53,7 +61,7 @@ function ScrollAreaContent({ className, ...props }: ScrollAreaContentProps) {
   );
 }
 
-function ScrollAreaThumb({ className, ...props }: ScrollAreaThumbProps) {
+export function ScrollAreaThumb({ className, ...props }: ScrollAreaThumbProps) {
   return (
     <BaseScrollArea.Thumb
       {...props}
@@ -78,7 +86,10 @@ function ScrollAreaScrollbar({
   );
 }
 
-function ScrollAreaCorner({ className, ...props }: ScrollAreaCornerProps) {
+export function ScrollAreaCorner({
+  className,
+  ...props
+}: ScrollAreaCornerProps) {
   return (
     <BaseScrollArea.Corner
       {...props}
@@ -87,11 +98,31 @@ function ScrollAreaCorner({ className, ...props }: ScrollAreaCornerProps) {
   );
 }
 
-export const ScrollArea = {
+export const ScrollBar = ScrollAreaScrollbar;
+export interface ScrollAreaProps extends ScrollAreaRootProps {
+  /** Region name, handlers and ref for the native scroll surface. */
+  viewportProps?: ScrollAreaViewportProps;
+}
+function ScrollAreaControl({
+  children,
+  viewportProps,
+  ...props
+}: ScrollAreaProps) {
+  return (
+    <ScrollAreaRoot {...props} data-slot="scroll-area">
+      <ScrollAreaViewport {...viewportProps}>
+        <ScrollAreaContent>{children}</ScrollAreaContent>
+      </ScrollAreaViewport>
+      <ScrollBar />
+      <ScrollAreaCorner />
+    </ScrollAreaRoot>
+  );
+}
+export const ScrollArea = Object.assign(ScrollAreaControl, {
   Root: ScrollAreaRoot,
   Viewport: ScrollAreaViewport,
   Content: ScrollAreaContent,
   Scrollbar: ScrollAreaScrollbar,
   Thumb: ScrollAreaThumb,
   Corner: ScrollAreaCorner,
-};
+});

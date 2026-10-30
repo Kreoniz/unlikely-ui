@@ -1,15 +1,25 @@
 # Packaging and source installation
 
-Status: unscoped `unlikely-ui@0.1.0-alpha.2` published, 2026-10-22.
-ESM, types, CSS, explicit exports and tarball consumer checks exist. MIT is the
-selected code/documentation license. Alpha.2 is available on npm under `next`;
-source registry installation is future work. See [the release workflow](./releasing.md).
+Status: alpha.3 release artifact, 2026-10-30. ESM, types, CSS, explicit exports
+and tarball consumer checks exist. MIT is the code/documentation license.
+Alpha releases use `next`; registry availability is recorded only after
+verification in [the release workflow](./releasing.md).
 
-The current checkout adds unreleased `unlikely-ui/switch`, `unlikely-ui/tabs`,
-and `unlikely-ui/menu` exports. They are built into local tarballs but are not
-part of the published alpha.2. Publication and version selection remain separate.
+Alpha.3 adds `unlikely-ui/switch`, `unlikely-ui/tabs`, `unlikely-ui/menu` and
+its `unlikely-ui/dropdown-menu` alias, named parts and semantic app utilities.
+These are absent from alpha.2. Source registry installation remains future work.
 
 ## Initial decision
+
+The 2026-10-30 migration retains npm as the default delivery path. Standard
+controls adopt shadcn Base UI composition and named-part conventions while
+sharing unlikely ui's semantic foundations and documented integration contracts.
+Compatibility aliases preserve source names, with intentional behavior changes
+called out separately: Dialog.Content now includes its default corner close
+action. Audit dismissal controls and tab order during that upgrade.
+The library owns the adapted source once. Apps receive reviewed updates through
+dependency upgrades; per-app source copies are not required for customization
+through tokens, variants and composition. These changes are included in alpha.3.
 
 Start with one npm package containing compiled ESM, declarations and CSS.
 Keep one component source tree. Add shadcn-compatible source installation later
@@ -37,9 +47,8 @@ all unused bytes from a bundle.
 
 ## npm contract
 
-The owner selected the unscoped name `unlikely-ui`. npm returned E404 for that
-name on 2026-10-20; this is not a reservation or a guarantee of acceptance.
-Start with ESM only. Do not add CommonJS support without
+The package uses the selected unscoped name `unlikely-ui`, published as alpha.1
+and alpha.2 per the dated release records. It is ESM only. Do not add CommonJS support without
 a real consumer requirement. Implemented exports are:
 
 ```text
@@ -53,9 +62,10 @@ unlikely-ui/checkbox
 unlikely-ui/combobox
 unlikely-ui/date-picker
 unlikely-ui/dialog
+unlikely-ui/dropdown-menu # alias for the action menu
 unlikely-ui/field
 unlikely-ui/input
-unlikely-ui/menu        # unreleased checkout preview
+unlikely-ui/menu        # added in alpha.3
 unlikely-ui/physical-button
 unlikely-ui/popover
 unlikely-ui/radio-group
@@ -63,8 +73,8 @@ unlikely-ui/scroll-area  # included starting with alpha.2
 unlikely-ui/select
 unlikely-ui/skeleton
 unlikely-ui/spinner
-unlikely-ui/switch      # unreleased checkout preview
-unlikely-ui/tabs        # unreleased checkout preview
+unlikely-ui/switch      # added in alpha.3
+unlikely-ui/tabs        # added in alpha.3
 unlikely-ui/textarea
 unlikely-ui/theme
 unlikely-ui/toast
@@ -139,10 +149,10 @@ generated API JSON and development assets stay outside the artifact. Keep
 repository-only references in README as explicit repository paths rather than
 links to files absent from an installation.
 
-Consumer setup for alpha.2:
+Consumer setup for alpha.3:
 
 ```sh
-pnpm add -E unlikely-ui@0.1.0-alpha.2
+pnpm add -E unlikely-ui@0.1.0-alpha.3
 ```
 
 ```tsx
@@ -206,56 +216,64 @@ the local file targets of their Markdown links.
 
 ## Later source registry
 
-Shadcn supports custom registries and items declaring source files, npm
-dependencies, registry dependencies and CSS/theme setup. Reuse that protocol
-and CLI before considering a custom installer. A static registry build is
-enough for basic distribution; an authenticated service or registry UI is not
-an initial requirement.
+Shared npm consumption is the implemented default. Revisit source delivery when
+an app actually needs to own control internals. Reuse shadcn's registry protocol
+and CLI, generating release-pinned payloads from this implementation; do not
+build another edition or custom installer.
 
-Adding this later is a contained delivery project if source boundaries stay
-small. It is not only a hosting change. The work includes:
+That later project must resolve sibling/shared dependencies and portable
+imports, regenerate styles in the consuming app, preserve client/theme/portal
+contracts, and prove editable Button/Dialog adoption in a clean consumer.
+Source copies transfer update/merge ownership to each app. No registry metadata,
+service or generator is implemented or required now.
 
-1. Describe items and shared dependencies in registry manifests, using the
-   canonical component files as inputs. Share Theme/helpers/tokens as explicit
-   items, with one installed copy of each per consumer project.
-2. Generate registry payloads from a release revision. Normalize portable import
-   paths and the package's Tailwind prefix/build contract as needed. Generate
-   transformations rather than maintaining a second component implementation.
-3. Supply Tailwind v4 token mappings, theme scope and any required CSS. Copied
-   source must be genuinely editable and compile in the target app; referencing
-   a precompiled class that cannot be regenerated is not sufficient.
-4. Preserve client directives, names, state attributes, relative dependencies
-   and explicit runtime package requirements. Adapt destination aliases through
-   the registry/consumer configuration rather than assuming `@/components`.
-5. Test installation in a clean React/Tailwind app: install Button, then Dialog;
-   confirm shared dependencies are not duplicated, both work and a locally
-   changed variant can be rebuilt. Cover custom tokens and a nested portal.
-6. Document ownership and updates. Use release-pinned registry URLs or repository
-   refs where supported. Keep the consumer lockfile and commit the installed
-   source. An install can be reviewed with the CLI's dry-run/diff facilities;
-   it is not an automatic safe merge of local and upstream edits.
+## Shadcn upstream maintenance
 
-A source installer can be added without changing the existing npm API; component
-or token changes made at the same time still follow the normal version policy.
-Keep generated registry artifacts tied to the same library release rather than
-inventing separate per-component versions at the start.
+`docs/shadcn-upstream.json` records the reviewed repository revision, file paths
+and SHA-256 fingerprints. It distinguishes adapted composition from naming
+alignment; Field and Tooltip deliberately retain their existing behavior.
+Calendar, DatePicker, status/category semantics, Toast and PhysicalButton keep
+their existing contracts. The named API is not a wholesale copy of a shadcn
+style or a guarantee of all third-party block compatibility.
 
-## What makes a later registry easier
+Adapted code keeps the upstream MIT notice in `THIRD_PARTY_NOTICES.md`, included
+and checked in the tarball. No shadcn CLI, icon library, variant framework or
+class-merging dependency is added to the runtime. Existing CSS layers determine
+supported consumer overrides.
 
-- Components import their actual sibling modules, not the npm root barrel or
-  host-app aliases. Examples, routing and product logic stay outside them.
-- Tokens, variants and their requirements are explicit. Complete static class
-  strings and a deterministic prefix are easier to transform than runtime
-  utility construction or an opaque recipe engine.
-- Theme has a small explicit contract, including portals. Shared context is
-  a known dependency rather than an implicit package-wide singleton.
-- Both output paths use the same source and examples. Validate semantic and
-  visual parity for generated output before advertising it.
+For an upstream update:
 
-Do not prebuild registry metadata, AST tooling or a generic component generator
-now. Keep these boundaries and validate a single source-install proof when
-source delivery is actually selected. The cost grows with hidden coupling and
-the size of the catalogue; adopting these boundaries now limits that growth.
+1. Select an immutable reviewed shadcn commit. Download only the relevant Base UI
+   files at both the recorded revision and the candidate revision under
+   `.local/shadcn-upstream/`; compare those upstream versions first. Use
+   `https://raw.githubusercontent.com/shadcn-ui/ui/<revision>/<upstreamPath>`.
+2. Apply the relevant upstream changes to the existing local module. Review
+   the small integration decisions explicitly: local token classes, portal
+   theme restoration, state-aware class callbacks, required accessible names
+   and documented extensions. Do not overwrite customized files blindly.
+3. Exercise the affected gallery workflow and the packed-consumer integration.
+   Check focus, controlled state, light/dark appearance and nested portal
+   tokens. Changes to the wrapper require source review; Base UI behavior fixes
+   are received separately through a dependency upgrade.
+4. Update the pinned revision/fingerprints for every reviewed file together,
+   recording any intentionally retained older component baseline separately.
+   Record behavior and visual differences in the changelog. Publish only when
+   requested, following the existing release gate.
+
+During this migration, the pre-migration source and the pinned upstream sources
+were compared before adopting composition changes. Consumer fixtures exercise
+the resulting local adaptations rather than claiming automatic upstream merging.
+An update-review rehearsal compared Dialog at
+`687f09817b614a3450f0f56779edf367082e1e53` with the pinned revision: upstream
+replaced its local class helper import with the `cn` package. The local adapter
+intentionally retains `stateClass` and CSS-layer overrides, including Base UI's
+state-aware class callbacks. That change needs no runtime dependency here;
+the provenance file records the reviewed current source. This is a source-review
+example, not evidence that arbitrary future changes can be merged automatically.
+Maintenance savings remain unproven. Base UI already owned primitive behavior
+before the naming migration. Assess one useful upstream composition/behavior
+change when it arises and real app adoption before widening compatibility;
+do not manufacture an update or add a registry to justify the migration.
 
 ## Existing consumers changing adoption mode
 

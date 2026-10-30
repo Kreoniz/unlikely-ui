@@ -1,10 +1,37 @@
 'use client';
 
+// Adapted from shadcn/ui (MIT); see THIRD_PARTY_NOTICES.md.
+
 import { Button as BaseButton } from '@base-ui/react/button';
 import { isValidElement } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+export type ButtonVariant =
+  | 'default'
+  | 'outline'
+  | 'secondary'
+  | 'ghost'
+  | 'destructive'
+  | 'link'
+  | 'primary'
+  | 'danger';
+export type ButtonSize =
+  | 'default'
+  | 'xs'
+  | 'sm'
+  | 'lg'
+  | 'icon'
+  | 'icon-xs'
+  | 'icon-sm'
+  | 'icon-lg'
+  | 'md';
+export interface ButtonStyleProps {
+  /** Visual emphasis. primary/danger are compatibility aliases for default/destructive. */
+  variant?: ButtonVariant;
+  /** Control size. md is a compatibility alias for default. */
+  size?: ButtonSize;
+  /** Additional classes, applied through the consumer's CSS layers. */
+  className?: string;
+}
 interface ButtonBaseProps extends BaseButton.Props {
   /** Visual emphasis for the action. */
   variant?: ButtonVariant;
@@ -21,29 +48,60 @@ export type ButtonProps = ButtonBaseProps &
   (
     | {
         /** Control size. Icon sizes require an accessible name. */ size?:
-          'sm' | 'md' | 'lg';
+          'default' | 'xs' | 'sm' | 'md' | 'lg';
       }
-    | ({ size: 'icon' | 'icon-sm' | 'icon-lg' } & (
+    | ({ size: 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg' } & (
         { 'aria-label': string } | { 'aria-labelledby': string }
       ))
   );
 
 const base =
   'u-button ui:inline-flex ui:items-center ui:justify-center ui:gap-2 ui:appearance-none ui:whitespace-nowrap ui:rounded-u-control ui:border ui:border-solid ui:font-u-sans ui:font-medium ui:no-underline ui:select-none ui:cursor-pointer';
-const variants: Record<ButtonVariant, string> = {
-  primary:
+const variants = {
+  default:
     'ui:bg-u-accent ui:text-u-accent-ink ui:border-u-accent-border ui:hover:bg-u-accent-hover ui:active:bg-u-accent-pressed',
   secondary:
     'ui:bg-u-surface ui:text-u-ink ui:border-u-line ui:hover:bg-u-hover ui:active:bg-u-hover',
   ghost:
     'ui:bg-transparent ui:text-u-ink ui:border-transparent ui:hover:bg-u-hover ui:active:bg-u-hover',
-  danger:
+  outline:
+    'ui:bg-transparent ui:text-u-ink ui:border-u-line ui:hover:bg-u-hover ui:active:bg-u-hover',
+  destructive:
     'ui:bg-u-danger-soft ui:text-u-danger ui:border-u-danger-border ui:hover:bg-u-danger-hover ui:active:bg-u-danger-pressed',
+  link: 'ui:bg-transparent ui:text-u-accent-text ui:border-transparent ui:hover:underline',
+};
+const sizes: Record<ButtonSize, string> = {
+  default: 'u-button-size-default',
+  md: 'u-button-size-default',
+  xs: 'u-button-size-xs',
+  sm: 'u-button-size-sm',
+  lg: 'u-button-size-lg',
+  icon: 'u-button-size-icon',
+  'icon-xs': 'u-button-size-icon-xs',
+  'icon-sm': 'u-button-size-icon-sm',
+  'icon-lg': 'u-button-size-icon-lg',
 };
 
+/** Shared shadcn-style variants for Button and semantic native links. */
+export function buttonVariants({
+  variant = 'default',
+  size = 'default',
+  className,
+}: ButtonStyleProps = {}) {
+  const canonical =
+    variant === 'primary'
+      ? 'default'
+      : variant === 'danger'
+        ? 'destructive'
+        : variant;
+  return [base, variants[canonical], sizes[size], className]
+    .filter(Boolean)
+    .join(' ');
+}
+
 export function Button({
-  variant = 'primary',
-  size = 'md',
+  variant = 'default',
+  size = 'default',
   loading = false,
   disabled,
   className,
@@ -60,6 +118,7 @@ export function Button({
       : undefined);
   return (
     <BaseButton
+      data-slot="button"
       {...props}
       render={render}
       role={role}
@@ -70,13 +129,12 @@ export function Button({
       data-size={size}
       data-loading={loading || undefined}
       className={(state) =>
-        [
-          base,
-          variants[variant],
-          typeof className === 'function' ? className(state) : className,
-        ]
-          .filter(Boolean)
-          .join(' ')
+        buttonVariants({
+          variant,
+          size,
+          className:
+            typeof className === 'function' ? className(state) : className,
+        })
       }
     >
       <span className="u-button-label" data-loading={loading || undefined}>

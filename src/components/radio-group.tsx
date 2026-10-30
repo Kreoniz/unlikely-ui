@@ -1,5 +1,7 @@
 'use client';
 
+// Adapted from shadcn/ui (MIT); see THIRD_PARTY_NOTICES.md.
+
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
 import { Radio as BaseRadio } from '@base-ui/react/radio';
 import { createContext, useContext } from 'react';
@@ -19,6 +21,7 @@ function RadioGroupRoot<Value>({
   return (
     <SegmentedContext value={variant === 'segmented'}>
       <BaseRadioGroup
+        data-slot="radio-group"
         {...props}
         data-variant={variant}
         className={stateClass('u-radio-group', className)}
@@ -26,7 +29,7 @@ function RadioGroupRoot<Value>({
     </SegmentedContext>
   );
 }
-function RadioItem<Value>({
+export function RadioGroupItem<Value>({
   className,
   children,
   ...props
@@ -34,6 +37,7 @@ function RadioItem<Value>({
   const segmented = useContext(SegmentedContext);
   return (
     <BaseRadio.Root
+      data-slot="radio-group-item"
       {...props}
       className={stateClass(
         segmented ? 'u-segmented-item' : 'u-choice u-radio',
@@ -52,4 +56,7 @@ function RadioItem<Value>({
 
 const SegmentedContext = createContext(false);
 
-export const RadioGroup = { Root: RadioGroupRoot, Item: RadioItem };
+export const RadioGroup = Object.assign(RadioGroupRoot, {
+  Root: RadioGroupRoot,
+  Item: RadioGroupItem,
+});

@@ -1,5 +1,222 @@
 import { test, expect } from '@playwright/test';
 
+test('open DatePicker disabling prevents selection and reenabling keeps it closed', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const probe = page.getByRole('region', { name: 'Live control changes' });
+  const trigger = probe.getByRole('button', {
+    name: 'Mutable date: Choose a date',
+    exact: true,
+  });
+  await trigger.click();
+  const popup = page.getByRole('dialog', { name: 'Mutable date', exact: true });
+  await expect(popup).toBeVisible();
+  const disable = probe.getByRole('button', {
+    name: 'Disable picker',
+    exact: true,
+  });
+  // Model an app state change without an outside pointer event dismissing the
+  // popup first. The app establishes its enabled focus destination in advance.
+  await disable.focus();
+  await disable.evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(popup).toBeHidden();
+  await expect(trigger).toBeDisabled();
+  await expect(probe.getByLabel('Date changes')).toHaveText('0');
+  await expect(
+    probe.getByRole('button', { name: 'Enable picker', exact: true }),
+  ).toBeFocused();
+  await probe
+    .getByRole('button', { name: 'Enable picker', exact: true })
+    .click();
+  await expect(popup).toBeHidden();
+  await trigger.click();
+  await page.getByRole('button', { name: 'Today', exact: true }).click();
+  await expect(probe.getByLabel('Date changes')).toHaveText('1');
+});
+
+test('Theme direction changes refresh Tabs geometry and preserve selection and focus', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const probe = page.getByRole('region', { name: 'Live control changes' });
+  const list = probe.getByRole('tablist', { name: 'Live panels', exact: true });
+  const selected = list.getByRole('tab', { name: 'Details', exact: true });
+  await selected.click();
+  const indicator = list.locator('.u-tabs-indicator');
+  const aligned = async () => {
+    const tabBox = await selected.boundingBox();
+    const lineBox = await indicator.boundingBox();
+    return (
+      !!tabBox &&
+      !!lineBox &&
+      Math.abs(tabBox.x - lineBox.x) < 1 &&
+      Math.abs(tabBox.width - lineBox.width) < 1
+    );
+  };
+  await expect.poll(aligned).toBe(true);
+  const vertical = probe
+    .getByRole('tablist', { name: 'Vertical live panels', exact: true })
+    .getByRole('tab', { name: 'Overview', exact: true });
+  expect(
+    await vertical.evaluate((el) =>
+      parseFloat(getComputedStyle(el, '::after').left),
+    ),
+  ).toBe(0);
+  await probe
+    .getByRole('button', { name: 'Use LTR tabs', exact: true })
+    .evaluate((element) => (element as HTMLButtonElement).click());
+  await expect(selected).toHaveAttribute('aria-selected', 'true');
+  await expect(selected).toBeFocused();
+  await expect.poll(aligned).toBe(true);
+  expect(
+    await vertical.evaluate((el) =>
+      parseFloat(getComputedStyle(el, '::after').right),
+    ),
+  ).toBe(0);
+  await page.emulateMedia({ forcedColors: 'active' });
+  await expect(vertical).toHaveCSS('text-decoration-line', 'underline');
+});
+
+test('closed retained Dialog allows page clicks and preserves its draft on reopening', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const probe = page.getByRole('region', { name: 'Retained Dialog probe' });
+  await probe
+    .getByRole('button', { name: 'Outside clicks: 0', exact: true })
+    .click();
+  await probe
+    .getByRole('button', { name: 'Open retained dialog', exact: true })
+    .click();
+  const dialog = page.getByRole('dialog', {
+    name: 'Retained dialog',
+    exact: true,
+  });
+  await dialog
+    .getByRole('textbox', { name: 'Retained draft', exact: true })
+    .fill('Keep this edit');
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(
+    probe.getByRole('button', { name: 'Open retained dialog', exact: true }),
+  ).toBeFocused();
+  await probe
+    .getByRole('button', { name: 'Outside clicks: 1', exact: true })
+    .click();
+  await probe
+    .getByRole('button', { name: 'Open retained dialog', exact: true })
+    .click();
+  await expect(
+    dialog.getByRole('textbox', { name: 'Retained draft', exact: true }),
+  ).toHaveValue('Keep this edit');
+  await page.keyboard.press('Escape');
+  await expect(
+    probe.getByRole('button', { name: 'Outside clicks: 2', exact: true }),
+  ).toBeVisible();
+});
+
+test('portal language inherits through Theme and nested overrides stay scoped', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page
+    .getByRole('button', { name: 'Проверить язык', exact: true })
+    .click();
+  const dialog = page.getByRole('dialog', {
+    name: 'Язык диалога',
+    exact: true,
+  });
+  await expect(dialog).toBeVisible();
+  expect(
+    await dialog.evaluate((element) =>
+      element.closest('[lang]')?.getAttribute('lang'),
+    ),
+  ).toBe('ru');
+  await dialog.getByRole('combobox', { name: 'Проект', exact: true }).click();
+  expect(
+    await page
+      .getByRole('listbox')
+      .evaluate((element) => element.closest('[lang]')?.getAttribute('lang')),
+  ).toBe('ru');
+  await page.keyboard.press('Escape');
+  await dialog
+    .getByRole('button', { name: 'Open English panel', exact: true })
+    .click();
+  const english = page.getByRole('dialog', {
+    name: 'English panel',
+    exact: true,
+  });
+  expect(
+    await english.evaluate((element) =>
+      element.closest('[lang]')?.getAttribute('lang'),
+    ),
+  ).toBe('en');
+  expect(
+    await dialog.evaluate((element) =>
+      element.closest('[lang]')?.getAttribute('lang'),
+    ),
+  ).toBe('ru');
+  expect(await page.locator('html').getAttribute('lang')).toBe('en');
+  await english
+    .getByRole('button', { name: 'Close English panel', exact: true })
+    .click();
+  await dialog
+    .getByRole('button', { name: 'Закрыть проверку', exact: true })
+    .click();
+  await expect(
+    page.getByRole('button', { name: 'Проверить язык', exact: true }),
+  ).toBeFocused();
+});
+
+test('copied workflow carries its layout and compound consumers retain explicit composition', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const copied = page.getByRole('region', { name: 'Copied project workflow' });
+  await copied
+    .getByRole('button', { name: 'New project', exact: true })
+    .click();
+  const dialog = page.getByRole('dialog', {
+    name: 'Create project',
+    exact: true,
+  });
+  await expect(dialog.locator('form')).toHaveCSS('display', 'grid');
+  await expect(dialog.locator('form')).toHaveCSS('row-gap', '20px');
+  await expect(dialog.locator('.example-actions')).toHaveCSS('display', 'flex');
+  await dialog
+    .getByRole('textbox', { name: 'Project name', exact: true })
+    .fill('Copied workflow');
+  await dialog
+    .getByRole('button', { name: 'Create project', exact: true })
+    .click();
+  await expect(copied.getByRole('status')).toHaveText(
+    'Created Copied workflow.',
+  );
+  const trigger = page.getByRole('button', {
+    name: 'Legacy project',
+    exact: true,
+  });
+  await trigger.click();
+  const legacy = page.getByRole('dialog', {
+    name: 'Legacy project form',
+    exact: true,
+  });
+  await expect(
+    legacy.getByRole('button', { name: 'Close', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    legacy.getByRole('textbox', { name: 'Legacy project name' }),
+  ).toHaveCSS('border-radius', '12px');
+  const input = legacy.getByRole('combobox', { name: 'Legacy option' });
+  await input.fill('Old');
+  await input.press('ArrowDown');
+  await input.press('Enter');
+  await expect(input).toHaveValue('Old API');
+  await legacy.getByRole('button', { name: 'Cancel legacy project' }).click();
+  await expect(trigger).toBeFocused();
+});
+
 test('packed common controls submit, select panels, and restore nested themes through Menu portals', async ({
   page,
 }) => {
@@ -87,6 +304,9 @@ test('packed tooltip timing inherits Provider settings and honors Trigger overri
     exact: true,
   });
   const tooltip = page.getByRole('tooltip');
+  // install() still advances with wall time; freeze it before measuring the
+  // short Trigger override so actionability checks cannot consume its delay.
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
   await overridden.hover();
   await page.clock.runFor(50);
   await expect(tooltip).not.toBeVisible();
@@ -132,6 +352,50 @@ test('packed modules hydrate, respond, and share nested theme state with a porta
 
   await expect(portal).toHaveAttribute('dir', 'rtl');
   await expect(portal.getByRole('button')).toHaveCSS('border-radius', '16px');
+});
+
+test('shadcn composition, editable selection chips and semantic utilities retain scoped portal themes', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const groups = page.getByRole('combobox', { name: 'Migration groups' });
+  await expect(
+    page.getByRole('button', { name: 'Remove Engineering', exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Remove Design', exact: true })
+    .click();
+  await page
+    .getByRole('button', { name: 'Remove Engineering', exact: true })
+    .click();
+  await expect(
+    page.getByRole('status').filter({ hasText: /^Migration groups:/ }),
+  ).toHaveText('Migration groups: none');
+  await groups.fill('Eng');
+  await groups.press('ArrowDown');
+  await groups.press('Enter');
+  await expect(
+    page.getByRole('button', { name: 'Remove Engineering', exact: true }),
+  ).toBeVisible();
+  await groups.press('Escape');
+  const trigger = page.getByRole('button', { name: 'Open shadcn theme probe' });
+  await trigger.click();
+  const dialog = page.getByRole('dialog', {
+    name: 'Shadcn theme probe',
+    exact: true,
+  });
+  const probe = page.getByTestId('shadcn-portal-alias');
+  await expect(probe).toHaveCSS('border-top-color', 'rgb(191, 220, 255)');
+  if (process.env.UI_CONSUMER_MODE === 'tailwind') {
+    await expect(probe).toHaveCSS('background-color', 'rgb(191, 220, 255)');
+    await expect(probe).toHaveCSS('color', 'rgb(16, 40, 24)');
+  }
+  await expect(
+    dialog.getByRole('button', { name: 'Dismiss theme probe' }),
+  ).toBeVisible();
+  await dialog.getByRole('button', { name: 'Done', exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
 });
 
 test('library styles are isolated; unprefixed consumer utilities win in the documented cascade', async ({
@@ -181,11 +445,9 @@ test('packed fields and overlays validate, inherit themes and retain their inter
     name: 'Project form',
     exact: true,
   });
-  await expect(page.locator('.u-dialog-theme')).toHaveAttribute(
-    'data-appearance',
-    'light',
-  );
-  await expect(page.locator('.u-dialog-theme')).toHaveAttribute('dir', 'rtl');
+  const dialogTheme = page.locator('.u-dialog-theme').filter({ has: dialog });
+  await expect(dialogTheme).toHaveAttribute('data-appearance', 'light');
+  await expect(dialogTheme).toHaveAttribute('dir', 'rtl');
   const input = dialog.getByRole('textbox', { name: 'Project name' });
   await expect(input).toHaveCSS('border-radius', '16px');
   const priority = dialog.getByRole('combobox', { name: 'Priority' });
@@ -245,6 +507,23 @@ test('packed adoption components inherit nested themes and keep calendar, search
 }) => {
   await page.goto('/');
   const search = page.getByRole('combobox', { name: 'Group search' });
+  await expect(search).toHaveAccessibleName('Group search');
+  await expect(search).toHaveAccessibleDescription('Find a group by name.');
+  const options = page.getByRole('button', {
+    name: 'Показать группы',
+    exact: true,
+  });
+  await expect(options).toHaveAccessibleName('Показать группы');
+  await options.click();
+  const openTrigger = page
+    .getByRole('region', { name: 'Adoption components' })
+    .locator('[data-slot="combobox-trigger"]');
+  await expect(openTrigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(openTrigger).toHaveAttribute(
+    'aria-controls',
+    (await page.getByRole('listbox').getAttribute('id')) ?? '',
+  );
+  await search.press('Escape');
   const physical = page.getByRole('button', { name: 'Power', exact: true });
   await expect(physical).toHaveCSS('width', '144px');
   await expect(physical.locator('.u-physical-cap')).toHaveCSS(

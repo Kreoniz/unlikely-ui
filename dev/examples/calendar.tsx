@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Calendar, ru, enUS } from '../../src/components/calendar.js';
 import { DatePicker } from '../../src/components/date-picker.js';
-import { RadioGroup } from '../../src/components/radio-group.js';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../src/components/radio-group.js';
 import { Button } from '../../src/components/button.js';
 import { CheckControl } from '../controls.js';
 import { CodeBlock } from '../code-block.js';
@@ -86,15 +89,15 @@ export function CalendarExamples({ picker = false }: { picker?: boolean }) {
           </p>
         </div>
         <div className="playground-controls">
-          <RadioGroup.Root
+          <RadioGroup
             variant="segmented"
             aria-label="Calendar language"
             value={language}
             onValueChange={setLanguage}
           >
-            <RadioGroup.Item value="ru">Русский</RadioGroup.Item>
-            <RadioGroup.Item value="en">English</RadioGroup.Item>
-          </RadioGroup.Root>
+            <RadioGroupItem value="ru">Русский</RadioGroupItem>
+            <RadioGroupItem value="en">English</RadioGroupItem>
+          </RadioGroup>
           <CheckControl checked={highlight} onCheckedChange={setHighlight}>
             Highlight selected week
           </CheckControl>

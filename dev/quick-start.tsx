@@ -14,16 +14,47 @@ export function QuickStart() {
         </p>
       </div>
       <section className="setup-step">
-        <h2>1. Install an exact version</h2>
+        <h2>1. Install the package</h2>
         <CodeBlock
           language="text"
-          label="Shell"
+          label="Consumer app"
+          checkout={false}
           code={`pnpm add -E unlikely-ui@${packageMetadata.version}`}
         />
         <p>
           Requires React and React DOM {packageMetadata.peerDependencies.react}.
           ESM only. Tailwind is optional when consuming the precompiled styles.
+          Commit your app's lockfile and review the release notes before
+          upgrading.
         </p>
+        <p>
+          Alpha.3 adds named parts, semantic utilities, Switch, Tabs and Menu.
+          Dialog now includes a close button by default; audit custom dismissal
+          controls and use showCloseButton={'{false}'} where appropriate. Follow
+          the installed USAGE.md and declarations for your exact version.
+        </p>
+        <details>
+          <summary>Evaluate later checkout changes locally</summary>
+          <p>In the library repository, build a temporary tarball:</p>
+          <CodeBlock
+            language="text"
+            label="Library checkout"
+            code="pnpm pack --pack-destination .local/packages"
+          />
+          <p>
+            From your app, install the absolute path printed by that command:
+          </p>
+          <CodeBlock
+            language="text"
+            label="Consumer app"
+            code="pnpm add -E /absolute/path/to/the/generated-package.tgz"
+          />
+          <p>
+            A lockfile does not distribute the tarball. Other machines and CI
+            need the same file at the referenced path. Use a distinct published
+            version or a stable shared artifact for a committed app dependency.
+          </p>
+        </details>
       </section>
       <section className="setup-step">
         <h2>2. Import CSS and wrap your components</h2>
@@ -57,8 +88,13 @@ export function QuickStart() {
         <CodeBlock
           language="text"
           label="CSS"
-          code={`@layer theme, base, ui-theme, ui-base, ui-utilities, components, utilities;\n@import 'tailwindcss';\n@import 'unlikely-ui/styles.css';`}
+          code={`@layer theme, base, ui-theme, ui-base, ui-utilities, components, utilities;\n@import 'tailwindcss';\n@import 'unlikely-ui/styles.css';\n@import 'unlikely-ui/tailwind.css';`}
         />
+        <p>
+          Use shared controls and semantic utilities such as bg-background,
+          text-foreground, bg-card and text-muted-foreground across apps. Keep
+          page layouts and product workflows in the app.
+        </p>
       </section>
       <section className="setup-step" id="compatibility">
         <h2>Preview releases and compatibility</h2>

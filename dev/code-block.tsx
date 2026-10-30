@@ -9,12 +9,17 @@ export function CodeBlock({
   code,
   language = 'tsx',
   label,
+  checkout = true,
 }: {
   code: string;
   language?: 'tsx' | 'typescript' | 'text';
   label?: string;
+  checkout?: boolean;
 }) {
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState<{
+    code: string;
+    message: string;
+  } | null>(null);
   const [highlighted, setHighlighted] = useState<{
     code: string;
     language: string;
@@ -42,9 +47,9 @@ export function CodeBlock({
   async function copy() {
     try {
       await navigator.clipboard.writeText(code);
-      setFeedback('Copied');
+      setFeedback({ code, message: 'Copied' });
     } catch {
-      setFeedback('Select the snippet to copy');
+      setFeedback({ code, message: 'Select the snippet to copy' });
     }
   }
   return (
@@ -58,6 +63,11 @@ export function CodeBlock({
                 ? 'Text'
                 : 'TSX')}
         </span>
+        {checkout && (
+          <a className="code-availability" href="#quick-start">
+            Checkout source
+          </a>
+        )}
         <Button size="sm" variant="ghost" onClick={copy}>
           <Glyph name="copy" size={14} />
           Copy
@@ -97,7 +107,7 @@ export function CodeBlock({
         <ScrollArea.Corner />
       </ScrollArea.Root>
       <span className="copy-feedback" role="status">
-        {feedback}
+        {feedback?.code === code ? feedback.message : ''}
       </span>
     </div>
   );

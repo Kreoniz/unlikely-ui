@@ -1,0 +1,244 @@
+.signature-data-flap {
+  --flap-shell: var(--u-physical-casing);
+  --flap-plate: var(--u-physical-plate);
+  --flap-ink: var(--u-physical-inset);
+  --flap-face: color-mix(in srgb, var(--flap-shell), black 14%);
+  display: inline-block;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: 19px;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--flap-plate), black 40%);
+  border-radius: 31px;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--flap-plate), var(--flap-ink) 30%),
+    color-mix(in srgb, var(--flap-plate), var(--flap-ink) 16%) 52%,
+    var(--flap-plate)
+  );
+  box-shadow:
+    inset 0 2px 1px color-mix(in srgb, var(--flap-ink), transparent 40%),
+    inset 0 0 0 5px color-mix(in srgb, var(--flap-plate), var(--flap-ink) 15%),
+    inset 0 0 0 6px color-mix(in srgb, var(--flap-ink), transparent 80%),
+    0 5px 0 var(--flap-shell),
+    0 13px 16px -5px color-mix(in srgb, var(--flap-shell), transparent 45%);
+}
+.signature-data-sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.signature-data-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-inline-size: 0;
+  padding: 5px;
+  border: 1px solid color-mix(in srgb, var(--flap-ink), transparent 80%);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--flap-shell), black 60%);
+  box-shadow:
+    inset 0 2px 4px black,
+    0 1px 1px color-mix(in srgb, var(--flap-ink), transparent 65%);
+}
+.signature-data-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-inline-size: 0.79em;
+  max-inline-size: 100%;
+  block-size: 1.62em;
+  padding-inline: 0.06em;
+  box-sizing: border-box;
+  border: 2px solid color-mix(in srgb, var(--flap-shell), black 50%);
+  border-radius: 8px;
+  color: var(--flap-ink);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--flap-face), var(--flap-ink) 7%),
+    var(--flap-face) 52%,
+    color-mix(in srgb, var(--flap-face), var(--flap-ink) 4%)
+  );
+  box-shadow:
+    inset 0 1px 1px color-mix(in srgb, var(--flap-ink), transparent 85%),
+    inset 0 -2px 2px color-mix(in srgb, black, transparent 45%),
+    0 1px 0 color-mix(in srgb, var(--flap-ink), transparent 75%);
+  font: 650 clamp(40px, 5.6vw, 72px)/1 var(--u-font);
+  font-variant-numeric: tabular-nums;
+  perspective: 350px;
+}
+.signature-data-cell-value {
+  display: block;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 1px color-mix(in srgb, black, transparent 35%);
+}
+.signature-data-cell::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  border-block-start: 2px solid color-mix(in srgb, var(--flap-shell), black 45%);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--flap-ink), transparent 85%);
+  z-index: 4;
+  pointer-events: none;
+}
+.signature-data-cell-hinges {
+  position: absolute;
+  inset: 50% -4px auto;
+  block-size: 16px;
+  translate: 0 -50%;
+  z-index: 5;
+  pointer-events: none;
+}
+.signature-data-cell-hinges::before,
+.signature-data-cell-hinges::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inline-size: 5px;
+  border: 1px solid var(--flap-shell);
+  border-radius: 2px;
+  background: linear-gradient(
+    to bottom,
+    var(--flap-plate),
+    color-mix(in srgb, var(--flap-ink), var(--flap-plate) 35%) 28%,
+    var(--flap-plate) 72%
+  );
+  box-shadow: 0 1px 2px black;
+}
+.signature-data-cell-hinges::before {
+  inset-inline-start: 0;
+}
+.signature-data-cell-hinges::after {
+  inset-inline-end: 0;
+}
+.signature-data-old-leaf,
+.signature-data-old-bottom,
+.signature-data-new-leaf {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 50%;
+  overflow: hidden;
+  color: var(--flap-ink);
+  background: var(--flap-face);
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+.signature-data-old-leaf > span,
+.signature-data-old-bottom > span,
+.signature-data-new-leaf > span {
+  block-size: 200%;
+  display: grid;
+  place-items: center;
+}
+.signature-data-old-leaf {
+  inset-block-start: 0;
+  border-radius: 6px 6px 0 0;
+  transform-origin: center bottom;
+  animation: signature-flap-fold var(--flap-duration) ease-in forwards;
+  z-index: 3;
+}
+.signature-data-old-bottom {
+  inset-block-end: 0;
+  border-radius: 0 0 6px 6px;
+  animation: signature-flap-replace var(--flap-duration) steps(1) forwards;
+  z-index: 1;
+}
+.signature-data-new-leaf {
+  inset-block-end: 0;
+  border-radius: 0 0 6px 6px;
+  transform-origin: center top;
+  animation: signature-flap-unfold var(--flap-duration) ease-out forwards;
+  z-index: 2;
+}
+.signature-data-old-bottom > span,
+.signature-data-new-leaf > span {
+  transform: translateY(-50%);
+}
+@keyframes signature-flap-fold {
+  0% {
+    transform: rotateX(0);
+  }
+  50%,
+  100% {
+    transform: rotateX(-90deg);
+  }
+}
+@keyframes signature-flap-unfold {
+  0%,
+  50% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0);
+  }
+}
+@keyframes signature-flap-replace {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* One completion event governs the whole reading, including empty targets. */
+.signature-data-cells[data-flipping] {
+  animation: signature-flap-cycle var(--flap-duration) linear;
+}
+@keyframes signature-flap-cycle {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signature-data-cells,
+  .signature-data-old-leaf,
+  .signature-data-old-bottom,
+  .signature-data-new-leaf {
+    animation: none;
+  }
+  .signature-data-old-leaf,
+  .signature-data-old-bottom,
+  .signature-data-new-leaf {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .signature-data-flap {
+    padding: 13px;
+    border-radius: 24px;
+  }
+  .signature-data-cells {
+    gap: 4px;
+  }
+  .signature-data-cell {
+    font-size: clamp(36px, 9vw, 64px);
+  }
+}
+@media (forced-colors: active) {
+  .signature-data-flap,
+  .signature-data-cell {
+    border: 1px solid CanvasText;
+  }
+  .signature-data-cells,
+  .signature-data-old-leaf,
+  .signature-data-old-bottom,
+  .signature-data-new-leaf {
+    animation: none;
+  }
+  .signature-data-old-leaf,
+  .signature-data-old-bottom,
+  .signature-data-new-leaf {
+    display: none;
+  }
+}

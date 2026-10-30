@@ -6,9 +6,18 @@ import type {
 } from '../../src/components/physical-button.js';
 import { Button } from '../../src/components/button.js';
 import { Input } from '../../src/components/input.js';
-import { Field } from '../../src/components/field.js';
-import { RadioGroup } from '../../src/components/radio-group.js';
-import { Select } from '../../src/components/select.js';
+import { Field, FieldLabel } from '../../src/components/field.js';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../src/components/radio-group.js';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../src/components/select.js';
 import { Theme } from '../../src/theme.js';
 import { CheckControl } from '../controls.js';
 import { CodeBlock } from '../code-block.js';
@@ -145,8 +154,8 @@ ${markup
             </p>
           </div>
           <div className="physical-settings">
-            <Field.Root>
-              <Field.Label>Cap label</Field.Label>
+            <Field>
+              <FieldLabel>Cap label</FieldLabel>
               <Input
                 size="sm"
                 value={label}
@@ -154,10 +163,10 @@ ${markup
                 placeholder="Blank for no label"
                 onValueChange={setLabel}
               />
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Preset</Field.Label>
-              <Select.Root
+            </Field>
+            <Field>
+              <FieldLabel>Preset</FieldLabel>
+              <Select
                 defaultValue="industrial"
                 items={{ industrial: 'Industrial', mint: 'Mint', blue: 'Blue' }}
                 onValueChange={(value) => {
@@ -171,66 +180,66 @@ ${markup
                   setPattern(value === 'industrial' ? 'hazard' : 'plain');
                 }}
               >
-                <Select.Trigger size="sm">
-                  <Select.Value />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Item value="industrial">Industrial</Select.Item>
-                  <Select.Item value="mint">Mint</Select.Item>
-                  <Select.Item value="blue">Blue</Select.Item>
-                </Select.Content>
-              </Select.Root>
-            </Field.Root>
+                <SelectTrigger size="sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="industrial">Industrial</SelectItem>
+                  <SelectItem value="mint">Mint</SelectItem>
+                  <SelectItem value="blue">Blue</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
             <fieldset className="physical-setting-wide">
               <legend>Size</legend>
-              <RadioGroup.Root
+              <RadioGroup
                 variant="segmented"
                 aria-label="Physical button size"
                 value={size}
                 onValueChange={setSize}
               >
                 {(['sm', 'md', 'lg'] as const).map((value) => (
-                  <RadioGroup.Item key={value} value={value}>
+                  <RadioGroupItem key={value} value={value}>
                     {value}
-                  </RadioGroup.Item>
+                  </RadioGroupItem>
                 ))}
-              </RadioGroup.Root>
+              </RadioGroup>
             </fieldset>
-            <Field.Root>
-              <Field.Label>Shape</Field.Label>
-              <Select.Root
+            <Field>
+              <FieldLabel>Shape</FieldLabel>
+              <Select
                 value={shape}
                 onValueChange={(v) => v && setShape(v)}
                 items={{ round: 'Round', square: 'Square' }}
               >
-                <Select.Trigger size="sm">
-                  <Select.Value />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Item value="round">Round</Select.Item>
-                  <Select.Item value="square">Square</Select.Item>
-                </Select.Content>
-              </Select.Root>
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Press depth</Field.Label>
-              <Select.Root
+                <SelectTrigger size="sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="round">Round</SelectItem>
+                  <SelectItem value="square">Square</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field>
+              <FieldLabel>Press depth</FieldLabel>
+              <Select
                 value={depth}
                 onValueChange={(v) => v && setDepth(v)}
                 items={{ low: 'Low', medium: 'Medium', high: 'High' }}
               >
-                <Select.Trigger size="sm">
-                  <Select.Value />
-                </Select.Trigger>
-                <Select.Content>
+                <SelectTrigger size="sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
                   {(['low', 'medium', 'high'] as const).map((v) => (
-                    <Select.Item key={v} value={v}>
+                    <SelectItem key={v} value={v}>
                       {v.charAt(0).toUpperCase() + v.slice(1)}
-                    </Select.Item>
+                    </SelectItem>
                   ))}
-                </Select.Content>
-              </Select.Root>
-            </Field.Root>
+                </SelectContent>
+              </Select>
+            </Field>
             <div className="physical-colors physical-setting-wide">
               {slots.map(([key, title]) => (
                 <label className="physical-color" key={key}>

@@ -1,20 +1,44 @@
 # Component contracts
 
-Status: alpha preview contracts, updated 2026-10-25. Published alpha.2 contains
-22 components. Switch, Tabs, and Menu below are **unreleased checkout previews**,
-available in a locally built tarball and absent from published alpha.2. All examples require a
+Status: alpha.3 preview contracts, updated 2026-10-30. The package contains
+25 preview components, including Switch, Tabs and Menu. All examples require a
 `Theme` boundary and one import of `unlikely-ui/styles.css`.
 Each component is exported from the root and its matching kebab-case subpath.
 For app and agent setup, follow the [consumer guide](../USAGE.md).
 ScrollArea is included starting with alpha.2.
 
+**Alpha.3 migration:** standard controls now use
+callable roots and named parts following shadcn's Base UI conventions. Prefer
+`Dialog` / `DialogContent`, `Card` / `CardHeader`, `Select` / `SelectTrigger`,
+`Tabs` / `TabsTrigger` / `TabsContent`, and equivalent named parts in new code.
+The compound names remain compatibility aliases to the same
+implementation, except that `Combobox.Input` remains the bare input while
+`ComboboxInput` includes standard optional trigger/clear controls, and
+`ScrollArea.Root` / `Switch.Root` remain explicit composition surfaces.
+Removable ComboboxChip controls require a localized value-specific removeLabel.
+ComboboxInputProps describes the named composed input; ComboboxBareInputProps
+describes the bare compound input. The older ComboboxComposedInputProps type
+remains an alias for the named input.
+`DropdownMenu` and its implemented named parts also have a
+`unlikely-ui/dropdown-menu` subpath. This is not a guarantee of all shadcn APIs
+or blocks: the scoped theme, Field validation and Tooltip timing contracts
+below are deliberately retained. Generated declarations describe the exact
+installed exports. These changes are absent from published alpha.2.
+
 ## Actions and sizing
 
 Button owns text, text-with-icon, and icon-only actions. Regular sizes are
-`sm`, `md` (default), and `lg`. Square sizes are `icon-sm`, `icon`, and `icon-lg`.
+`default`, `xs`, `sm`, and `lg`. `md` remains a compatibility alias for default.
+Square sizes are `icon-xs`, `icon-sm`, `icon`, and `icon-lg`.
 An icon size requires `aria-label` or `aria-labelledby` in TypeScript. Icons are
 supplied by the app. The separate private IconButton export has been removed.
 This follows [shadcn's Button sizing convention](https://ui.shadcn.com/docs/components/base/button).
+Variants are default, outline, secondary, ghost, destructive and link; primary
+and danger remain compatibility aliases. `xs` uses a 32px visual target with
+tighter text/padding; all sizes retain the touch-target rule. `buttonVariants`
+returns the same classes for native links without imposing button semantics.
+When motion is allowed, ordinary buttons move down 1px while pressed. Disabled
+controls do not move; reduced-motion preference removes this press travel.
 
 There are no comfortable/compact theme modes. Theme controls appearance,
 direction and tokens; components expose explicit sizes. All small controls
@@ -22,23 +46,28 @@ retain at least 44px touch targets on coarse-pointer devices.
 
 ## Fields
 
-`Field.Root`, `Field.Label`, `Field.Description` and `Field.Error` wrap the
-corresponding Base UI parts. `Field.Control`, `Field.Item` and `Field.Validity`
+`Field`, `FieldLabel`, `FieldDescription` and `FieldError` wrap the
+corresponding Base UI parts. `FieldControl`, `FieldItem` and `FieldValidity`
 are available for composition; Control is unstyled. Use `Input` or `Textarea`
 for the default styled text controls. Labels, descriptions and visible errors
 are associated with the control through Base UI.
 
 ```tsx
-import { Field } from 'unlikely-ui/field';
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+} from 'unlikely-ui/field';
 import { Input } from 'unlikely-ui/input';
 
-<Field.Root name="email" validationMode="onBlur">
-  <Field.Label>Email address</Field.Label>
+<Field name="email" validationMode="onBlur">
+  <FieldLabel>Email address</FieldLabel>
   <Input type="email" required autoComplete="email" />
-  <Field.Description>Used for project invitations.</Field.Description>
-  <Field.Error match="valueMissing">Enter your email address.</Field.Error>
-  <Field.Error match="typeMismatch">Enter a valid email address.</Field.Error>
-</Field.Root>;
+  <FieldDescription>Used for project invitations.</FieldDescription>
+  <FieldError match="valueMissing">Enter your email address.</FieldError>
+  <FieldError match="typeMismatch">Enter a valid email address.</FieldError>
+</Field>;
 ```
 
 Base UI owns field state and validation timing. Its blur validation defers a
@@ -48,8 +77,8 @@ this behavior and errors after editing. An app can instead supply
 The library supplies no form-state framework or business validation.
 
 Input preserves Base UI's `render`, state-aware `className`/`style`, events,
-refs, and controlled/uncontrolled conventions. Its `size` is `sm | md | lg`;
-`md` is the 40px default, with `sm` and `lg` selecting 32px and 48px heights.
+refs, and controlled/uncontrolled conventions. Its `size` is `default | sm | md | lg`;
+default and its md alias are 40px, with sm and lg selecting 32px and 48px heights.
 It replaces the native numeric input `size` attribute.
 
 Textarea renders a native `<textarea>` through `Field.Control`, retaining field
@@ -77,6 +106,12 @@ and scrollable viewport. Consumers do not add another portal around Content.
 Use `portalProps` to set the container or `keepMounted`. Popover additionally
 accepts `positionerProps` for side, alignment, offsets and collision options.
 Base UI owns positioning, focus, dismissal and scroll locking.
+DialogContent now includes a corner dismiss action by default. Set
+`showCloseButton={false}` to supply only custom actions; `closeLabel` localizes
+the built-in action. DialogHeader and DialogFooter provide standard composition;
+Footer can append an optional close action. PopoverContent, SelectContent,
+ComboboxContent and TooltipContent accept direct positioning props in addition
+to the existing positionerProps escape hatch, which takes precedence.
 
 Popover positioners default to `positionMethod="fixed"`. This prevents the
 document from jumping when focus enters a popup portaled after the app content.
@@ -88,18 +123,25 @@ Positioned popups scale and fade from the anchor; dialogs fade and move slightly
 Base UI controls the closing mount phase. Reduced motion disables transitions.
 
 ```tsx
-import { Dialog } from 'unlikely-ui/dialog';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from 'unlikely-ui/dialog';
 import { Button } from 'unlikely-ui/button';
 
-<Dialog.Root>
-  <Dialog.Trigger render={<Button />}>New project</Dialog.Trigger>
-  <Dialog.Content>
-    <Dialog.Title>Create project</Dialog.Title>
-    <Dialog.Description>Add project details.</Dialog.Description>
+<Dialog>
+  <DialogTrigger render={<Button />}>New project</DialogTrigger>
+  <DialogContent>
+    <DialogTitle>Create project</DialogTitle>
+    <DialogDescription>Add project details.</DialogDescription>
     {/* Fields and application-owned submit behavior */}
-    <Dialog.Close render={<Button variant="secondary" />}>Cancel</Dialog.Close>
-  </Dialog.Content>
-</Dialog.Root>;
+    <DialogClose render={<Button variant="secondary" />}>Cancel</DialogClose>
+  </DialogContent>
+</Dialog>;
 ```
 
 Supply an accessible title and a concise description when relevant. Keep an
@@ -107,10 +149,10 @@ explicit close/cancel action reachable on touch screens. Dialog scrolls within
 the available viewport. Popover uses available positioning space and scrolls
 when necessary. The shared layer tokens allow a popover above a dialog.
 
-Content inherits appearance, direction and `Theme.tokens` overrides
+Content inherits appearance, direction, explicit `Theme.lang` and `Theme.tokens` overrides
 from its originating React tree. Ordinary ancestor CSS and `style` overrides
 are not transferred automatically. Importing an overlay does not set the app's
-global theme. A custom portal still needs its own empty Theme boundary.
+global theme or document language. A custom portal still needs its own empty Theme boundary.
 
 ## Tooltip
 
@@ -137,14 +179,21 @@ The shorter hover delay follows the quick end of
 This is a chosen library default, not an accessibility timing requirement.
 
 ```tsx
-<Tooltip.Provider>
-  <Tooltip.Root>
-    <Tooltip.Trigger render={<Button size="icon" aria-label="Add project" />}>
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from 'unlikely-ui/tooltip';
+
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger render={<Button size="icon" aria-label="Add project" />}>
       <PlusIcon />
-    </Tooltip.Trigger>
-    <Tooltip.Content>Create a new project</Tooltip.Content>
-  </Tooltip.Root>
-</Tooltip.Provider>
+    </TooltipTrigger>
+    <TooltipContent>Create a new project</TooltipContent>
+  </Tooltip>
+</TooltipProvider>;
 ```
 
 Tooltip text is supplementary. Icons still require accessible names; essential
@@ -160,24 +209,28 @@ Select exposes `Root`, `Trigger`, `Value`, `Content`, `Item`, `Group` and
 `items` to map values to display labels. Content includes the themed portal,
 positioner and scrollable list; it supports `portalProps` and `positionerProps`.
 The default popup opens below its trigger (`alignItemWithTrigger={false}`).
-Trigger accepts `sm | md | lg`, disabled and invalid states through Field.
-Use Field.Label to name the select.
+Trigger accepts default/sm/md/lg, disabled and invalid states through Field.
+Use FieldLabel to name the select.
 
 RadioGroup exposes `Root` and `Item`. Root preserves Base UI's controlled and
 uncontrolled state, arrow-key interaction, name and form props. Give the group
-an accessible name and label each item. When composing a group inside Field.Root, wrap each labeled item with
-Field.Item so its label and control retain independent IDs. Outside Field,
+an accessible name and label each item. When composing a group inside Field, wrap each labeled item with
+FieldItem so its label and control retain independent IDs. Outside Field,
 a normal wrapping label is sufficient.
 
 Checkbox preserves Base UI's checked/defaultChecked, onCheckedChange, required,
 disabled, read-only, indeterminate and form props. Label it with a wrapping
 label or an explicit accessible name. Mixed state has its own dash indicator.
+When motion is allowed, the check indicator settles in on entry and the box
+transitions between its semantic colors. Reduced motion removes those effects.
 
 ```tsx
-<RadioGroup.Root aria-label="Schedule" defaultValue="weekly">
-  <label><RadioGroup.Item value="daily" />Daily</label>
-  <label><RadioGroup.Item value="weekly" />Weekly</label>
-</RadioGroup.Root>
+import { RadioGroup, RadioGroupItem } from 'unlikely-ui/radio-group';
+
+<RadioGroup aria-label="Schedule" defaultValue="weekly">
+  <label><RadioGroupItem value="daily" />Daily</label>
+  <label><RadioGroupItem value="weekly" />Weekly</label>
+</RadioGroup>
 
 <label><Checkbox name="updates" />Email updates</label>
 ```
@@ -198,9 +251,10 @@ The packed fixture imports all new subpaths and checks declarations, server
 rendering, hydration, controlled fields, nested overlays and style isolation
 with and without consumer Tailwind. These are the tested browser cases, not a
 complete assistive-technology or physical-device audit. The package name and MIT
-license are selected; publication remains a separate step.
+license are selected. These contracts describe alpha.3; earlier releases retain
+their own installed guidance and declarations.
 
-## Private API changes in this iteration
+## Historical private-preview changes (before alpha.1)
 
 Imports now use `unlikely-ui/*`. Replace the former personal-scope imports.
 Replace IconButton with Button using `size="icon"`, `icon-sm`, or `icon-lg`,
@@ -230,8 +284,8 @@ for thematic breaks in content.
 There is no requirement to turn every layout element into a component.
 
 Use Switch for immediately applied boolean settings, Tabs for views with
-associated panels, and Menu for contextual actions. These three are unreleased
-checkout previews; check your installed version before importing them. Full schedule views,
+associated panels, and Menu for contextual actions. These three require
+alpha.3 or later. Full schedule views,
 group assignment and empty-state copy stay with the consuming app or a recipe.
 PhysicalButton belongs to the expressive set requested for playful surfaces.
 
@@ -245,15 +299,17 @@ navigation retain browser behavior. Only the scrollbar presentation is custom.
 ```tsx
 import { ScrollArea } from 'unlikely-ui/scroll-area';
 
-<ScrollArea.Root style={{ height: 240 }}>
-  <ScrollArea.Viewport role="region" aria-label="Resources">
-    <ScrollArea.Content>{/* Long content */}</ScrollArea.Content>
-  </ScrollArea.Viewport>
-  <ScrollArea.Scrollbar />
-</ScrollArea.Root>;
+<ScrollArea
+  style={{ height: 240 }}
+  viewportProps={{ role: 'region', 'aria-label': 'Resources' }}
+>
+  {/* Long content */}
+</ScrollArea>;
 ```
 
-The compound parts preserve Base UI props, state-based class/style callbacks,
+The named ScrollArea includes the viewport, content and default vertical bar.
+Use `ScrollArea.Root`, `.Viewport`, `.Content` and `.Scrollbar` for explicit
+composition when customizing that structure. These compound parts preserve Base UI props, state-based class/style callbacks,
 render composition and refs. Put a bounded size on Root, an accessible name and
 optional region role on Viewport, and content inside Content so geometry updates
 when it changes. Put scroll handlers and the programmatic scrolling ref on
@@ -355,7 +411,7 @@ includes a themed fixed positioner and animated popup. Input accepts the same
 visual sizes as Input. Root keeps controlled/uncontrolled query/value APIs,
 object equality/stringification, filtering and form integration.
 
-Keep Field.Label, Field.Description and Combobox under the same Field.Root
+Keep FieldLabel, FieldDescription and Combobox under the same Field
 to associate the label and help text. An explicit aria-label also works.
 Pass `items` and render List's item callback. For externally filtered
 results use `filter={null}`. Requests, debouncing and stale-response cancellation
@@ -364,7 +420,7 @@ Keep Status and Empty mounted and conditionally change their children; Base UI
 uses those parts for live announcements. Do not announce an empty result while
 loading or showing an error.
 
-RadioGroup.Root accepts `variant="segmented"`. Put text inside each Item and
+RadioGroup accepts `variant="segmented"`. Put text inside each RadioGroupItem and
 name the group. It retains radio selection and arrow keys; it is appropriate
 for filters in one view. Tabs with separate panels require a different contract.
 
@@ -405,6 +461,10 @@ Date on selection. Clicking the selected date retains it and closes the popup.
 Opening focuses the selected date; selecting or dismissing returns trigger
 focus. Today respects disabled/hidden matchers. Use calendarProps for calendar
 options and triggerProps for native trigger attributes/ref/className.
+Disabling an open picker closes it and prevents selection; enabling it again
+does not reopen it. If the app disables it while focus is inside the popup,
+move focus to a persistent enabled control as part of that action: the disabled
+trigger cannot receive focus. Existing focus elsewhere is retained.
 
 Dates represent local calendar dates. Apps own the effective today, timezone
 conversion and URL serialization; supply `today` for a deterministic server
@@ -463,25 +523,24 @@ subpaths without client directives. The Card showcase contains an empty-state
 recipe assembled from Card, text and Button; no EmptyState component is exported.
 Illustrations and app-specific copy remain outside the library runtime.
 
-## Switch (unreleased)
+## Switch
 
-`Switch.Root` and `Switch.Thumb` retain Base UI's checked/defaultChecked,
+`Switch` includes its thumb and retains Base UI's checked/defaultChecked,
 onCheckedChange, labeling, ref, disabled/readOnly, and native form behavior.
 Root includes the hidden form input. Supply an accessible label; use name/value
 and optional uncheckedValue when a form needs a submitted value. A form reset
 restores the uncontrolled default. Root's visible track is 40 × 24px; coarse
 pointers receive a non-overlapping 44px control box. Direction and selection
 roles follow Theme. No global preference persistence is installed.
-Field.Root invalid state gives the identifying track a danger border and retains
-the separate focus ring; use Field.Error for an associated explanation.
+Field invalid state gives the identifying track a danger border and retains
+the separate focus ring; use FieldError for an associated explanation.
+Use `Switch.Root` and `Switch.Thumb` for explicit composition with custom children.
 
 ```tsx
 import { Switch } from 'unlikely-ui/switch';
 
 <label>
-  <Switch.Root name="autosave" defaultChecked>
-    <Switch.Thumb />
-  </Switch.Root>
+  <Switch name="autosave" defaultChecked />
   Auto-save drafts
 </label>;
 ```
@@ -489,7 +548,13 @@ import { Switch } from 'unlikely-ui/switch';
 Choose Checkbox when a boolean is an independent choice submitted as part of
 another action. The showcase includes both controlled and form/reset examples.
 
-## Tabs (unreleased)
+## Tabs
+
+Named composition uses Tabs, TabsList, TabsTrigger and TabsContent. TabsList
+supports filled and line treatments without requiring an explicit indicator.
+The optional TabsIndicator retains Base UI's animated measured geometry.
+It refreshes that geometry after a Theme direction change without resetting
+the selected value or focused tab.
 
 `Tabs.Root`, `List`, `Tab`, `Indicator`, and `Panel` retain Base UI composition.
 Each Tab value corresponds to a Panel value. Name the List. The default uses
@@ -501,29 +566,30 @@ Panels are associated with their tabs; preserve the upstream keepMounted behavio
 when retaining local panel state is important.
 
 ```tsx
-import { Tabs } from 'unlikely-ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from 'unlikely-ui/tabs';
 
-<Tabs.Root defaultValue="account">
-  <Tabs.List aria-label="Preferences">
-    <Tabs.Tab value="account">Account</Tabs.Tab>
-    <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
-    <Tabs.Indicator />
-  </Tabs.List>
-  <Tabs.Panel value="account">Account settings</Tabs.Panel>
-  <Tabs.Panel value="notifications">Notification settings</Tabs.Panel>
-</Tabs.Root>;
+<Tabs defaultValue="account">
+  <TabsList aria-label="Preferences">
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="notifications">Notifications</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Account settings</TabsContent>
+  <TabsContent value="notifications">Notification settings</TabsContent>
+</Tabs>;
 ```
 
 Keep segmented RadioGroup for filtering one view. Use links for routed navigation,
-including the showcase's Examples/API pages. The initial styling is line tabs;
+including the showcase's Examples/API pages. Use `TabsList variant="line"` for line tabs;
 no additional theme density mode or panel-navigation abstraction is introduced.
 
-## Menu (unreleased)
+## Menu
 
-`Menu.Root`, `Trigger`, `Content`, `Item`, `Group`, `GroupLabel`, and `Separator`
-compose Base UI's action menu. Content includes Portal, a restoring Theme, and
+`DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`,
+`DropdownMenuGroup`, `DropdownMenuLabel` and `DropdownMenuSeparator` compose
+Base UI's action menu. `Menu.Root` and its compound parts remain compatibility
+aliases. Content includes Portal, a restoring Theme, and
 Positioner; consumers do not add another portal. portalProps controls the portal;
-positionerProps defaults to fixed positioning, start alignment, an 8px gap, and
+positionerProps defaults to fixed positioning, start alignment, a 4px gap, and
 16px collision padding. Popup props such as finalFocus remain available.
 Item.tone defaults to default; danger uses semantic destructive colors. Labels
 must identify actions independently of color. Disabled items retain Base UI's
@@ -532,18 +598,29 @@ focus. Trigger supports render={<Button />}. Submenus, command search, and
 checkbox/radio menu items are not part of this initial surface.
 
 ```tsx
-import { Menu } from 'unlikely-ui/menu';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+} from 'unlikely-ui/dropdown-menu';
 import { Button } from 'unlikely-ui/button';
 
-<Menu.Root>
-  <Menu.Trigger render={<Button variant="secondary" />}>Actions</Menu.Trigger>
-  <Menu.Content>
-    <Menu.Group>
-      <Menu.GroupLabel>Project</Menu.GroupLabel>
-      <Menu.Item onClick={() => console.log('Duplicate')}>Duplicate</Menu.Item>
-    </Menu.Group>
-  </Menu.Content>
-</Menu.Root>;
+<DropdownMenu>
+  <DropdownMenuTrigger render={<Button variant="secondary" />}>
+    Actions
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuGroup>
+      <DropdownMenuLabel>Project</DropdownMenuLabel>
+      <DropdownMenuItem onClick={() => console.log('Duplicate')}>
+        Duplicate
+      </DropdownMenuItem>
+    </DropdownMenuGroup>
+  </DropdownMenuContent>
+</DropdownMenu>;
 ```
 
 The showcase demonstrates menu-to-dialog handoff. While opening the dialog,

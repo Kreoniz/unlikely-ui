@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ComponentPropsWithRef } from 'react';
 import { dateMatchModifiers } from 'react-day-picker';
 import { Calendar } from './calendar.js';
@@ -15,7 +15,7 @@ export interface DatePickerProps {
   defaultValue?: Date;
   /** Called with the chosen date before the popup closes. */
   onValueChange?: (date: Date) => void;
-  /** Prevent opening or changing the date. */
+  /** Prevent opening or changing the date; closes an already-open popup. */
   disabled?: boolean;
   /** Trigger text when no date is selected. */
   placeholder?: string;
@@ -68,6 +68,9 @@ export function DatePicker({
 }: DatePickerProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (disabled) setOpen(false);
+  }, [disabled]);
   const selected = value === undefined ? internalValue : (value ?? undefined);
   const [month, setMonth] = useState(selected ?? today);
   const dateLabel = selected
@@ -78,15 +81,16 @@ export function DatePicker({
       })
     : placeholder;
   function select(date: Date | undefined) {
-    if (!date) return;
+    if (disabled || !date) return;
     if (value === undefined) setInternalValue(date);
     onValueChange?.(date);
     setOpen(false);
   }
   return (
     <Popover.Root
-      open={open}
+      open={open && !disabled}
       onOpenChange={(next) => {
+        if (next && disabled) return;
         if (next) setMonth(selected ?? today);
         setOpen(next);
       }}
@@ -117,6 +121,7 @@ export function DatePicker({
       >
         <Calendar
           {...calendarProps}
+          disabled={disabled ? true : calendarProps?.disabled}
           month={month}
           onMonthChange={setMonth}
           selected={selected}
@@ -132,6 +137,7 @@ export function DatePicker({
           className="u-date-picker-today"
           onClick={() => select(today)}
           disabled={
+            disabled ||
             dateMatchModifiers(today, calendarProps?.disabled ?? false) ||
             dateMatchModifiers(today, calendarProps?.hidden ?? false)
           }

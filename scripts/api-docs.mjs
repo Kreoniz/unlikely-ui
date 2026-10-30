@@ -175,9 +175,12 @@ export async function generateApi() {
       propsSymbol &&
       checker
         .getExportsOfModule(checker.getSymbolAtLocation(file))
-        .some((item) => unalias(item) === propsSymbol);
+        .find((item) => unalias(item) === propsSymbol);
+    const printedProps = propsType ? text(propsType, file) : '';
     const propsReference = publicProps
-      ? text(propsType, file)
+      ? /import\("[./]/.test(printedProps)
+        ? publicProps.name
+        : printedProps
       : `NonNullable<Parameters<${callableReference}>[0]>`;
     return {
       name,
@@ -226,21 +229,21 @@ export async function generateApi() {
       primary,
       primary.valueDeclaration ?? file,
     );
-    const parts = mainType.getCallSignatures().length
-      ? [callable(name, mainType, primary, file)]
-      : mainType
-          .getProperties()
-          .map((symbol) =>
-            callable(
-              `${name}.${symbol.name}`,
-              checker.getTypeOfSymbolAtLocation(
-                symbol,
-                symbol.valueDeclaration ?? file,
-              ),
-              symbol,
-              file,
-            ),
-          );
+    const parts = [];
+    if (mainType.getCallSignatures().length)
+      parts.push(callable(name, mainType, primary, file));
+    // Callable roots can carry legacy compound aliases during migration.
+    for (const symbol of mainType.getProperties()) {
+      const type = checker.getTypeOfSymbolAtLocation(
+        symbol,
+        symbol.valueDeclaration ?? file,
+      );
+      if (type.getCallSignatures().length)
+        parts.push({
+          ...callable(`${name}.${symbol.name}`, type, symbol, file),
+          compatibility: mainType.getCallSignatures().length > 0,
+        });
+    }
     const types = [];
     const values = [];
     for (const exported of exports.filter((symbol) => symbol !== primary)) {
@@ -260,6 +263,11 @@ export async function generateApi() {
               : [],
         });
       } else {
+        const type = checker.getTypeOfSymbolAtLocation(symbol, declaration);
+        if (type.getCallSignatures().length) {
+          parts.push(callable(exported.name, type, symbol, file));
+          continue;
+        }
         values.push({
           name: exported.name,
           type: text(
@@ -276,13 +284,58 @@ export async function generateApi() {
       upstream:
         entry.id === 'calendar'
           ? 'https://daypicker.dev/api'
-          : `https://base-ui.com/react/components/${entry.id === 'physical-button' ? 'button' : entry.id}`,
-      parts,
+          : entry.id === 'date-picker'
+            ? 'https://base-ui.com/react/components/popover'
+            : [
+                  'button',
+                  'physical-button',
+                  'checkbox',
+                  'combobox',
+                  'dialog',
+                  'field',
+                  'input',
+                  'menu',
+                  'dropdown-menu',
+                  'popover',
+                  'radio-group',
+                  'scroll-area',
+                  'select',
+                  'switch',
+                  'tabs',
+                  'toast',
+                  'tooltip',
+                ].includes(entry.id)
+              ? `https://base-ui.com/react/components/${{ 'physical-button': 'button', 'dropdown-menu': 'menu' }[entry.id] ?? entry.id}`
+              : undefined,
+      parts: parts.sort(
+        (a, b) =>
+          Number(Boolean(a.compatibility)) - Number(Boolean(b.compatibility)),
+      ),
       types: types.sort((a, b) => a.name.localeCompare(b.name, 'en')),
       values,
     };
   }
   return documents;
+}
+
+/** Identical aliases retain names and links without serializing their reflection twice. */
+export function compactApi(document) {
+  const seen = new Map();
+  return {
+    ...document,
+    parts: document.parts.map((part) => {
+      const { name, compatibility, ...content } = part;
+      const key = JSON.stringify(content);
+      if (seen.has(key))
+        return {
+          name,
+          ...(compatibility ? { compatibility } : {}),
+          aliasOf: seen.get(key),
+        };
+      seen.set(key, name);
+      return part;
+    }),
+  };
 }
 
 export async function writeApi(documents) {
@@ -293,7 +346,7 @@ export async function writeApi(documents) {
   }
   for (const [id, document] of Object.entries(documents)) {
     const path = resolve(output, `${id}.json`);
-    const content = JSON.stringify(document, null, 2) + '\n';
+    const content = JSON.stringify(compactApi(document), null, 2) + '\n';
     if ((await readFile(path, 'utf8').catch(() => '')) === content) continue;
     const temporary = `${path}.${process.pid}.tmp`;
     await writeFile(temporary, content);
@@ -308,6 +361,6 @@ if (
   const documents = await generateApi();
   await writeApi(documents);
   console.log(
-    `Generated API references for ${Object.keys(documents).length} components and ${Object.values(documents).reduce((count, document) => count + document.parts.length, 0)} public parts/functions.`,
+    `Generated API references for ${Object.keys(documents).length} component subpaths and ${Object.values(documents).reduce((count, document) => count + document.parts.length, 0)} public parts/functions.`,
   );
 }

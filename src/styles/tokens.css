@@ -1,6 +1,6 @@
-/* unlikely ui — foundations, 2026-10-19.
- * Opt-in runtime scope; distributed in the private M0 package build.
- * CSS is the source of truth for this draft. See tokens.md for the contract.
+/* unlikely ui — scoped foundations.
+ * Canonical values for the runtime and generated review sheet.
+ * See docs/foundations/tokens.md for the contract.
  */
 .u-theme {
   /* Private references: components consume semantic aliases below. */
@@ -62,6 +62,7 @@
   --u-physical-plate: #252b25;
   --u-physical-stripe: #f7dc36;
   --u-physical-indicator: #88f19e;
+  --u-physical-inset: #f7f4eb;
 
   /* Spaces: rem values assume the browser's default 16px root size. */
   --u-space-0: 0;
@@ -149,6 +150,28 @@
   --u-shadow: var(--u-shadow-sm);
   --u-panel-shadow: var(--u-shadow-md);
   --u-motion: var(--u-duration-normal);
+  /* shadcn vocabulary, resolved anew at every theme boundary and portal.
+   * Values remain owned by the semantic --u-* roles above. */
+  --background: var(--u-canvas);
+  --foreground: var(--u-ink);
+  --card: var(--u-surface);
+  --card-foreground: var(--u-ink);
+  --popover: var(--u-surface-raised);
+  --popover-foreground: var(--u-ink);
+  --primary: var(--u-accent);
+  --primary-foreground: var(--u-accent-ink);
+  --secondary: var(--u-surface-hover);
+  --secondary-foreground: var(--u-ink);
+  --muted: var(--u-well);
+  --muted-foreground: var(--u-muted);
+  --accent: var(--u-selection);
+  --accent-foreground: var(--u-selection-ink);
+  --destructive: var(--u-danger);
+  --destructive-foreground: var(--u-danger-soft);
+  --border: var(--u-line-soft);
+  --input: var(--u-line);
+  --ring: var(--u-focus);
+  --radius: var(--u-radius);
   color-scheme: light;
 }
 

@@ -1,9 +1,30 @@
 import { useRef, useState } from 'react';
-import { Menu } from '../../src/components/menu.js';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../src/components/dropdown-menu.js';
 import { Button } from '../../src/components/button.js';
-import { Card } from '../../src/components/card.js';
-import { Dialog } from '../../src/components/dialog.js';
-import { Field } from '../../src/components/field.js';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../../src/components/card.js';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '../../src/components/dialog.js';
+import { Field, FieldLabel } from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
 import { Theme } from '../../src/theme.js';
 import { CodeBlock } from '../code-block.js';
@@ -15,53 +36,60 @@ export function ProjectActions() {
   const [message, setMessage] = useState('');
   const trigger = useRef<HTMLButtonElement>(null);
   return (
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>{name}</Card.Title>
-        <Card.Description>
+    <Card>
+      <CardHeader>
+        <CardTitle>{name}</CardTitle>
+        <CardDescription>
           Contextual actions keep the main project action clear.
-        </Card.Description>
-      </Card.Header>
-      <Card.Content>
-        <Menu.Root>
-          <Menu.Trigger ref={trigger} render={<Button variant="secondary" />}>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            ref={trigger}
+            render={<Button variant="secondary" />}
+          >
             Project actions
-          </Menu.Trigger>
-          <Menu.Content finalFocus={() => (renaming ? false : trigger.current)}>
-            <Menu.Group>
-              <Menu.GroupLabel>Project actions</Menu.GroupLabel>
-              <Menu.Item
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            finalFocus={() => (renaming ? false : trigger.current)}
+          >
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Project actions</DropdownMenuLabel>
+              <DropdownMenuItem
                 onClick={() => {
                   setDraft(name);
                   setRenaming(true);
                 }}
               >
                 Rename
-              </Menu.Item>
-              <Menu.Item onClick={() => setMessage(`Duplicated ${name}.`)}>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setMessage(`Duplicated ${name}.`)}
+              >
                 Duplicate
-              </Menu.Item>
-              <Menu.Item disabled>Transfer ownership</Menu.Item>
-            </Menu.Group>
-            <Menu.Separator />
-            <Menu.Item
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled>Transfer ownership</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
               tone="danger"
               onClick={() => setMessage(`Archive requested for ${name}.`)}
             >
               Archive
-            </Menu.Item>
-          </Menu.Content>
-        </Menu.Root>
-      </Card.Content>
-      <Card.Footer>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </CardContent>
+      <CardFooter>
         <p role="status">{message || 'Choose an action.'}</p>
-      </Card.Footer>
-      <Dialog.Root open={renaming} onOpenChange={setRenaming}>
-        <Dialog.Content finalFocus={trigger}>
-          <Dialog.Title>Rename project</Dialog.Title>
-          <Dialog.Description>
+      </CardFooter>
+      <Dialog open={renaming} onOpenChange={setRenaming}>
+        <DialogContent finalFocus={trigger}>
+          <DialogTitle>Rename project</DialogTitle>
+          <DialogDescription>
             Choose a name you can recognize.
-          </Dialog.Description>
+          </DialogDescription>
           <form
             className="example-form"
             onSubmit={(event) => {
@@ -71,25 +99,25 @@ export function ProjectActions() {
               setRenaming(false);
             }}
           >
-            <Field.Root>
-              <Field.Label>Project title</Field.Label>
+            <Field>
+              <FieldLabel>Project title</FieldLabel>
               <Input
                 value={draft}
                 onValueChange={setDraft}
                 required
                 pattern={'.*\\S.*'}
               />
-            </Field.Root>
+            </Field>
             <div className="example-actions">
-              <Dialog.Close render={<Button variant="secondary" />}>
+              <DialogClose render={<Button variant="secondary" />}>
                 Cancel rename
-              </Dialog.Close>
+              </DialogClose>
               <Button type="submit">Save name</Button>
             </div>
           </form>
-        </Dialog.Content>
-      </Dialog.Root>
-    </Card.Root>
+        </DialogContent>
+      </Dialog>
+    </Card>
   );
 }
 
@@ -110,7 +138,7 @@ export function MenuExamples() {
         </p>
       </section>
       <CodeBlock
-        code={`import { Menu } from 'unlikely-ui/menu';\nimport { Button } from 'unlikely-ui/button';\n\n<Menu.Root>\n  <Menu.Trigger render={<Button variant="secondary" />}>Actions</Menu.Trigger>\n  <Menu.Content>\n    <Menu.Group>\n      <Menu.GroupLabel>Project</Menu.GroupLabel>\n      <Menu.Item onClick={() => console.log('Duplicate')}>Duplicate</Menu.Item>\n      <Menu.Item disabled>Transfer ownership</Menu.Item>\n    </Menu.Group>\n    <Menu.Separator />\n    <Menu.Item tone="danger" onClick={() => console.log('Archive requested')}>Archive</Menu.Item>\n  </Menu.Content>\n</Menu.Root>`}
+        code={`import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from 'unlikely-ui/dropdown-menu';\nimport { Button } from 'unlikely-ui/button';\n\n<DropdownMenu>\n  <DropdownMenuTrigger render={<Button variant="secondary" />}>Actions</DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuGroup>\n      <DropdownMenuLabel>Project</DropdownMenuLabel>\n      <DropdownMenuItem onClick={() => console.log('Duplicate')}>Duplicate</DropdownMenuItem>\n      <DropdownMenuItem disabled>Transfer ownership</DropdownMenuItem>\n    </DropdownMenuGroup>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem tone="danger" onClick={() => console.log('Archive requested')}>Archive</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>`}
       />
       <section className="specimen" aria-label="Nested menu theme">
         <div className="specimen-heading">

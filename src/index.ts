@@ -1,10 +1,15 @@
-export { Alert } from './components/alert.js';
+export {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertActions,
+} from './components/alert.js';
 export type { AlertProps } from './components/alert.js';
 
 export { Badge } from './components/badge.js';
 export type { BadgeProps, StatusTone } from './components/badge.js';
 
-export { Button } from './components/button.js';
+export { Button, buttonVariants } from './components/button.js';
 export type {
   ButtonProps,
   ButtonSize,
@@ -14,15 +19,43 @@ export type {
 export { Calendar } from './components/calendar.js';
 export type { CalendarProps } from './components/calendar.js';
 
-export { Card } from './components/card.js';
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardAction,
+  CardContent,
+  CardFooter,
+} from './components/card.js';
 export type { CardProps } from './components/card.js';
 
 export { Checkbox } from './components/checkbox.js';
 export type { CheckboxProps } from './components/checkbox.js';
 
-export { Combobox } from './components/combobox.js';
+export {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxStatus,
+  ComboboxEmpty,
+  ComboboxTrigger,
+  ComboboxClear,
+  ComboboxValue,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxCollection,
+  ComboboxSeparator,
+  ComboboxChips,
+  ComboboxChip,
+  ComboboxChipsInput,
+  useComboboxAnchor,
+} from './components/combobox.js';
 export type {
   ComboboxInputProps,
+  ComboboxBareInputProps,
   ComboboxContentProps,
   ComboboxItemProps,
   ComboboxListProps,
@@ -33,14 +66,33 @@ export type {
 export { DatePicker } from './components/date-picker.js';
 export type { DatePickerProps } from './components/date-picker.js';
 
-export { Dialog } from './components/dialog.js';
+export {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+  DialogClose,
+  DialogPortal,
+  DialogOverlay,
+  DialogHeader,
+  DialogFooter,
+} from './components/dialog.js';
 export type {
   DialogContentProps,
   DialogTitleProps,
   DialogDescriptionProps,
 } from './components/dialog.js';
 
-export { Field } from './components/field.js';
+export {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+  FieldControl,
+  FieldItem,
+  FieldValidity,
+} from './components/field.js';
 export type {
   FieldRootProps,
   FieldLabelProps,
@@ -57,20 +109,35 @@ export type {
   PhysicalButtonColors,
 } from './components/physical-button.js';
 
-export { Popover } from './components/popover.js';
+export {
+  Popover,
+  PopoverContent,
+  PopoverTitle,
+  PopoverDescription,
+  PopoverTrigger,
+  PopoverClose,
+  PopoverHeader,
+} from './components/popover.js';
 export type {
   PopoverContentProps,
   PopoverTitleProps,
   PopoverDescriptionProps,
 } from './components/popover.js';
 
-export { RadioGroup } from './components/radio-group.js';
+export { RadioGroup, RadioGroupItem } from './components/radio-group.js';
 export type {
   RadioGroupProps,
   RadioItemProps,
 } from './components/radio-group.js';
 
-export { ScrollArea } from './components/scroll-area.js';
+export {
+  ScrollArea,
+  ScrollBar,
+  ScrollAreaViewport,
+  ScrollAreaContent,
+  ScrollAreaThumb,
+  ScrollAreaCorner,
+} from './components/scroll-area.js';
 export type {
   ScrollAreaRootProps,
   ScrollAreaViewportProps,
@@ -80,7 +147,18 @@ export type {
   ScrollAreaCornerProps,
 } from './components/scroll-area.js';
 
-export { Select } from './components/select.js';
+export {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from './components/select.js';
 export type {
   SelectTriggerProps,
   SelectContentProps,
@@ -107,7 +185,12 @@ export type {
 export { Toast } from './components/toast.js';
 export type { ToastViewportProps } from './components/toast.js';
 
-export { Tooltip } from './components/tooltip.js';
+export {
+  Tooltip,
+  TooltipProvider,
+  TooltipContent,
+  TooltipTrigger,
+} from './components/tooltip.js';
 export type {
   TooltipContentProps,
   TooltipRootProps,
@@ -115,7 +198,17 @@ export type {
   TooltipProviderProps,
 } from './components/tooltip.js';
 
-export { Menu } from './components/menu.js';
+export {
+  Menu,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+} from './components/menu.js';
 export type {
   MenuContentProps,
   MenuItemProps,
@@ -123,10 +216,16 @@ export type {
   MenuSeparatorProps,
 } from './components/menu.js';
 
-export { Switch } from './components/switch.js';
+export { Switch, SwitchThumb } from './components/switch.js';
 export type { SwitchRootProps, SwitchThumbProps } from './components/switch.js';
 
-export { Tabs } from './components/tabs.js';
+export {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  TabsIndicator,
+} from './components/tabs.js';
 export type {
   TabsRootProps,
   TabsListProps,
@@ -134,3 +233,16 @@ export type {
   TabsPanelProps,
   TabsIndicatorProps,
 } from './components/tabs.js';
+
+export type { ButtonStyleProps } from './components/button.js';
+export type { DialogFooterProps } from './components/dialog.js';
+export type {
+  ComboboxComposedInputProps,
+  ComboboxChipProps,
+} from './components/combobox.js';
+export type { SwitchProps } from './components/switch.js';
+export type { ScrollAreaProps } from './components/scroll-area.js';
+export type {
+  DropdownMenuContentProps,
+  DropdownMenuItemProps,
+} from './components/dropdown-menu.js';

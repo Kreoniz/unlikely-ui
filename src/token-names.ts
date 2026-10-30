@@ -50,6 +50,7 @@ export type ThemeToken =
   | '--u-physical-plate'
   | '--u-physical-stripe'
   | '--u-physical-indicator'
+  | '--u-physical-inset'
   | '--u-space-0'
   | '--u-space-0-5'
   | '--u-space-1'

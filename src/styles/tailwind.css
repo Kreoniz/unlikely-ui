@@ -8,6 +8,7 @@
   --color-u-muted: var(--u-muted);
   --color-u-line: var(--u-line);
   --color-u-accent: var(--u-accent);
+  --color-u-accent-text: var(--u-accent-text);
   --color-u-accent-hover: var(--u-accent-hover);
   --color-u-accent-pressed: var(--u-accent-pressed);
   --color-u-accent-ink: var(--u-accent-ink);
@@ -19,4 +20,29 @@
   --color-u-danger-border: var(--u-danger-border);
   --font-u-sans: var(--u-font);
   --radius-u-control: var(--u-radius);
+  /* Opt-in app utilities using shadcn's semantic vocabulary. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--u-font);
+  --radius-sm: var(--u-radius-sm);
+  --radius-md: var(--u-radius-md);
+  --radius-lg: var(--u-radius-lg);
+  --radius-xl: var(--u-radius-xl);
 }

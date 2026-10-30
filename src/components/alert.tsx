@@ -13,6 +13,7 @@ function AlertRoot({
 }: AlertProps) {
   return (
     <div
+      data-slot="alert"
       {...props}
       role={role}
       data-tone={tone}
@@ -20,26 +21,34 @@ function AlertRoot({
     />
   );
 }
-function AlertTitle({ className, ...props }: ComponentPropsWithRef<'div'>) {
-  return (
-    <div
-      {...props}
-      className={['u-alert-title', className].filter(Boolean).join(' ')}
-    />
-  );
-}
-function AlertDescription({
+export function AlertTitle({
   className,
   ...props
 }: ComponentPropsWithRef<'div'>) {
   return (
     <div
+      data-slot="alert-title"
+      {...props}
+      className={['u-alert-title', className].filter(Boolean).join(' ')}
+    />
+  );
+}
+export function AlertDescription({
+  className,
+  ...props
+}: ComponentPropsWithRef<'div'>) {
+  return (
+    <div
+      data-slot="alert-description"
       {...props}
       className={['u-alert-description', className].filter(Boolean).join(' ')}
     />
   );
 }
-function AlertActions({ className, ...props }: ComponentPropsWithRef<'div'>) {
+export function AlertActions({
+  className,
+  ...props
+}: ComponentPropsWithRef<'div'>) {
   return (
     <div
       {...props}
@@ -47,9 +56,9 @@ function AlertActions({ className, ...props }: ComponentPropsWithRef<'div'>) {
     />
   );
 }
-export const Alert = {
+export const Alert = Object.assign(AlertRoot, {
   Root: AlertRoot,
   Title: AlertTitle,
   Description: AlertDescription,
   Actions: AlertActions,
-};
+});

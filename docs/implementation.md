@@ -1,287 +1,196 @@
-# Implementation plan
+# Implementation status
 
-Status: alpha.2 published, 2026-10-22. M0, M1 fields/actions, and
-M2 overlay implementations exist with browser and packed-consumer checks.
-All catalogue entries are previews. Alpha.2 adds ScrollArea after the
-first alpha, bringing the catalogue to twenty-two. The owner selected the unscoped
-`unlikely-ui` name and MIT license. `0.1.0-alpha.2` is published on npm under
-`next`; `latest` remains alpha.1 from the first publication. See the
-[release record](./release-2026-10-22.md). The source registry is planned.
-Campus migration is separate. On 2026-10-25, the checkout adds unreleased
-Switch, Tabs and Menu previews (twenty-five catalogue entries), adoption and
-form recipes, and showcase review fixes. These additions are not published.
+Updated 2026-10-30. Keep implemented checkout behavior separate from published
+releases and future delivery options.
 
-## Initial scope
+- **Release candidate:** `unlikely-ui@0.1.0-alpha.3` contains twenty-five preview
+  catalogue entries, including Switch, Tabs and Menu. The shadcn Base UI
+  convention migration adds callable roots, named parts, standard Button variants,
+  `buttonVariants`, composed controls and scoped semantic Tailwind aliases.
+  Existing compound names remain available, with documented differences such
+  as Dialog's new close-button default. See
+  [consumer migration guidance](../USAGE.md#upgrades-and-validation).
+  Publication is recorded only after a verified registry lookup.
+- **Previous release:** alpha.2 was published on 2026-10-22 with twenty-two
+  preview entries, including ScrollArea. See [its release record](./release-2026-10-22.md).
+- **App studies:** Margin and Dispatch are in-memory, app-owned experiments
+  outside the npm runtime. The owner requested a stronger visual/motion direction
+  after reviewing the first studies. That revision is implemented and checked
+  in the checkout. The final council is complete; bounded findings were fixed
+  afterward without rescoring. Owner feedback remains pending. See
+  [the app-study evidence](./app-studies-2026-10-30.md).
+- **Signature studies:** all six owner-selected experiments are reconstructed
+  against the original imagegen references in Devspace, outside the npm package.
+  The first implementations were rejected on 2026-10-30; the completed council
+  sequence reviewed those substitutes and does not score this reconstruction.
+  The revision restores the output-slot Receipt, mechanical Split-flap, hinged
+  Guarded action, material Allocation bar with locks, signed shadow-offset XY
+  pad and six-sector contextual Radial menu. Owner acceptance remains pending.
+  See [contracts and limits](./signature-studies.md).
+- **Delivery:** one npm package is the default. A source registry is an optional
+  future delivery mode, not an implemented or scheduled second edition. Further
+  publication, deployment and Campus migration are separate operations.
 
-Build one React library on Base UI and Tailwind CSS v4. Start with one root npm
-package and one local Vite/React gallery. Use the selected unscoped name
-`unlikely-ui`, now published for the first alpha. Keep one
-version for tokens and components. A source registry can later use the same
-component source; see [packaging](./packaging.md).
+## Shared boundary
 
-The first vertical slice is a small named-field form opened from a button in
-a dialog. It must work in both appearances, all control sizes, with a custom token
-override, and in a nested theme. This exercises the design and the package's
-hard boundaries before the catalogue grows.
+Base UI owns interaction, keyboard, focus, positioning and controlled-state
+conventions. The library owns styled composition, semantic tokens, loading and
+naming contracts, scoped theme restoration, declarations and consumer CSS
+integration. Apps own layouts, requests, business state, copy and font loading.
+
+The shadcn adaptation improves familiar composition; it does not promise every
+upstream API or third-party block, automatic merging, or measured maintenance
+savings. Pinned provenance is in `docs/shadcn-upstream.json`; follow the
+[upstream review workflow](./packaging.md#shadcn-upstream-maintenance).
+
+Use one implementation and release version for controls and tokens. Preserve
+explicit subpaths, CSS imports, React peers, interactive client directives and
+presentation-only module boundaries. Source delivery must reuse this source if
+it is selected later. See [packaging](./packaging.md) for the public contract.
 
 ## Repository layout
 
-The M0–M2 source tree exists. Add further entries only when their milestone starts.
-
 ```text
-unlikely-ui/
-  AGENTS.md
-  CONTEXT.md
-  README.md
-  package.json                 # one unscoped publishable package
-  LICENSE                      # MIT; brand/font assets have separate terms
-  CHANGELOG.md                 # release notes and compatibility policy
-  pnpm-lock.yaml
-  pnpm-workspace.yaml          # build-script allowlist; no member packages
-  mise.toml                    # verified runtime pins, added in M0
-  tsconfig.json
-  tsconfig.build.json
-  vite.config.ts               # local gallery only
-  src/
-    index.ts                   # explicit public re-exports
-    theme.tsx                  # scoped appearance and token context
-    components/
-      alert.tsx
-      badge.tsx
-      button.tsx
-      calendar.tsx
-      card.tsx
-      checkbox.tsx
-      combobox.tsx
-      date-picker.tsx
-      dialog.tsx
-      field.tsx
-      input.tsx
-      menu.tsx
-      physical-button.tsx
-      popover.tsx
-      radio-group.tsx
-      scroll-area.tsx
-      select.tsx
-      skeleton.tsx
-      spinner.tsx
-      switch.tsx
-      tabs.tsx
-      textarea.tsx
-      toast.tsx
-      tooltip.tsx
-    lib/                       # state-class composition and text-control classes
-    styles/
-      tokens.css               # canonical values after the M0 move
-      tailwind.css             # semantic utility mappings / build input
-      index.css                # library stylesheet entry
-  dev/
-    index.html
-    main.tsx
-    gallery.tsx
-    catalog.ts                 # component discovery and actual maturity
-    examples/                  # component playgrounds
-    experiments/               # runnable work excluded from npm
-    public/                    # showcase-only assets and font notices
-  tests/
-    browser/                   # behavior checks against gallery cases
-    consumer/                  # fixture consuming the packed npm artifact
-  scripts/                     # small build / pack / fixture orchestration
-  docs/
-    foundations/               # rationale, generator, review sheet, report
-    implementation.md
-    packaging.md
-    showcase.md
-  dist/                        # generated and ignored
-  .local/                      # ignored disk-backed fixture/cache work
+src/
+  index.ts                 # public re-exports
+  theme.tsx                # scoped appearance, direction and token overrides
+  token-names.ts           # generated from canonical CSS
+  components/              # flat component modules and compatibility subpaths
+  lib/                     # small styling/control helpers
+  styles/
+    tokens.css             # only editable token values
+    tailwind.css           # optional semantic utility adapter
+    index.css              # library stylesheet entry
+
+dev/                       # separate Vite gallery
+  catalog.ts               # alphabetical discovery and maturity
+  examples/                # component examples and app-owned recipes
+  experiments/             # investigations and app studies, excluded from npm
+  generated/api/           # generated and ignored API JSON
+  public/                  # showcase assets and font notices
+
+tests/
+  browser/                 # gallery and installed-consumer behavior checks
+  consumer/                # packed-artifact fixture
+  adoption/                # archived independent consumer trial
+scripts/                   # build, docs, token and fixture orchestration
+docs/                      # contracts, rationale, evidence and release records
+dist/                      # generated npm output, ignored
+.local/                    # ignored disk-backed builds, fixtures and diagnostics
 ```
 
-Use a flat file per component initially; create a component directory only when
-multiple files warrant it. Keep examples and tests outside published source.
-No `apps/*`, `packages/*`, monorepo task runner, separate tokens package or
-empty registry directory is needed for this scope. A second independently
-released product would be a reason to revisit the layout.
-
-M0 moved the canonical CSS to `src/styles/tokens.css`; the existing sheet
-builder now reads that source. The foundation document/report remain in docs.
-Token-name types are generated by `scripts/token-types.mjs`.
+Keep component-local variants and relative sibling imports. Create a component
+directory only when multiple files warrant it. No monorepo runner, empty
+registry scaffold, separate tokens package or product model belongs here without
+a concrete need. Runtime and pnpm pins live in `mise.toml` and `package.json`.
 
 ## Showcase and devspace
 
-The Vite workspace implements overview, foundations, component playgrounds and
-devspace, with appearance and sizes controls, search, copyable examples and honest
-maturity labels. See [showcase](./showcase.md). New work appears here as it is
-implemented; experiments stay outside the package until their contracts settle.
+The gallery implements overview, setup, foundations, recipes, component
+examples/API views, app studies and devspace. Search and shareable links aid
+composition discovery; availability notices distinguish checkout examples from
+npm. Experiments stay outside the package until their contracts and relevant
+checks justify promotion. See [showcase](./showcase.md).
 
 ## M0 — Foundations and package proof
 
-Work:
+Implemented foundation: scoped `.u-theme`, explicit `tokens` overrides, inherited
+appearance/direction, canonical CSS values and generated token-name types.
+Package utilities use `ui:` with `ui-theme`, `ui-base`, `ui-utilities` layers.
 
-- Scaffold TypeScript and the local gallery; pin verified runtimes with mise
-  and use the existing pnpm version. Choose the initial React major based on
-  the fixture and publish only its tested peer range.
-- Implement a scoped `Theme` with controlled `appearance="light" | "dark"`. The app owns persistence and the
-  resolution of system preference. The implemented runtime scope is `.u-theme`.
-- Support explicit semantic overrides through `Theme`'s `tokens` prop. Define
-  their inherited/merged behavior before implementing portal wrappers. Include
-  direction inheritance in the overlay integration; do not impose global LTR.
-- Map tokens to Tailwind utilities and prove the style compilation and override
-  boundary using a button-sized specimen. Prototype a portaled specimen now;
-  the public Dialog implementation belongs to M2.
-- Start with ordinary TypeScript ESM/declaration emission and a Tailwind CSS
-  build. Add a dedicated bundler only if a concrete output requirement needs
-  it. Preserve module boundaries and emitted client directives.
-- Establish explicit JS, types and CSS exports; test a packed tarball from a
-  separate fixture. Never use an export pointing to a file the build omits.
-
-Style integration gate:
-
-M0 established the `ui:` prefix and `ui-theme`, `ui-base`, `ui-utilities`
-layers. The isolated fixture proves coexistence with an unprefixed consumer
-Tailwind build and an intentional utility override. A plain fixture proves
-native host-control styles are unchanged. The concrete import/layer recipe is
-recorded in `docs/packaging.md`; preserve these checks during later changes.
-
-The optional future source-registry build will need to normalize the library
-prefix or supply a documented compatible build input. Keep prefixes and class
-lists deterministic so this is a build concern, not a hand-maintained edition.
-
-Done when:
-
-- Theme appearance and sizes and explicit overrides reach the portaled specimen,
-  including an inner light scope inside a dark scope and the reverse.
-- Consumer control styles are unchanged by the library; the library retains
-  its intended styles; an allowed consumer override has an explicit passing
-  example. Focus, motion and touch sizing remain intact.
-- The tarball fixture loads its declared exports, CSS and types, uses the
-  declared peer dependencies, and does not require repository aliases/files.
-- A browser-rendered SSR smoke check catches import-time DOM assumptions and
-  hydration mismatch in the chosen theme contract. Preserve interactive client
-  entry directives; a full framework compatibility claim needs its own fixture.
+Preserve the integration gate: opposite nested appearances and token overrides
+reach portals; host controls remain isolated; allowed consumer overrides work
+in the documented cascade; packed exports/types/CSS resolve without repository
+aliases; DOM-free SSR and browser hydration succeed. A plain React fixture and
+an app-owned Tailwind fixture cover the supported style boundary. A broader
+framework claim needs its own fixture.
 
 ## M1 — Actions and fields
 
-Build `Button`, `Field`, `Input` and `Textarea` on the foundation.
+Button, Field, Input and Textarea are preview implementations. The current
+checkout uses standard Button variant/size names and retains older aliases.
+Icon-only sizes require an accessible name; apps supply icons. Loading retains
+layout/name and exposes busy state.
 
-- `Button`: primary, secondary, ghost and danger variants; sm/md/lg sizes;
-  disabled, loading, hover, pressed and focus-visible states. Loading retains
-  layout and an accessible name and exposes busy state. Preserve Base UI's
-  supported composition and native semantics.
-- Icon-only actions use Button sizes `icon`, `icon-sm`, and `icon-lg`, with
-  a required accessible name. Consumers supply icons. A tooltip is optional.
-- `Field`: Base UI composition for label, description, control and error.
-  Associate text and invalid state with the control. It does not own form
-  state, business validation, or a dependency on a form framework.
-- `Input` and `Textarea`: controlled/uncontrolled values, disabled, read-only,
-  invalid, placeholder and focus behavior. Use the appropriate Base UI/native
-  control rather than inventing missing primitives.
-
-Done when the example form is understandable by accessible names, can be
-completed using the keyboard, shows an associated error, and stays readable
-and aligned in all appearance and sizes examples. Check disabled and read-only
-as different states. Exercise consumer event/ref composition where supported.
+Field preserves Base UI association and validation timing. It supplies no form
+framework or business validation. Text controls retain controlled/uncontrolled,
+ref/event, disabled and read-only behavior. Preserve keyboard-completable forms,
+associated errors, visible focus, touch sizing and consumer composition.
 
 ## M2 — Overlays and the first alpha
 
-Build `Dialog`, `Popover` and `Tooltip` with recognizable compound parts from
-Base UI. Keep positioning, dismissal and focus behavior in Base UI. Do not
-replace these with a generic overlay abstraction.
+Dialog, Popover and Tooltip compose Base UI without a generic replacement
+engine. Content wrappers own the portal/positioning composition and restore
+originating Theme settings, including nested overrides and direction.
 
-Done when:
+Preserve title/description and trigger naming, focus containment/return,
+dismissal, nested popup stacking, narrow layouts and reduced motion. Essential
+information must remain available without hover. The packed project-form slice,
+keyboard cases and representative axe checks supplied the first alpha's bounded
+integration evidence. No comprehensive human accessibility audit is implied.
 
-- Dialog has a title/description, sensible initial focus, focus containment,
-  dismissal and focus return. Popover and Tooltip expose named triggers and
-  correct keyboard behavior. Check disabled-trigger cases intentionally.
-- Nested theme values, direction and explicit token overrides reach
-  portaled content. Test a popover launched from a dialog and its stacking.
-- Narrow layouts, zoom/reflow and reduced motion remain usable; essential
-  information is available without relying on a tooltip or hover alone.
-- The vertical slice works from the tarball, and an initial accessibility check
-  plus browser keyboard checks pass on the library's actual composition.
-- Build exports, declaration files, CSS contents, dependency ranges and the
-  public contract are reviewed. Naming/licensing and release access are resolved
-  before an actual publish. Document findings and remaining limitations.
-
-This is enough scope for a useful `0.1.0-alpha.1`; a broad component catalogue
-is not an alpha requirement. Publishing is a separate release action.
+Alpha.1 was published on 2026-10-20; alpha.2 followed on 2026-10-22. Publication
+is an explicit release action, not a milestone's automatic side effect.
 
 ## M3 — Common controls and presentation
 
-Select, RadioGroup (including segmented selection), and Checkbox are alpha previews.
-The checkout now adds Switch, Tabs, and Menu as unreleased previews.
-Implement keyboard and controlled-state examples with each, and validate the
-styled integration rather than retesting Base UI internals wholesale.
+Select, RadioGroup (including segmented selection), Checkbox, Combobox,
+Calendar, DatePicker, Toast, Spinner, Skeleton, Badge, Alert, Card, ScrollArea
+and PhysicalButton are preview implementations. Switch, Tabs and Menu are
+alpha.3 previews. Calendar wraps React DayPicker single-date mode;
+DatePicker composes Calendar, Popover and Button. PhysicalButton is an opt-in
+expressive control, separate from ordinary Button geometry.
 
-The Campus adoption requirements added Combobox, a single-date Calendar and
-DatePicker, Toast, Spinner, Skeleton, Badge, Alert, and Card. Combobox
-and Toast compose Base UI; Calendar uses React DayPicker for its accessible grid
-and localization. DatePicker composes Calendar, Popover, and Button. Shared
-semantic tokens provide their styles. Empty state is a Card/Button recipe.
-
-Full scheduling calendars, data-table engines, charts, application sidebars,
-drag-and-drop and product business logic remain outside the library. Apps own
-search requests/debouncing, today/timezone policy, URL dates and schedule rendering.
+Apps own search/debouncing, effective today/timezone policy, local-date
+serialization and scheduling logic. Empty states and settings/task workflows
+remain compositions, not new runtime widgets. Full scheduling calendars,
+data-table engines, chart systems and product navigation remain outside the
+current library scope.
 
 ## Validation and scripts
 
-Foundation check: `pnpm tokens:check` (or its Python command). It regenerates the
-sheet and checks 98 palette pairs; it is not a browser/component audit.
+- `pnpm dev`: regenerate API docs and run the local gallery.
+- `pnpm check`: regenerate token types/API docs and type-check source/examples.
+- `pnpm docs:generate` / `pnpm test:docs`: generate and verify public API extraction.
+- `pnpm tokens:check`: regenerate the foundations sheet and contrast report;
+  currently 98 palette pairs, not a component accessibility audit.
+- `pnpm build`: clean ESM, declarations, CSS, tokens and Tailwind adapter output.
+- `pnpm showcase:build`: regenerate API docs and build the static gallery.
+- `pnpm test:browser`: Playwright gallery workflows, responsive behavior and
+  representative axe checks. Human screen-reader/zoom/device checks are separate.
+- `pnpm test:consumer`: build/pack/install the artifact, check exports/docs/types,
+  copied recipes/app-study types, SSR/hydration, portals and CSS integration in
+  plain React and consumer Tailwind modes.
+- `pnpm release:check`: the complete pre-publication gate above. `prepack`
+  builds; `prepublishOnly` runs the release gate. See [releasing](./releasing.md).
 
-Implemented scripts:
+Use the narrowest meaningful checks after ordinary changes and the full gate
+for a release candidate. Test integration behavior rather than static class maps;
+one passing palette or screenshot does not establish accessibility. Keep heavy
+fixtures/caches on disk and use separate Playwright output directories for
+concurrent diagnostic runs.
 
-- `pnpm dev`: local Vite gallery, source changes visible immediately.
-- `pnpm check`: TypeScript checks for source and examples.
-- `pnpm build`: ESM, declarations, runtime CSS, tokens and optional Tailwind
-  adapter outputs, with a clean `dist/`.
-- `pnpm test:browser`: focused real-browser checks of named gallery cases,
-  initially using Playwright. Add an accessibility integration for M2's gate.
-- `pnpm test:consumer`: pack the artifact and install/use it in the isolated
-  fixture under `.local/`; verify production build and style integration.
-- `pnpm release:check`: complete release gate, including typed API extraction,
-  foundations, production showcase, browser cases and the packed consumer.
-- `prepack`: clean library build; `prepublishOnly`: complete release gate.
-  See [the release workflow](./releasing.md).
+## Validation records and open evidence
 
-Do not install a second unit-test runner simply to test static variant maps.
-Add pure unit tests when there is meaningful library-owned logic to check.
-Use representative visual review rather than snapshots of every possible prop
-combination. Run only checks relevant to a change, plus the complete release
-gate for an alpha candidate.
+The [migration council record](./council-review-2026-10-30.md) identifies its
+frozen baselines, accepted fixes, prior gallery/consumer results and limits.
+These historical results must not be presented as fresh checks of later edits.
 
-## Status
+Before the owner's visual/motion revision, the app-study baseline passed a
+clean sequential `pnpm release:check`: type/docs/token checks, production build,
+57 gallery cases and nine packed-consumer cases in each styling mode. The local
+log is `.local/app-studies/release-check-sequential.log`. Earlier logs failed on
+CSS-import fixture typing and concurrent trace-artifact writes; those invocations
+were not green release gates. The revised checks, final council and subsequent
+corrections are recorded in [the app-study evidence](./app-studies-2026-10-30.md).
 
-- ScrollArea added on 2026-10-21 and included in alpha.2. It styles Base UI's
-  native scroll viewport, includes vertical and
-  horizontal examples, and is used in showcase navigation and code panels.
-- M0: implemented and checked on 2026-10-19. Runtime scope `.u-theme`; `ui:`
-  utility prefix and explicit CSS layers; ESM/types/CSS exports; packed
-  fixtures with/without consumer Tailwind; SSR/hydration and themed portals.
-- M1: Button, Field, Input and Textarea are preview implementations.
-  Named fields, errors, controlled/uncontrolled editing, disabled/read-only states,
-  validation and form completion are covered in the gallery and packed fixture.
-- M2: Dialog, Popover and Tooltip are preview implementations. Content wrappers
-  restore theme settings inside portals. The project form, focus containment and
-  return, nested popover stacking, tooltip descriptions and narrow touch layouts
-  are covered. The unscoped alpha and MIT license are selected, with build/publish
-  hooks and release notes. `0.1.0-alpha.1` was published on 2026-10-20.
-- M3: Common controls, feedback and presentation are alpha previews, including
-  the Campus adoption set above. Switch, Tabs, and Menu are implemented as
-  unreleased checkout previews. The source registry remains planned.
-- GitHub Actions checks pull requests and deploys successful `main` builds to
-  the public showcase. npm publication remains a separate release action.
-- Expressive: PhysicalButton is an opt-in preview requested from a physical
-  button reference. It adds a domed cap, configurable circular casing and plate,
-  and an optional front light following aria-pressed or momentary pressure,
-  using Base UI button semantics. It does not alter the ordinary Button or the core theme.
-- Showcase and production build are implemented. Gallery browser cases cover
-  generated TypeScript API references for all component subpaths, compound parts,
-  helper types and functions; examples use light/dark syntax coloring. Tooltip
-  hover defaults to 300ms on every hover, with Provider/Trigger overrides and
-  immediate keyboard focus. Provider shares timing settings without group warmup.
-  Gallery browser cases also cover
-  representative axe scans and responsive/touch behavior; packed
-  consumer cases pass in both modes. See [component contracts](./components.md). These are the checked cases, not blanket
-  accessibility or framework-support guarantees.
-- The 2026-10-19 review follow-ups are resolved: touch calendar layout, ref
-  inference, generated option/default/type context, snippet imports and packaged
-  consumer/agent guidance. See [review resolutions](./review-2026-10-19.md).
+One fresh package-only agent trial produced Reading room using public installed
+guidance and declarations; the parent subsequently checked a bounded browser
+workflow. This demonstrates feasibility for that task, not general agent
+productivity, owner-recognized branding or maintenance savings. Human
+screen-reader speech, real zoom, physical-device/virtual-keyboard ergonomics,
+actual app upgrades and a useful upstream adaptation remain open evidence.
+
+The showcase workflow checks pull requests and deploys successful `main` builds;
+see [deployment](../deploy/README.md). Nothing in these records authorizes a new
+publication, deployment or another repository's migration.

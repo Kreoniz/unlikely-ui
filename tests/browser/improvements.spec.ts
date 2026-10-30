@@ -1,6 +1,67 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+test('shadcn named compositions keep their appearance and sizing at narrow and wide widths', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const appearance of ['light', 'dark']) {
+      await page.goto('/#components/button');
+      const toggle = page.getByRole('button', {
+        name: `Switch to ${appearance} appearance`,
+      });
+      if (await toggle.count()) await toggle.click();
+      await expect(
+        page.getByRole('link', { name: 'Explore devspace', exact: true }),
+      ).toHaveCSS('min-block-size', '40px');
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      await page.screenshot({
+        path: `.local/shadcn-button-${appearance}-${width}.png`,
+      });
+      await page.goto('/#components/card');
+      await page.getByRole('checkbox', { name: 'Compact panel' }).check();
+      await expect(page.locator('.u-card-header').first()).toHaveCSS(
+        'padding',
+        '12px',
+      );
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      await page.screenshot({
+        path: `.local/shadcn-card-${appearance}-${width}.png`,
+      });
+      await page.goto('/#components/dialog');
+      await page
+        .getByRole('region', { name: 'Overlay playground' })
+        .getByRole('button', { name: 'New project', exact: true })
+        .click();
+      const dialog = page.getByRole('dialog', {
+        name: 'Create project',
+        exact: true,
+      });
+      await expect(
+        dialog.getByRole('button', { name: 'Close', exact: true }),
+      ).toBeVisible();
+      const box = await dialog.boundingBox();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+      await page.screenshot({
+        path: `.local/shadcn-dialog-${appearance}-${width}.png`,
+      });
+      await page.keyboard.press('Escape');
+    }
+  }
+});
+
 test('showcase preserves component spacing and renders actual typography roles', async ({
   page,
 }) => {
@@ -101,7 +162,7 @@ test('quick start, complete source, and example links lead to working compositio
     page.getByRole('heading', { name: 'Start using unlikely ui' }),
   ).toBeVisible();
   await expect(page.locator('main')).toContainText(
-    'pnpm add -E unlikely-ui@0.1.0-alpha.2',
+    'pnpm add -E unlikely-ui@0.1.0-alpha.3',
   );
   await page.goto('/#components/dialog');
   await page
@@ -112,6 +173,18 @@ test('quick start, complete source, and example links lead to working compositio
   await expect(code).toContainText('function ProjectDialog');
   await expect(code).not.toContainText('../../src/');
   await expect(code).not.toContainText('Form content');
+  await expect(code).toContainText("display: 'grid'");
+  await expect(page.getByRole('note')).toContainText(
+    'API version: 0.1.0-alpha.3',
+  );
+  await page.goto('/#components/dialog/api?part=DialogContent');
+  await expect(page.locator('.api-intro .code-block').first()).toContainText(
+    "import { DialogContent } from 'unlikely-ui/dialog'",
+  );
+  await page.goto('/#components/button/api?part=buttonVariants');
+  await expect(page.locator('.api-intro .code-block').first()).toContainText(
+    "import { buttonVariants } from 'unlikely-ui/button'",
+  );
   await page.goto('/#components/button?example=example-icon-only-buttons');
   await expect(page.locator('#example-icon-only-buttons')).toBeFocused();
   await page.goto('/#components/card');
@@ -119,7 +192,10 @@ test('quick start, complete source, and example links lead to working compositio
     .getByRole('radio', { name: 'Complete example', exact: true })
     .check();
   await expect(page.locator('.example-code pre')).toContainText(
-    'setAdded(true)',
+    'function EmptyState',
+  );
+  await expect(page.locator('.example-code pre')).not.toContainText(
+    '../../src/',
   );
 });
 
@@ -179,7 +255,7 @@ for (const reducedMotion of ['no-preference', 'reduce'] as const) {
   });
 }
 
-test('a failed asynchronous save retains the draft and retry completes once', async ({
+test('a failed asynchronous save retains the draft, retry succeeds, and later edits become dirty', async ({
   page,
 }) => {
   await page.goto('/#recipes');
@@ -196,23 +272,33 @@ test('a failed asynchronous save retains the draft and retry completes once', as
   await expect(
     form.getByRole('textbox', { name: 'Workspace notes' }),
   ).toHaveAttribute('readonly');
+  const notes = form.getByRole('textbox', { name: 'Workspace notes' });
+  await notes.focus();
   await expect(form.getByRole('alert')).toContainText(
     'Your draft is still here.',
   );
+  await expect(notes).toBeFocused();
   await expect(
     form.getByRole('textbox', { name: 'Workspace name' }),
   ).toHaveValue('A useful draft');
   await form.getByRole('button', { name: 'Try again' }).click();
   await expect(save).toBeFocused();
+  await notes.focus();
   await expect(form.getByRole('status')).toHaveText('Saved A useful draft.');
-  await expect(save).toBeFocused();
+  await expect(notes).toBeFocused();
   await form
     .getByRole('textbox', { name: 'Workspace name' })
     .fill('Unwanted edit');
+  await expect(form.getByRole('status')).toHaveText('Unsaved changes.');
   await form.getByRole('button', { name: 'Discard changes' }).click();
   await expect(
     form.getByRole('textbox', { name: 'Workspace name' }),
   ).toHaveValue('A useful draft');
+  await expect(form.getByRole('status')).toHaveText('Restored saved values.');
+  await form
+    .getByRole('textbox', { name: 'Workspace notes' })
+    .fill('Another unsaved note.');
+  await expect(form.getByRole('status')).toHaveText('Unsaved changes.');
 });
 
 test('required DatePicker recipe submits a local value, clears, and resets', async ({
@@ -232,8 +318,22 @@ test('required DatePicker recipe submits a local value, clears, and resets', asy
   await page.getByRole('button', { name: 'Today', exact: true }).click();
   await form.getByRole('button', { name: 'Submit project' }).click();
   await expect(form.getByRole('status')).toHaveText(
-    'Submitted Garden journal: due 2026-10-19.',
+    'Last submitted: Garden journal, due 2026-10-19.',
   );
+  await page.setViewportSize({ width: 320, height: 800 });
+  const longName = 'X'.repeat(200);
+  await form
+    .getByRole('textbox', { name: 'Project name', exact: true })
+    .fill(longName);
+  await form.getByRole('button', { name: 'Submit project' }).click();
+  await expect(form.getByRole('status')).toHaveText(
+    `Last submitted: ${longName}, due 2026-10-19.`,
+  );
+  expect(
+    await form
+      .getByRole('status')
+      .evaluate((el) => el.scrollWidth <= el.clientWidth),
+  ).toBe(true);
   await form.getByRole('button', { name: 'Clear due date' }).click();
   await expect(form.locator('input[name="dueDate"]')).toHaveValue('');
   await form.getByRole('button', { name: 'Reset form' }).click();

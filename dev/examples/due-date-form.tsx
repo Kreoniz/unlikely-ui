@@ -1,7 +1,12 @@
 import { useId, useRef, useState } from 'react';
 import { Button } from '../../src/components/button.js';
 import { DatePicker } from '../../src/components/date-picker.js';
-import { Field } from '../../src/components/field.js';
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '../../src/components/field.js';
 import { Input } from '../../src/components/input.js';
 
 // A local calendar date is not a UTC timestamp. The app chooses its serialization.
@@ -24,6 +29,11 @@ export function DueDateForm() {
   return (
     <form
       className="example-form"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1fr)',
+        gap: 'var(--u-space-5)',
+      }}
       aria-label="Project due date"
       noValidate
       onReset={() => {
@@ -45,17 +55,17 @@ export function DueDateForm() {
         }
         const data = new FormData(event.currentTarget);
         setResult(
-          `Submitted ${data.get('projectName')}: due ${data.get('dueDate')}.`,
+          `Last submitted: ${data.get('projectName')}, due ${data.get('dueDate')}.`,
         );
       }}
     >
-      <Field.Root name="projectName" invalid={missingName}>
-        <Field.Label>Project name</Field.Label>
+      <Field name="projectName" invalid={missingName}>
+        <FieldLabel>Project name</FieldLabel>
         <Input ref={nameRef} value={name} onValueChange={setName} required />
-        <Field.Error match={missingName}>Enter a project name.</Field.Error>
-      </Field.Root>
-      <Field.Root invalid={missingDate}>
-        <Field.Label htmlFor={`${id}-trigger`}>Due date</Field.Label>
+        <FieldError match={missingName}>Enter a project name.</FieldError>
+      </Field>
+      <Field invalid={missingDate}>
+        <FieldLabel htmlFor={`${id}-trigger`}>Due date</FieldLabel>
         <DatePicker
           label="Due date"
           value={date}
@@ -70,14 +80,22 @@ export function DueDateForm() {
           }}
         />
         <input type="hidden" name="dueDate" value={localDateValue(date)} />
-        <Field.Description id={`${id}-help`}>
+        <FieldDescription id={`${id}-help`}>
           Required. Submitted as a local YYYY-MM-DD date.
-        </Field.Description>
-        <Field.Error id={`${id}-error`} match={missingDate}>
+        </FieldDescription>
+        <FieldError id={`${id}-error`} match={missingDate}>
           Choose a due date.
-        </Field.Error>
-      </Field.Root>
-      <div className="example-actions">
+        </FieldError>
+      </Field>
+      <div
+        className="example-actions"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-end',
+          gap: 'var(--u-space-2)',
+        }}
+      >
         <Button type="button" variant="ghost" onClick={() => setDate(null)}>
           Clear due date
         </Button>
@@ -86,7 +104,9 @@ export function DueDateForm() {
         </Button>
         <Button type="submit">Submit project</Button>
       </div>
-      <p role="status">{result}</p>
+      <p role="status" style={{ overflowWrap: 'anywhere' }}>
+        {result}
+      </p>
     </form>
   );
 }

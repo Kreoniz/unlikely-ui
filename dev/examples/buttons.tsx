@@ -1,19 +1,35 @@
 import { useState } from 'react';
-import { Button } from '../../src/components/button.js';
+import { Button, buttonVariants } from '../../src/components/button.js';
 import type { ButtonVariant } from '../../src/components/button.js';
-import { Field } from '../../src/components/field.js';
-import { Select } from '../../src/components/select.js';
-import { RadioGroup } from '../../src/components/radio-group.js';
+import { Field, FieldLabel } from '../../src/components/field.js';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../src/components/select.js';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '../../src/components/radio-group.js';
 import { CheckControl } from '../controls.js';
 import { Glyph } from '../glyph.js';
 import { CodeBlock } from '../code-block.js';
 
-const variants = ['primary', 'secondary', 'ghost', 'danger'] as const;
-const sizes = ['sm', 'md', 'lg'] as const;
+const variants = [
+  'default',
+  'outline',
+  'secondary',
+  'ghost',
+  'destructive',
+  'link',
+] as const;
+const sizes = ['xs', 'sm', 'default', 'lg'] as const;
 
 export function ButtonExamples() {
-  const [variant, setVariant] = useState<ButtonVariant>('primary');
-  const [size, setSize] = useState<'sm' | 'md' | 'lg'>('md');
+  const [variant, setVariant] = useState<ButtonVariant>('default');
+  const [size, setSize] = useState<'xs' | 'sm' | 'default' | 'lg'>('default');
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [actions, setActions] = useState(0);
@@ -42,41 +58,37 @@ export function ButtonExamples() {
           </p>
         </div>
         <div className="playground-controls">
-          <Field.Root className="variant-control">
-            <Field.Label>Variant</Field.Label>
-            <Select.Root
+          <Field className="variant-control">
+            <FieldLabel>Variant</FieldLabel>
+            <Select
               value={variant}
               onValueChange={(v) => {
                 if (v) setVariant(v);
               }}
               items={variants.map((value) => ({ value, label: value }))}
             >
-              <Select.Trigger size="sm">
-                <Select.Value />
-              </Select.Trigger>
-              <Select.Content>
+              <SelectTrigger size="sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
                 {variants.map((value) => (
-                  <Select.Item key={value} value={value}>
+                  <SelectItem key={value} value={value}>
                     {value}
-                  </Select.Item>
+                  </SelectItem>
                 ))}
-              </Select.Content>
-            </Select.Root>
-          </Field.Root>
+              </SelectContent>
+            </Select>
+          </Field>
           <fieldset className="size-control">
             <legend>Size</legend>
-            <RadioGroup.Root
-              aria-label="Size"
-              value={size}
-              onValueChange={setSize}
-            >
+            <RadioGroup aria-label="Size" value={size} onValueChange={setSize}>
               {sizes.map((value) => (
                 <label key={value} className="choice-label">
-                  <RadioGroup.Item value={value} />
+                  <RadioGroupItem value={value} />
                   {value}
                 </label>
               ))}
-            </RadioGroup.Root>
+            </RadioGroup>
           </fieldset>
           <CheckControl checked={disabled} onCheckedChange={setDisabled}>
             Disabled
@@ -97,7 +109,7 @@ export function ButtonExamples() {
           {variants.map((value) => (
             <div className="variant-example" key={value}>
               <Button variant={value} onClick={() => setActions((n) => n + 1)}>
-                {value === 'danger' ? 'Delete project' : 'Create project'}
+                {value === 'destructive' ? 'Delete project' : 'Create project'}
               </Button>
               <span>{value}</span>
             </div>
@@ -138,14 +150,13 @@ export function ButtonExamples() {
         <div className="state-row">
           <Button disabled>Unavailable</Button>
           <Button loading>Saving project</Button>
-          <Button
-            variant="secondary"
-            render={<a href="#devspace" />}
-            nativeButton={false}
+          <a
+            href="#devspace"
+            className={buttonVariants({ variant: 'secondary' })}
           >
             Explore devspace
             <Glyph name="arrow" />
-          </Button>
+          </a>
         </div>
         <p className="specimen-note">
           Loading retains its accessible name and size. Link composition keeps

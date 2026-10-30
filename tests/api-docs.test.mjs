@@ -3,13 +3,33 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 import { fileURLToPath } from 'node:url';
-import { generateApi } from '../scripts/api-docs.mjs';
+import { generateApi, compactApi } from '../scripts/api-docs.mjs';
+import { expandApi } from '../dev/api-types.ts';
 
 const documents = await generateApi();
 const part = (id, name) =>
   documents[id].parts.find((part) => part.name === name);
 const prop = (id, name, property) =>
   part(id, name).props.find((prop) => prop.name === property);
+
+test('stored aliases preserve the complete public reference and distinct compositions', () => {
+  for (const document of Object.values(documents))
+    assert.deepEqual(expandApi(compactApi(document)), document);
+  assert.ok(compactApi(documents.card).parts.some((part) => 'aliasOf' in part));
+  assert.ok(
+    !(
+      'aliasOf' in
+      compactApi(documents.combobox).parts.find(
+        (part) => part.name === 'ComboboxInput',
+      )
+    ),
+  );
+  assert.equal(
+    documents['dropdown-menu'].upstream,
+    'https://base-ui.com/react/components/menu',
+  );
+  assert.equal(documents.card.upstream, undefined);
+});
 
 test('every component subpath has a generated reference and no private exports leak in', async () => {
   const manifest = JSON.parse(
@@ -27,6 +47,23 @@ test('every component subpath has a generated reference and no private exports l
 });
 
 test('compound components, inherited props, native attributes and generic callbacks are preserved', () => {
+  assert.ok(prop('dialog', 'Dialog', 'onOpenChange'));
+  assert.ok(prop('dialog', 'DialogContent', 'showCloseButton'));
+  assert.ok(
+    part('combobox', 'Combobox').signatures[0].includes('<Value, Multiple'),
+  );
+  assert.ok(
+    part('combobox', 'ComboboxInput').props.some(
+      (prop) => prop.name === 'showClear',
+    ),
+  );
+  assert.ok(prop('button', 'buttonVariants', 'variant'));
+  assert.equal(part('dialog', 'Dialog.Content').compatibility, true);
+  assert.ok(!part('dialog', 'DialogContent').compatibility);
+  assert.ok(
+    documents.dialog.parts.indexOf(part('dialog', 'DialogContent')) <
+      documents.dialog.parts.indexOf(part('dialog', 'Dialog.Content')),
+  );
   assert.ok(
     prop('dialog', 'Dialog.Root', 'onOpenChange').type.includes('eventDetails'),
   );
@@ -131,7 +168,7 @@ test('declarations include imports and helpers while property summaries keep pri
     ]) {
       assert.doesNotMatch(
         item.type,
-        /node_modules|DO_NOT_USE_OR_YOU_WILL_BE_FIRED/,
+        /node_modules|DO_NOT_USE_OR_YOU_WILL_BE_FIRED|import\("[./]/,
       );
     }
   }
@@ -156,11 +193,14 @@ test('generated public indexed-access types compile against the real public modu
   const code = `
     import { Dialog } from '../src/components/dialog.js';
     import type { TooltipRootProps } from '../src/components/tooltip.js';
+    import type { DropdownMenuContentProps } from '../src/components/dropdown-menu.js';
     type Child<Payload> = ${prop('tooltip', 'Tooltip.Root', 'children').type};
     type TriggerRef<Payload> = ${prop('dialog', 'Dialog.Trigger', 'ref').type};
+    type FinalFocus = ${prop('dropdown-menu', 'DropdownMenuContent', 'finalFocus').type};
     const child: Child<string> = ({ payload }) => payload?.toUpperCase();
     const ref: TriggerRef<unknown> = { current: document.createElement('button') };
-    void [child, ref];
+    const finalFocus: FinalFocus = true;
+    void [child, ref, finalFocus];
   `;
   const options = {
     strict: true,

@@ -1,0 +1,471 @@
+.signature-guarded-study {
+  min-inline-size: 0;
+  color: var(--u-ink);
+}
+.signature-guarded-scene {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(1rem, 3vw, 2rem);
+  border-block: 1px solid var(--u-line-soft);
+  background: var(--u-well);
+}
+.signature-guarded-sandbox {
+  min-inline-size: 0;
+  align-self: center;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--u-line);
+  border-radius: var(--u-radius-md);
+  background: var(--u-surface);
+}
+.signature-guarded-study h3,
+.signature-guarded-study h4 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.signature-guarded-sandbox h3 {
+  margin-block-end: 1.5rem;
+  font-family: var(--u-font-display);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: var(--u-tracking-heading);
+}
+.signature-guarded-eyebrow {
+  margin: 0 0 0.75rem;
+  font-family: var(--u-font-mono);
+  font-size: 0.6875rem;
+  color: var(--u-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.signature-guarded-sandbox > label {
+  display: block;
+  margin-block-end: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.signature-guarded-sandbox textarea {
+  min-inline-size: 0;
+  inline-size: 100%;
+  resize: vertical;
+}
+.signature-guarded-queue-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block: 1.5rem 0.5rem;
+  font-size: 0.875rem;
+}
+.signature-guarded-queue-heading h4 {
+  font-size: inherit;
+}
+.signature-guarded-queue-heading > span {
+  font-family: var(--u-font-mono);
+}
+.signature-guarded-sandbox ul {
+  padding-inline-start: 1.25rem;
+  margin-block: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.signature-guarded-empty {
+  margin-block: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  color: var(--u-muted);
+}
+.signature-guarded-sandbox-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.signature-guarded-study .u-button {
+  min-block-size: 2.75rem;
+  block-size: auto;
+  max-inline-size: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.signature-guarded {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-inline-size: 0;
+  --guarded-shell: var(--u-physical-casing);
+  --guarded-cream: var(--u-physical-inset);
+}
+.signature-guarded-mechanism {
+  position: relative;
+  inline-size: 224px;
+  max-inline-size: 100%;
+  block-size: 352px;
+}
+.signature-guarded-housing {
+  position: absolute;
+  inset: auto 0 14px;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--guarded-shell), white 27%);
+  border-radius: 28px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--guarded-shell), white 22%),
+    color-mix(in srgb, var(--guarded-shell), white 8%) 60%,
+    var(--guarded-shell)
+  );
+  box-shadow:
+    inset 0 2px 2px color-mix(in srgb, white, transparent 65%),
+    inset 0 -2px 2px color-mix(in srgb, black, transparent 60%),
+    0 3px 0 color-mix(in srgb, var(--guarded-shell), black 20%),
+    0 6px 0 color-mix(in srgb, var(--guarded-shell), black 32%),
+    0 16px 16px -6px color-mix(in srgb, var(--guarded-shell), transparent 65%);
+}
+.signature-guarded-housing::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--guarded-shell), black 35%);
+  border-radius: 22px;
+  box-shadow: inset 0 1px 1px color-mix(in srgb, white, transparent 80%);
+  pointer-events: none;
+}
+.signature-guarded-action {
+  position: absolute;
+  inset: 16px;
+}
+/* Reuse the cap, bezel and press behavior from PhysicalButton. The study's
+   square protective housing is front-facing, as in the guarded reference. */
+.signature-guarded-cap.u-physical-button {
+  inline-size: 100%;
+  block-size: 100%;
+}
+.signature-guarded-cap .u-physical-housing {
+  transform: none;
+  box-shadow:
+    inset 0 2px 3px color-mix(in srgb, black, transparent 35%),
+    0 1px 0 color-mix(in srgb, white, transparent 70%);
+}
+.signature-guarded-cap .u-physical-label {
+  letter-spacing: -0.01em;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.signature-guarded[data-open='false'] .signature-guarded-cap {
+  opacity: 1;
+}
+.signature-guarded-screw {
+  position: absolute;
+  inline-size: 16px;
+  block-size: 16px;
+  border: 2px solid color-mix(in srgb, var(--guarded-shell), black 45%);
+  border-radius: 50%;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--guarded-shell), white 20%),
+    var(--guarded-shell)
+  );
+  box-shadow: 0 1px 1px color-mix(in srgb, white, transparent 70%);
+}
+.signature-guarded-screw::after {
+  content: '';
+  position: absolute;
+  inset: 5px 2px;
+  background: color-mix(in srgb, var(--guarded-shell), black 55%);
+  rotate: -45deg;
+}
+.signature-guarded-screw[data-corner='1'] {
+  inset: 15px auto auto 15px;
+}
+.signature-guarded-screw[data-corner='2'] {
+  inset: 15px 15px auto auto;
+}
+.signature-guarded-screw[data-corner='3'] {
+  inset: auto 15px 15px auto;
+}
+.signature-guarded-screw[data-corner='4'] {
+  inset: auto auto 15px 15px;
+}
+.signature-guarded-cover {
+  position: absolute;
+  inset: 22px 22px auto;
+  aspect-ratio: 1;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: transparent;
+  color: var(--u-physical-ink);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+  touch-action: manipulation;
+  transform-origin: 50% 2px;
+  transform-style: preserve-3d;
+  /* The lid owns its 3D scene. Keeping the housing outside that scene prevents
+     its cap and inset from intersecting the turning faces. */
+  transform: perspective(1100px) rotateX(0deg);
+  transition: transform var(--guarded-duration, 500ms) var(--u-ease-standard);
+  z-index: 2;
+}
+.signature-guarded-cover-face,
+.signature-guarded-cover-back {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.25rem;
+  padding: 30px;
+  border: 2px solid
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 22%);
+  border-radius: inherit;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--guarded-cream), white 25%),
+    var(--guarded-cream) 65%,
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 10%)
+  );
+  box-shadow:
+    inset 0 3px 1px color-mix(in srgb, white, transparent 20%),
+    inset 0 0 0 5px
+      color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 8%),
+    inset 0 -5px 3px
+      color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 18%),
+    0 5px 0 color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 35%),
+    0 7px 4px color-mix(in srgb, black, transparent 45%);
+  backface-visibility: hidden;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.signature-guarded-cover-face {
+  transform: translateZ(1px);
+}
+.signature-guarded-cover-face svg {
+  inline-size: 22px;
+  block-size: 22px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.signature-guarded-cover-face i {
+  position: absolute;
+  inline-size: 27px;
+  block-size: 5px;
+  border: 1px solid
+    color-mix(in srgb, var(--u-physical-stripe), var(--guarded-shell) 25%);
+  border-radius: 5px;
+  background: color-mix(
+    in srgb,
+    var(--u-physical-stripe),
+    var(--guarded-cream) 45%
+  );
+}
+.signature-guarded-cover-face i:nth-child(1) {
+  inset: 25px auto auto 24px;
+  rotate: -48deg;
+}
+.signature-guarded-cover-face i:nth-child(2) {
+  inset: 25px 24px auto auto;
+  rotate: 48deg;
+}
+.signature-guarded-cover-face i:nth-child(3) {
+  inset: auto 24px 25px auto;
+  rotate: -48deg;
+}
+.signature-guarded-cover-face i:nth-child(4) {
+  inset: auto auto 25px 24px;
+  rotate: 48deg;
+}
+.signature-guarded-cover-back {
+  transform: rotateX(180deg) translateZ(1px);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 25%),
+    var(--guarded-cream)
+  );
+  box-shadow:
+    inset 0 0 0 6px
+      color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 12%),
+    inset 0 0 0 8px
+      color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 30%),
+    inset 0 8px 14px color-mix(in srgb, var(--guarded-shell), transparent 75%),
+    0 -4px 0 color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 30%);
+}
+.signature-guarded[data-open='true'] .signature-guarded-cover {
+  transform: perspective(1100px) rotateX(125deg);
+}
+.signature-guarded-cover:focus-visible {
+  outline: none;
+}
+.signature-guarded-cover:focus-visible > span,
+.signature-guarded-cap:focus-visible {
+  outline: 3px solid var(--u-focus);
+  outline-offset: 5px;
+}
+.signature-guarded-cover:disabled {
+  cursor: not-allowed;
+}
+.signature-guarded-cover:disabled .signature-guarded-cover-face {
+  filter: saturate(0.35);
+}
+.signature-guarded-hinge {
+  position: absolute;
+  z-index: 3;
+  inset: 13px auto auto 50%;
+  translate: -50% 0;
+  inline-size: 72px;
+  block-size: 18px;
+  border: 1px solid color-mix(in srgb, var(--guarded-shell), black 20%);
+  border-radius: 4px;
+  background: linear-gradient(
+    var(--guarded-cream),
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 45%) 45%,
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 12%) 65%,
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 55%)
+  );
+  box-shadow: 0 2px 2px color-mix(in srgb, black, transparent 50%);
+  pointer-events: none;
+}
+.signature-guarded-hinge::after {
+  content: '';
+  position: absolute;
+  inset: -2px 9px;
+  border-inline: 4px solid
+    color-mix(in srgb, var(--guarded-cream), var(--guarded-shell) 28%);
+  border-radius: 2px;
+}
+.signature-guarded-consequence {
+  inline-size: 100%;
+  max-inline-size: 26rem;
+  padding-block: 1rem 0;
+}
+.signature-guarded-consequence h3 {
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.signature-guarded-description {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.signature-guarded-description p {
+  margin-block: 0.5rem;
+}
+.signature-guarded-step {
+  font-weight: 600;
+}
+.signature-guarded-error {
+  color: var(--u-danger);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.signature-guarded-consequence > .u-button {
+  margin-block-start: 0.5rem;
+}
+.signature-guarded-feedback {
+  margin-block: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.signature-guarded-inspect {
+  margin-block-end: 1rem;
+  border-block: 1px solid var(--u-line-soft);
+  font-size: 0.875rem;
+}
+.signature-guarded-inspect summary,
+.signature-guarded-inspect label {
+  min-block-size: 44px;
+  align-content: center;
+  cursor: pointer;
+}
+.signature-guarded-inspect > div {
+  display: flex;
+  gap: 0.5rem 1.5rem;
+  flex-wrap: wrap;
+  padding-block: 0.5rem 1rem;
+}
+.signature-guarded-inspect label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.signature-guarded-inspect .signature-guarded-duration {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  flex-basis: 100%;
+  gap: 0.25rem 1rem;
+}
+.signature-guarded-duration input {
+  grid-column: 1 / -1;
+  inline-size: min(100%, 22rem);
+  min-block-size: 44px;
+  margin: 0;
+}
+.signature-guarded-duration output {
+  font-family: var(--u-font-mono);
+  font-size: 0.75rem;
+}
+.signature-guarded-inspect input {
+  accent-color: var(--u-accent-text);
+}
+.signature-guarded-inspect summary:focus-visible,
+.signature-guarded-inspect input:focus-visible {
+  outline: 2px solid var(--u-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 70rem) {
+  .signature-guarded-scene {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .signature-guarded {
+    grid-template-columns: 224px minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .signature-guarded-consequence {
+    padding: 0;
+  }
+}
+@media (max-width: 46rem) {
+  .signature-guarded {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .signature-guarded-consequence {
+    padding-block-start: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signature-guarded-cover {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .signature-guarded-housing,
+  .signature-guarded-cover-face,
+  .signature-guarded-cover-back,
+  .signature-guarded-hinge {
+    border-color: ButtonText;
+    background: Canvas;
+    color: ButtonText;
+    box-shadow: none;
+  }
+  .signature-guarded-cover:disabled .signature-guarded-cover-face {
+    color: GrayText;
+    border-color: GrayText;
+  }
+  .signature-guarded-cap .u-physical-cap {
+    border: 2px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+    box-shadow: none;
+  }
+  .signature-guarded-cover:focus-visible > span,
+  .signature-guarded-cap:focus-visible {
+    outline-color: Highlight;
+  }
+  .signature-guarded-screw,
+  .signature-guarded-cover-face i {
+    display: none;
+  }
+}

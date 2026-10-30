@@ -1,0 +1,113 @@
+{
+  "repository": "https://github.com/shadcn-ui/ui",
+  "revision": "96da9cc7f1aa10580a3741664e2a77c721206c00",
+  "reviewed": "2026-10-30",
+  "license": "MIT",
+  "components": [
+    {
+      "component": "button",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/button.tsx",
+      "sha256": "74f982d7ad7a764e3c95a519fc063a671e66ad758ea31dc89d747838e20c2487",
+      "localPath": "src/components/button.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "card",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/card.tsx",
+      "sha256": "0d525c03e086b0047f7c0700850281023359cfc020eb233fdb0d74ec870ebea0",
+      "localPath": "src/components/card.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "dialog",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/dialog.tsx",
+      "sha256": "aba6df6cbf51a1edcc22e415a3a46a666fc8cb66729e47b3ed2ecd97f166adff",
+      "localPath": "src/components/dialog.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "combobox",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/combobox.tsx",
+      "sha256": "214523dfe45facff2d8ddf4e07fe048a963278431bea997387fd5d21466e19fc",
+      "localPath": "src/components/combobox.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "popover",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/popover.tsx",
+      "sha256": "935bab728b60fd867384ebc6097d6a46c937423e015503e0251999b686f38bb7",
+      "localPath": "src/components/popover.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "select",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/select.tsx",
+      "sha256": "6348d30035b68867d5efffe9b0b1611718226bef9fdeef9554349d6b98252110",
+      "localPath": "src/components/select.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "switch",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/switch.tsx",
+      "sha256": "87aaf20b3209fabbcf0a9520c8b34733ddf2c91524c80ec72ed3dd3684f1bca3",
+      "localPath": "src/components/switch.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "tabs",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/tabs.tsx",
+      "sha256": "1eda25325a7aae9184224247d837b94f98f162d4f697740cc2b1bd53bd35cec6",
+      "localPath": "src/components/tabs.tsx",
+      "adoption": "adapted composition and named API; optional Base UI indicator refreshes after committed direction changes"
+    },
+    {
+      "component": "radio-group",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/radio-group.tsx",
+      "sha256": "c27fecb49f924d324d8c3d1354434508be0b59f202878d9713b8c1af1ebf5afa",
+      "localPath": "src/components/radio-group.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "scroll-area",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/scroll-area.tsx",
+      "sha256": "7e49845827447091a6493473779a05ba45cb8302e3703a6f9e4225dd6315cce2",
+      "localPath": "src/components/scroll-area.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "dropdown-menu",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/dropdown-menu.tsx",
+      "sha256": "18c1829679694a9b9850afcabf1158a80ec3624fb5e03d0d4b13339b729e0503",
+      "localPath": "src/components/menu.tsx",
+      "adoption": "adapted composition and named API"
+    },
+    {
+      "component": "field",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/field.tsx",
+      "sha256": "e7305c507a3f777b0193045fdd5ebfb1c58020d3d8e0821cb9e8d19b203576b9",
+      "localPath": "src/components/field.tsx",
+      "adoption": "named API alignment; existing behavior retained"
+    },
+    {
+      "component": "tooltip",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/tooltip.tsx",
+      "sha256": "dc5ec917d8276af9d66e7c951b0608d67c149bcb311072166bc8ce67ee2b7488",
+      "localPath": "src/components/tooltip.tsx",
+      "adoption": "named API alignment; existing behavior retained"
+    },
+    {
+      "component": "alert",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/alert.tsx",
+      "sha256": "639c846b57885d8af4dbdf7ddab7b15fd4d392c051f7496c67e811154e7861d9",
+      "localPath": "src/components/alert.tsx",
+      "adoption": "named API alignment; existing behavior retained"
+    },
+    {
+      "component": "input",
+      "upstreamPath": "apps/v4/registry/bases/base/ui/input.tsx",
+      "sha256": "00213ec177e4556e69b6680128c18023d859a8e4eaf4106fbcf6abdc4f2c419b",
+      "localPath": "src/components/input.tsx",
+      "adoption": "named API alignment; existing behavior retained"
+    }
+  ]
+}

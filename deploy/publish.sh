@@ -19,9 +19,23 @@ ssh_options=(
   -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3
 )
 target="$DEPLOY_USER@$DEPLOY_HOST"
-tar -czf - -C .local/showcase . | ssh "${ssh_options[@]}" "$target" "deploy $RELEASE_ID"
+rollback_attempt() {
+  if ssh "${ssh_options[@]}" "$target" "rollback $RELEASE_ID"; then
+    echo 'Rollback request completed.' >&2
+  else
+    echo 'Rollback could not be confirmed; public release state needs reconciliation.' >&2
+  fi
+}
+if tar -czf - -C .local/showcase . | ssh "${ssh_options[@]}" "$target" "deploy $RELEASE_ID"; then
+  :
+else
+  deploy_status=$?
+  echo 'Deployment did not confirm completion; requesting guarded rollback.' >&2
+  rollback_attempt
+  exit "$deploy_status"
+fi
 if ! python3 deploy/verify.py "$SITE_URL" .local/showcase; then
   echo 'Public verification failed; restoring the previous release.' >&2
-  ssh "${ssh_options[@]}" "$target" "rollback $RELEASE_ID"
+  rollback_attempt
   exit 1
 fi

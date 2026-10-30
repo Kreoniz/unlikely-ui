@@ -1,7 +1,17 @@
 import { useState } from 'react';
-import { Tabs } from '../../src/components/tabs.js';
+import {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
+} from '../../src/components/tabs.js';
 import { Input } from '../../src/components/input.js';
-import { Field } from '../../src/components/field.js';
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from '../../src/components/field.js';
 import { Switch } from '../../src/components/switch.js';
 import { CheckControl } from '../controls.js';
 import { CodeBlock } from '../code-block.js';
@@ -17,38 +27,36 @@ export function TabsExamples() {
           <h2>Related content panels</h2>
         </div>
         <div className="form-stage">
-          <Tabs.Root
+          <Tabs
             value={value}
             onValueChange={setValue}
             orientation={vertical ? 'vertical' : 'horizontal'}
           >
-            <Tabs.List aria-label="Preferences" activateOnFocus={automatic}>
-              <Tabs.Tab value="account">Account</Tabs.Tab>
-              <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
-              <Tabs.Tab value="access" disabled>
+            <TabsList aria-label="Preferences" activateOnFocus={automatic}>
+              <TabsTrigger value="account">Account</TabsTrigger>
+              <TabsTrigger value="notifications">Notifications</TabsTrigger>
+              <TabsTrigger value="access" disabled>
                 Access
-              </Tabs.Tab>
-              <Tabs.Indicator />
-            </Tabs.List>
-            <Tabs.Panel value="account">
-              <Field.Root>
-                <Field.Label>Account name</Field.Label>
+              </TabsTrigger>
+              <TabsIndicator />
+            </TabsList>
+            <TabsContent value="account">
+              <Field>
+                <FieldLabel>Account name</FieldLabel>
                 <Input defaultValue="Alex" />
-                <Field.Description>Shown on your profile.</Field.Description>
-              </Field.Root>
-            </Tabs.Panel>
-            <Tabs.Panel value="notifications">
+                <FieldDescription>Shown on your profile.</FieldDescription>
+              </Field>
+            </TabsContent>
+            <TabsContent value="notifications">
               <label className="setting-row">
-                <Switch.Root defaultChecked>
-                  <Switch.Thumb />
-                </Switch.Root>
+                <Switch defaultChecked />
                 <span>Email notifications</span>
               </label>
-            </Tabs.Panel>
-            <Tabs.Panel value="access">
+            </TabsContent>
+            <TabsContent value="access">
               Access settings are managed by your team.
-            </Tabs.Panel>
-          </Tabs.Root>
+            </TabsContent>
+          </Tabs>
         </div>
         <div className="playground-controls">
           <CheckControl checked={automatic} onCheckedChange={setAutomatic}>
@@ -65,7 +73,7 @@ export function TabsExamples() {
         </p>
       </section>
       <CodeBlock
-        code={`import { Tabs } from 'unlikely-ui/tabs';\n\n<Tabs.Root defaultValue="account">\n  <Tabs.List aria-label="Preferences">\n    <Tabs.Tab value="account">Account</Tabs.Tab>\n    <Tabs.Tab value="notifications">Notifications</Tabs.Tab>\n    <Tabs.Indicator />\n  </Tabs.List>\n  <Tabs.Panel value="account">Account settings</Tabs.Panel>\n  <Tabs.Panel value="notifications">Notification settings</Tabs.Panel>\n</Tabs.Root>`}
+        code={`import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from 'unlikely-ui/tabs';\n\n<Tabs defaultValue="account">\n  <TabsList aria-label="Preferences">\n    <TabsTrigger value="account">Account</TabsTrigger>\n    <TabsTrigger value="notifications">Notifications</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsContent value="account">Account settings</TabsContent>\n  <TabsContent value="notifications">Notification settings</TabsContent>\n</Tabs>`}
       />
     </>
   );

@@ -15,9 +15,10 @@ export interface InputProps extends Omit<
   size?: TextControlSize;
 }
 
-export function Input({ className, size = 'md', ...props }: InputProps) {
+export function Input({ className, size = 'default', ...props }: InputProps) {
   return (
     <BaseInput
+      data-slot="input"
       {...props}
       data-size={size}
       className={stateClass(textControlClass, className)}

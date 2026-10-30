@@ -1,6 +1,7 @@
 # unlikely ui: foundations draft
 
-Status: draft 02 for discussion, 2026-10-19. Derived from the mascot and library
+Status: implemented alpha foundations, visual direction under owner review,
+2026-10-30. Derived from the mascot and library
 mockups, plus the Marvin Campus screenshots and palette supplied in this conversation.
 Values are deliberately chosen from that visual direction, not presented as
 exact measurements of raster mockups. [tokens.css](../../src/styles/tokens.css) is the
@@ -24,12 +25,17 @@ or replacing a product's own identity.
 
 PhysicalButton is an explicit, opt-in expressive exception: its dimensional
 housing, gradients, shadows and hazard stripes follow the owner's supplied
-physical-button reference. The six `--u-physical-*` material roles (cap, ink,
-casing, plate, stripe and indicator) have canonical defaults in tokens.css, independent
+physical-button reference. The `--u-physical-*` material roles (cap, ink,
+casing, plate, stripe, indicator and cream inset) have canonical defaults in tokens.css, independent
 of status and brand meanings. They retain their material identity in both
 appearances. The optional front indicator is paired with aria-pressed and visible
 On/Off text in the toggle example; it is not the sole state cue. Ordinary controls
 retain the flat treatment above.
+
+The reference-led Allocation bar experiment uses this same opt-in material
+family: mint, cream inset and coral are segment paints, not status meanings.
+The cream inset retains its material color in both appearances. Its label and
+the mint label join the palette checks; this does not promote the experiment.
 
 ## Campus-informed refinement
 
@@ -65,6 +71,16 @@ site and local CSS currently use slightly different anchors (`#F7F4EC`,
 targets as design choices, not claims about the currently deployed palette.
 
 ## Token contract
+
+The 2026-10-30 checkout also exposes shadcn vocabulary inside `.u-theme`:
+background/foreground, card, popover, primary, secondary, muted, accent,
+destructive, border, input, ring and radius. These are computed aliases to
+the canonical `--u-*` roles, not another set of editable palette values.
+`primary` maps to the action family; `accent` maps to selection. Each theme
+boundary resolves aliases again, including restored portal themes. The optional
+Tailwind adapter supplies matching app utilities. Chart/sidebar palette roles
+are not inferred from categorical fills. Existing contrast checks still cover
+the documented canonical pairings; imported blocks need their own review.
 
 Use the `--u-` namespace. Use three levels only where useful:
 
@@ -167,8 +183,13 @@ layouts. Use tabular numbers only where values need to align.
   `0 12px 32px / 18%` in light appearance. Dark values are in CSS. Elevation
   also uses surface and border; no shadow on every component.
 - Motion: 100/160/240ms, standard `cubic-bezier(0.2, 0, 0, 1)`, exit
-  `cubic-bezier(0.4, 0, 1, 1)`. Reduced motion sets durations to zero. Avoid
-  transforms for ordinary hover; animate only the state properties needed.
+  `cubic-bezier(0.4, 0, 1, 1)`. Components disable relevant transitions and
+  decorative animation for reduced motion; the three duration tokens resolve
+  to 0ms in that preference so app-owned transitions follow it too.
+  Ordinary buttons move down 1px while pressed when motion is allowed.
+  Avoid spatial travel on ordinary hover. Apps choreograph entry, filtering,
+  task completion and save feedback with these tokens; update state immediately
+  and retain keyboard focus. Do not delay an action merely to play an animation.
 - Layers: sticky 10, dialog/backdrop tier 100, popup 110, tooltip 130, toast 150.
   A dialog's backdrop and panel need an explicit local stacking order. Keep the
   app root isolated and allow menus opened from dialogs above the dialog tier.
@@ -184,7 +205,7 @@ Regenerate the sheet and its [contrast report](./contrast.json) from the CSS:
 python3 docs/foundations/build-sheet.py
 ```
 
-The review sheet embeds the canonical `dev/public/button-logo.png` as a data URI
+The review sheet embeds the display derivative `dev/public/button-logo-small.png` as a data URI
 so its red button mark also works when the HTML is opened by itself.
 The accompanying contrast report
 checks the concrete opaque sRGB pairs used in
@@ -199,166 +220,51 @@ zoom/reflow, screen reader names, reduced motion and focus clipping in real UI.
 Base UI supplies unstyled interaction primitives; unlikely ui remains
 responsible for styling, composition and accessible usage. Preserve compound
 parts, refs, event semantics, controlled values and Base UI state attributes.
-Theme inherits scoped settings and explicit `tokens` overrides through React context.
+Theme inherits appearance, direction, explicit `lang` and `tokens` overrides through React context.
 An empty Theme inside a custom portal restores them at its DOM boundary. A popup mounted under body must retain the appearance of
 the control that opened it, including nested theme scopes.
 
-## Styling direction: Tailwind
+## Styling and delivery contract
 
-Recommended initial scope, following the owner's preference on 2026-10-19:
-React, Base UI and Tailwind CSS v4, with one component implementation.
-Author component styles with Tailwind classes and Base UI state attributes.
-Use semantic CSS custom properties for token values and scoped light/dark
-themes. These are part of the Tailwind implementation, not a separate styling
-edition. Theme changes should update semantic values rather than duplicate
-light/dark color utilities throughout components.
+One implementation uses Base UI, Tailwind CSS v4 utilities and semantic CSS.
+The package ships precompiled styles; consuming apps need Tailwind only when
+using their own utilities. `unlikely-ui/tailwind.css` is an implemented optional
+adapter, including the checkout's unreleased shadcn semantic mappings. Keep
+scoped values, complete static class names, utility isolation and the tested
+CSS layer order. Class-string order does not determine conflicting precedence.
 
-For this personal library, prioritize a small integration and maintenance
-surface. Base UI documents Tailwind styling directly. StyleX offers a useful
-typed JavaScript composition model, but adopting it would also commit this
-project to its compiler integration and a different style override API. There
-is no concrete consumer requirement for that commitment yet.
+The npm package owns shared controls and tokens. Apps own fonts, layout,
+workflow state and requests; they may use plain CSS or the optional adapter.
+Source registry installation remains a possible later delivery path using the
+same implementation. It is not implemented. A second styling edition or
+compiler integration has no current requirement.
 
-StyleX is outside the initial scope. Keep the CSS token contract portable;
-reconsider another styling engine only when a real project demonstrates a
-need. There is no planned StyleX adapter, edition or parity milestone.
+Use the [consumer guide](../../USAGE.md) for working CSS/import examples and
+app-level styling, [packaging](../packaging.md) for artifact and cascade contracts,
+and [implementation](../implementation.md) for milestone status. Keep release
+policy and publication procedures in the [changelog](../../CHANGELOG.md#release-policy)
+and [release guide](../releasing.md), rather than duplicating proposals here.
+React/React DOM are peers; Base UI is a runtime dependency. Fonts, gallery assets
+and build tools are excluded from the runtime package. Local tarballs support
+temporary evaluation; an exact published version provides shared distribution.
 
-Map semantic properties to namespaced utilities through a small Tailwind
-theme adapter. The following is a proposed integration, not an existing
-package export:
+## App character and motion
 
-```css
-@import 'tailwindcss';
-/* Also import unlikely ui tokens and apply its theme scope. */
+The owner's 2026-10-30 feedback rejected the first app studies as too quiet
+and static. The revised studies explore stronger display typography, numbered
+sections, ledger/document composition and selective depth. This changes
+app-owned presentation; ordinary control semantics and canonical palette
+values remain shared. The studies load Manrope for display text and Inter for
+body text as an explicit app choice, with font overrides passed through Theme
+so portals inherit them. This is an experiment awaiting owner feedback, not
+proof of cross-app brand recognition.
 
-@theme inline {
-  --color-u-canvas: var(--u-canvas);
-  --color-u-surface: var(--u-surface);
-  --color-u-ink: var(--u-ink);
-  --color-u-muted: var(--u-muted);
-  --color-u-accent: var(--u-accent);
-  --color-u-accent-ink: var(--u-accent-ink);
-  --radius-u-control: var(--u-radius);
-}
-```
-
-This gives utilities such as `bg-u-surface`, `text-u-ink` and
-`rounded-u-control`. Use `@theme inline` when referencing scoped properties
-so utilities resolve them where they are used. Avoid replacing the consumer's
-entire Tailwind theme or shipping Preflight as part of the library.
-
-For npm distribution, prefer compiling the component CSS inside the library
-and shipping it alongside JavaScript. Consuming projects import that CSS;
-they need Tailwind only if they also author their own Tailwind utilities.
-Keep package classes isolated from consumer utility names, and document CSS
-layer order and supported `className` overrides before the first release.
-Appending a class name alone does not guarantee which conflicting rule wins.
-Validate overrides in a Tailwind consumer as part of the first integration.
-
-Source recipes remain a separate distribution option if a real customization
-need appears. They require complete static class names and an explicit
-`@source` registration for the package because Tailwind does not scan
-`node_modules` automatically. Do not add both delivery paths at the outset.
-
-Build Button, Input and portaled Dialog with this one styling implementation
-to validate tokens, states, scoped themes and packaging before expanding.
-
-## Distribution proposal
-
-The detailed delivery contract and later source-installation path are in
-[packaging](../packaging.md); the planned source layout and component milestones
-are in [implementation](../implementation.md). Start with one npm delivery path
-and keep a future registry generated from the same source, rather than a second
-component implementation. Those documents refine the proposal below.
-
-Start with one ESM React package, with root, per-component, theme and CSS
-subpaths. The selected package name is the unscoped `unlikely-ui`, subject to
-npm accepting the first publication. Keep tokens in
-the same versioned package, with the implemented CSS-only `tokens.css` subpath.
-A separate tokens package is useful only when an actual
-independent consumer needs independent releases.
-
-React and React DOM should be peer dependencies. Base UI should be a regular
-runtime dependency. Publish compiled ESM, declarations and plain CSS; leave
-Tailwind, Vite, fonts, icons and the gallery out of consumer requirements.
-Tailwind is a library build dependency for the proposed precompiled-CSS
-distribution. Mark CSS files as package side effects so bundlers retain
-explicit style imports.
-Declare the React versions actually validated in consumer projects rather than
-promising a broad untested range. Keep product-specific calendars, dashboards
-and business logic in the consuming projects.
-
-For separate pet-project repositories, use the selected unscoped public npm
-package `unlikely-ui`. The owner chose this name on 2026-10-20 and selected MIT
-for package code/documentation. Local tarballs
-are useful before publishing and for testing the exact package contents.
-Use workspace dependencies only when projects actually share a workspace.
-Git dependencies and permanent symlinks are less useful as the normal release
-path because built output and reproducibility need additional care. A source
-registry or copy-and-paste model is useful for heavy per-app customization,
-but copied components stop receiving central fixes automatically; use it only
-if that ownership tradeoff is intentional. Keep shared components in the
-package and compose product-specific wrappers in each app by default.
-
-Example for alpha.2:
-
-```sh
-pnpm add -E unlikely-ui@0.1.0-alpha.2
-```
-
-```tsx
-import { Theme, Button } from 'unlikely-ui';
-import 'unlikely-ui/styles.css';
-
-export function App() {
-  return (
-    <Theme appearance="dark">
-      <Button variant="primary">Create project</Button>
-    </Theme>
-  );
-}
-```
-
-Theme and Button are alpha preview implementations in the published alpha.
-Import CSS once at the consumer
-entry and wrap the appropriate UI in Theme. Implement semantic overrides
-through Theme's `tokens` prop so customization also reaches portals.
-Pin exact versions while iterating, commit lockfiles, and upgrade each project
-deliberately after checking its critical screens. Test changes in one pilot
-project, then a second different product before calling the API stable.
-
-## Versioning proposal
-
-Use alpha and beta as specific readiness signals, not indefinite labels:
-
-- `0.1.0-alpha.1`: the first integrated reference implementation; naming,
-  components and visual contracts may still change. Publish under `next`.
-- `0.1.0-beta.1`: the initial token contract and selected component APIs are
-  settled; validate adoption, accessibility and packaging. Publish under `beta`.
-- `0.1.0`: the first regular release on `latest`; document the 0.x policy.
-- `1.0.0`: the supported public contract is used successfully in two pet
-  projects, with migrations, accessibility checks and predictable packaging.
-  A small dependable component set is enough; a huge catalogue is unnecessary.
-
-Before 1.0, adopt an explicit project convention: breaking changes increment
-the minor version (0.1 → 0.2), compatible additions/fixes increment patch, with
-additions identified in the changelog. SemVer itself makes no stability promise
-for 0.x. After 1.0, use patch for compatible fixes, minor for compatible additions
-and deprecations, major for incompatible changes.
-
-The public contract includes exports, props, event behavior, semantic token
-names/meaning, theme/portal behavior and supported platform versions. Treat
-visual changes explicitly: a correction to a documented value can be a patch;
-a compatible optional variant can be minor; a default redesign or a change
-to layout/density/meaning that requires consumer work deserves a major release.
-Document screenshot-relevant changes even when the TypeScript API is unchanged.
-Do not require a major for every tiny pixel correction.
-
-Prerelease suffixes and registry tags are different mechanisms. A suffix does
-not choose a tag automatically: set `--tag next` or `--tag beta` explicitly
-when publishing prereleases, keeping `latest` for regular releases. Pin actual
-versions in apps rather than depending on a moving tag. After 1.0, use e.g.
-`2.0.0-alpha.1` on `next` for a breaking redesign while 1.x stays on `latest`.
+Use motion to explain a change: a newly added row settles into place, selection
+changes visibly, and save/recovery feedback appears without moving the user's
+focus. Keep spatial movement small and bounded, using the existing timings.
+Honor reduced motion. Preserve immediate data updates, current status text,
+focus return and the ability to interrupt or repeat actions. Motion is an
+enhancement; status and meaning must remain available without it.
 
 ## Current milestone
 
