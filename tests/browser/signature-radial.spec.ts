@@ -227,6 +227,8 @@ test.describe('phone touch', () => {
     await expect(
       page.getByRole('group', { name: 'Workspace notes' }).getByRole('button'),
     ).toHaveCount(2);
+    // Do not mistake the previous popup's exit for the long-press opening.
+    await expect(menu).not.toBeVisible();
     const canvas = page.locator('.radial-canvas');
     await canvas.scrollIntoViewIfNeeded();
     const b = (await canvas.boundingBox())!;
@@ -248,6 +250,35 @@ test.describe('phone touch', () => {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
+  });
+
+  test('a short context-surface tap leaves closed-menu Escape unconsumed', async ({
+    page,
+  }) => {
+    await page.locator('.radial-canvas').tap();
+    await expect(
+      page.getByRole('menu', { name: menuName, exact: true }),
+    ).not.toBeVisible();
+    await page.evaluate(() => {
+      (document.activeElement as HTMLElement | null)?.blur();
+      window.addEventListener(
+        'keydown',
+        (event) => {
+          (
+            window as unknown as { radialEscapePrevented: boolean }
+          ).radialEscapePrevented = event.defaultPrevented;
+        },
+        { once: true },
+      );
+    });
+    await page.keyboard.press('Escape');
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { radialEscapePrevented: boolean })
+            .radialEscapePrevented,
+      ),
+    ).toBe(false);
   });
 });
 
@@ -284,6 +315,69 @@ for (const appearance of ['light', 'dark'])
       'Note pinned.',
     );
   });
+
+test('Escape before popup focus is installed cancels opening and restores the opener', async ({
+  page,
+}) => {
+  const trigger = page.getByRole('button', { name: menuName, exact: true });
+  const menu = page.getByRole('menu', { name: menuName, exact: true });
+  await trigger.evaluate((element) => {
+    // Keep activation and Escape in one browser turn to exercise the focus gap.
+    (document.activeElement as HTMLElement | null)?.blur();
+    element.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        button: 0,
+        buttons: 1,
+        pressure: 0.5,
+        detail: 1,
+        pointerType: 'mouse',
+        isPrimary: true,
+      }),
+    );
+    element.dispatchEvent(
+      new MouseEvent('mousedown', { bubbles: true, button: 0, buttons: 1 }),
+    );
+    element.dispatchEvent(
+      new PointerEvent('pointerup', {
+        bubbles: true,
+        button: 0,
+        pointerType: 'mouse',
+        isPrimary: true,
+      }),
+    );
+    element.dispatchEvent(
+      new MouseEvent('mouseup', { bubbles: true, button: 0 }),
+    );
+    element.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, button: 0, detail: 1 }),
+    );
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+  });
+  // Let the obsolete pointer frame run before checking that it stayed closed.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
+  await expect(trigger).not.toHaveAttribute('aria-expanded', 'true');
+  await expect(menu).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  for (const key of ['Enter', 'Space']) {
+    await trigger.press(key);
+    await expect(menu).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+  }
+});
 
 test('immediate Escape after pointer opening dismisses consistently and preserves later keyboard use', async ({
   page,

@@ -90,9 +90,47 @@ export function RadialMenu({
   const button = useRef<HTMLButtonElement>(null);
   const menuActions = useRef<ContextMenu.Root.Actions | null>(null);
   const isOpen = useRef(open ?? defaultOpen ?? false);
+  const openingIntent = useRef<'open' | 'close' | null>(null);
   useLayoutEffect(() => {
-    if (open !== undefined) isOpen.current = open;
+    if (open !== undefined) {
+      isOpen.current = open;
+      openingIntent.current = open ? null : 'close';
+    }
   }, [open]);
+  useLayoutEffect(() => {
+    const doc = button.current?.ownerDocument;
+    if (!doc) return;
+    const dismissDuringOpening = (event: KeyboardEvent) => {
+      const trigger = button.current;
+      if (
+        !trigger ||
+        event.key !== 'Escape' ||
+        event.defaultPrevented ||
+        (!isOpen.current && openingIntent.current !== 'open') ||
+        (event.target !== trigger && event.target !== doc.body)
+      )
+        return;
+      // Popup focus/dismissal may not be mounted yet. Its normal keyboard
+      // flow stays with Base UI; only bridge this opener/body focus gap.
+      event.preventDefault();
+      openingIntent.current = 'close';
+      menuActions.current?.close();
+      if (finalFocus === undefined)
+        queueMicrotask(() => {
+          const destination = button.current;
+          if (
+            !isOpen.current &&
+            destination?.isConnected &&
+            !destination.disabled &&
+            destination.getAttribute('aria-expanded') !== 'true' &&
+            doc.activeElement === doc.body
+          )
+            destination.focus({ preventScroll: true });
+        });
+    };
+    doc.addEventListener('keydown', dismissDuringOpening, true);
+    return () => doc.removeEventListener('keydown', dismissDuringOpening, true);
+  }, [finalFocus]);
   const [origin, setOrigin] = useState<'context' | 'button'>('button');
   const radial =
     layout === 'auto' &&
@@ -103,8 +141,18 @@ export function RadialMenu({
       open={open}
       defaultOpen={defaultOpen}
       onOpenChange={(next, details) => {
+        // Base UI defers a pointer opening to a frame. Escape or another
+        // dismissal supersedes that request, even before popup focus mounts.
+        if (next && (disabled || openingIntent.current === 'close')) {
+          openingIntent.current = 'close';
+          details.cancel();
+          return;
+        }
         onOpenChange?.(next, details);
-        if (!details.isCanceled) isOpen.current = open ?? next;
+        if (!details.isCanceled) {
+          isOpen.current = open ?? next;
+          openingIntent.current = next ? null : 'close';
+        } else if (next) openingIntent.current = 'close';
       }}
       actionsRef={menuActions}
       disabled={disabled}
@@ -114,10 +162,12 @@ export function RadialMenu({
           {...props}
           className="radial-context-surface"
           onContextMenu={(event) => {
+            if (!disabled) openingIntent.current = null;
             setOrigin('context');
             onContextMenu?.(event);
           }}
           onTouchStart={(event) => {
+            if (!disabled) openingIntent.current = null;
             setOrigin('context');
             onTouchStart?.(event);
           }}
@@ -129,14 +179,18 @@ export function RadialMenu({
           render={<Button variant="secondary" />}
           className="radial-open-button"
           onPointerDown={() => setOrigin('button')}
-          onKeyDown={(event) => {
-            setOrigin('button');
-            // Escape can arrive here before popup focus/dismissal mounts.
-            if (event.key === 'Escape' && isOpen.current) {
-              event.preventDefault();
-              menuActions.current?.close();
-            }
+          onMouseDownCapture={(event) => {
+            if (!disabled && event.button === 0) openingIntent.current = 'open';
           }}
+          onClickCapture={(event) => {
+            // Assistive and programmatic activations may have no pointer event.
+            if (!disabled && event.detail === 0) openingIntent.current = 'open';
+          }}
+          onKeyDownCapture={(event) => {
+            if (!disabled && ['Enter', ' '].includes(event.key))
+              openingIntent.current = 'open';
+          }}
+          onKeyDown={() => setOrigin('button')}
           disabled={disabled}
         >
           {label}

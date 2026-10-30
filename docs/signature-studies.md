@@ -106,8 +106,10 @@ and an ordinary Menu trigger for keyboard/touch access. Six separate cream
 wedges surround the invocation point, shifting within viewport bounds; the
 highlighted sector lifts outward in mint. Clockwise order is Copy, Duplicate,
 Move, Pin, Delete, More. Base UI's Up/Down, typeahead and Escape follow that linear
-order; no geometric arrow-key engine is added. Early Escape on the opener uses
-Base UI's close action before popup focus is ready. Exactly six labels of at most
+order; no geometric arrow-key engine is added. During opening, Escape from the
+opener or body uses Base UI's close action and cancels an obsolete deferred
+pointer request. Once popup focus is installed, Base UI handles its keys.
+Exactly six labels of at most
 fourteen code points use the fan. Other counts, longer labels, explicit list
 preference or very short viewports use the same ordinary list. Large custom
 fonts may require list layout. The scene copies real note text, creates/selects
