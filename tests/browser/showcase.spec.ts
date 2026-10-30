@@ -244,13 +244,13 @@ test('catalog search and responsive pages remain usable', async ({ page }) => {
   }
 });
 
-test('representative showcase pages and the open popup pass automated accessibility checks', async ({
-  page,
-}) => {
-  test.setTimeout(90_000);
-  // Audit settled colors; overlay motion has its own interaction coverage.
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  for (const appearance of ['light', 'dark']) {
+for (const appearance of ['light', 'dark']) {
+  test(`representative showcase pages and the open popup pass automated accessibility checks in ${appearance}`, async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    // Audit settled colors; overlay motion has its own interaction coverage.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     for (const route of [
       'overview',
       'components/button',
@@ -332,8 +332,8 @@ test('representative showcase pages and the open popup pass automated accessibil
           .toEqual([]);
       }
     }
-  }
-});
+  });
+}
 
 test('themed popover routes Tab around its sentinels after pointer and keyboard opening', async ({
   page,
