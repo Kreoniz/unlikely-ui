@@ -1604,10 +1604,15 @@ test('tooltips honor the selected delay on every hover and open immediately for 
   const settingsTooltip = page
     .getByRole('tooltip')
     .filter({ hasText: 'Manage project settings' });
+  // Keep hover-delay assertions independent of time spent in browser actions.
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
   for (const delay of [300, 600]) {
     if (delay === 600) {
+      await page.clock.resume();
       await page.getByRole('combobox', { name: 'Hover delay' }).click();
       await page.getByRole('option', { name: '600 ms', exact: true }).click();
+      await page.mouse.move(0, 0);
+      await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
     }
     await trigger.hover();
     await page.clock.runFor(delay - 100);
@@ -1640,8 +1645,11 @@ test('tooltips honor the selected delay on every hover and open immediately for 
   await expect(createTooltip).toBeVisible({ timeout: 200 });
   await expect(trigger).toHaveAccessibleDescription('Create a new project');
   await page.keyboard.press('Escape');
+  await page.clock.resume();
   await page.getByRole('combobox', { name: 'Hover delay' }).click();
   await page.getByRole('option', { name: 'Instant', exact: true }).click();
+  await page.mouse.move(0, 0);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
   await trigger.hover();
   await page.clock.runFor(20);
   await expect(createTooltip).toBeVisible();
