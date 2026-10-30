@@ -1,9 +1,9 @@
 # Packaging and source installation
 
-Status: alpha.3 release artifact, 2026-10-30. ESM, types, CSS, explicit exports
-and tarball consumer checks exist. MIT is the code/documentation license.
-Alpha releases use `next`; registry availability is recorded only after
-verification in [the release workflow](./releasing.md).
+Status: `unlikely-ui@0.1.0-alpha.3` published on 2026-10-30 UTC under `next`.
+ESM, types, CSS, explicit exports and tarball consumer checks exist. MIT is the
+code/documentation license. See [the verified release record](./release-2026-10-30.md)
+and [the release workflow](./releasing.md).
 
 Alpha.3 adds `unlikely-ui/switch`, `unlikely-ui/tabs`, `unlikely-ui/menu` and
 its `unlikely-ui/dropdown-menu` alias, named parts and semantic app utilities.

@@ -1,16 +1,17 @@
 # Implementation status
 
-Updated 2026-10-30. Keep implemented checkout behavior separate from published
+Updated 2026-10-31. Keep implemented checkout behavior separate from published
 releases and future delivery options.
 
-- **Release candidate:** `unlikely-ui@0.1.0-alpha.3` contains twenty-five preview
+- **Published baseline:** `unlikely-ui@0.1.0-alpha.3` contains twenty-five preview
   catalogue entries, including Switch, Tabs and Menu. The shadcn Base UI
   convention migration adds callable roots, named parts, standard Button variants,
   `buttonVariants`, composed controls and scoped semantic Tailwind aliases.
   Existing compound names remain available, with documented differences such
   as Dialog's new close-button default. See
   [consumer migration guidance](../USAGE.md#upgrades-and-validation).
-  Publication is recorded only after a verified registry lookup.
+  Published on 2026-10-30 UTC; the public tarball matches the checked artifact.
+  See [the release record](./release-2026-10-30.md).
 - **Previous release:** alpha.2 was published on 2026-10-22 with twenty-two
   preview entries, including ScrollArea. See [its release record](./release-2026-10-22.md).
 - **App studies:** Margin and Dispatch are in-memory, app-owned experiments

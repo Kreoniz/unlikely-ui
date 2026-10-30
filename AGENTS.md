@@ -75,7 +75,7 @@
   notes; TypeScript compatibility alone is insufficient.
 - The selected package is unscoped `unlikely-ui`, MIT licensed. Published release
   evidence and tag history are in `docs/releasing.md` and
-  `docs/release-2026-10-22.md`; checkout changes may be newer. Further npm
+  `docs/release-2026-10-30.md`; checkout changes may be newer. Further npm
   publication requires an explicit request. Never publish during routine work.
 - Before a release, run `pnpm release:check` and inspect the tarball. Preserve
   lifecycle hooks and registry/access/tag settings; follow `docs/releasing.md`
